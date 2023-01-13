@@ -24,14 +24,14 @@ const HeaderBox = styled.header`
   width: 100%;
   height: 10vh;
   padding: 20px 100px;
-  background-color: ${({ theme }) => theme.colors.black};
-  color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.mainColor};
+  color: ${({ theme }) => theme.colors.black};
 `;
 const HeaderWrap = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 1440px;
 `;
 const Logo = styled.span`
   color: ${({ theme }) => theme.colors.white};
@@ -42,7 +42,7 @@ const Menu = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.lg};
   a {
     margin-right: 15px;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.subColor1};
     font-weight: bold;
     cursor: pointer;
     border-radius: 10px;
