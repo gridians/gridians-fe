@@ -10,8 +10,9 @@ const Header = () => {
           <Logo>Devember</Logo>
         </Link>
         <Menu>
-          <Link to="/">로그인</Link>
-          <Link to="/">등록하기</Link>
+          <Link to="/">Home</Link>
+          <Link to="/">SignUp</Link>
+          <Link to="/">Enroll</Link>
         </Menu>
       </HeaderWrap>
     </HeaderBox>
@@ -23,32 +24,37 @@ const HeaderBox = styled.header`
   justify-content: center;
   width: 100%;
   height: 10vh;
-  padding: 20px 100px;
+  padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.mainColor};
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.subColor1};
 `;
 const HeaderWrap = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 1440px;
+  width: 100%;
 `;
 const Logo = styled.span`
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.subColor1};
   font-size: 2.2rem;
   font-family: ${({ theme }) => theme.fontFace.font1};
 `;
 const Menu = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 15%;
   a {
-    margin-right: 15px;
     color: ${({ theme }) => theme.colors.subColor1};
     font-weight: bold;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 20px;
+    border: 3px solid black;
     padding: 6px;
+    margin-left: 30px;
     &:hover {
-      font-size: ${({ theme }) => theme.fontSizes.xl};
+      font-size: ${({ theme }) => theme.fontSizes.xxl};
     }
   }
   span {

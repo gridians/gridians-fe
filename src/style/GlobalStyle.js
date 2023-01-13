@@ -15,7 +15,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     height: 100vh;
-    /* background-color: #00adb5; */
+    background-color: #dbdbdb;
    
     #root{
         width: 100%;

@@ -59,8 +59,8 @@ const colors = {
   gray_1: "#222222",
   gray_2: "#767676",
   green_1: "#3cb46e",
-  mainColor: "#222831",
-  subColor1: "#DBDBDB",
+  mainColor: "#DBDBDB",
+  subColor1: "#222831",
 };
 
 const theme = {
