@@ -22,10 +22,10 @@ const HeaderBox = styled.header`
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 10vh;
+  height: 6vh;
   padding: 20px 100px;
   background-color: ${({ theme }) => theme.colors.mainColor};
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
 `;
 const HeaderWrap = styled.div`
   display: flex;
