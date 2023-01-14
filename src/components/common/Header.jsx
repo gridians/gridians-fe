@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  if (window.location.pathname === "/") return null;
   return (
     <HeaderBox>
       <HeaderWrap>
@@ -10,9 +11,9 @@ const Header = () => {
           <Logo>Devember</Logo>
         </Link>
         <Menu>
-          <Link to="/">Home</Link>
-          <Link to="/">SignUp</Link>
-          <Link to="/">Enroll</Link>
+          <Link to="/home">Home</Link>
+          <Link to="/register">SignUp</Link>
+          <Link to="/home">Enroll</Link>
         </Menu>
       </HeaderWrap>
     </HeaderBox>

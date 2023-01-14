@@ -83,7 +83,7 @@ const CommentTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   color: ${({ theme }) => theme.colors.subColor1};
   font-weight: bold;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor2};
 `;
 
 const CommentFormContainer = styled.div`
@@ -93,7 +93,7 @@ const CommentFormContainer = styled.div`
 `;
 
 const CommentProfile = styled.div`
-  border: 1px solid white;
+  border: 1px solid ${({ theme }) => theme.colors.subColor2};
   border-radius: 50%;
   width: 70px;
   height: 70px;
@@ -103,7 +103,7 @@ const CommentInput = styled.textarea`
   width: 100%;
   border: none;
   height: 3vh;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor2};
   background-color: transparent;
   resize: none;
   font-size: ${({ theme }) => theme.fontSizes.lg};
@@ -123,7 +123,7 @@ const CommentButtonContainer = styled.div`
 `;
 const CommentButton = styled.button`
   background-color: transparent;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.subColor2};
   border: 1px solid ${({ theme }) => theme.colors.subColor1};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   font-weight: bold;

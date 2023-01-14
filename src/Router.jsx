@@ -9,10 +9,18 @@ export default function Router() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path={"/intro"} element={<Intro />} />
-        <Route path={"/"} element={<Home />} />
+        <Route path={"/"} element={<Intro />} />
         <Route path={"/register"} element={<Register />} />
+        <Route path={"/home"} element={<Home />} />
       </Routes>
+
+      {/* <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<MainPage />} />
+        </Route>
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes> */}
     </BrowserRouter>
   );
 }
