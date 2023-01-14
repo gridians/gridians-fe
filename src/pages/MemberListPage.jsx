@@ -1,26 +1,38 @@
-import React from "react";
-import styled from "styled-components";
-import { keyframes } from "styled-components";
+import React, { useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
 
 const MemberListPage = () => {
+  const [hover, setHover] = useState(false);
+  const [num, setNum] = useState();
+  const [top, setTop] = useState();
+  const [left, setLeft] = useState();
+
+  const member = [0, 1, 2, 3, 4, 5];
   return (
     <Container>
       <Wrap>
-        <MemberItem>
-          <MemberItem1 className="aa">1</MemberItem1>
-        </MemberItem>
-        <MemberItem>
-          <MemberItem1 className="aa">2</MemberItem1>
-        </MemberItem>
-        <MemberItem>
-          <MemberItem1 className="aa">3</MemberItem1>
-        </MemberItem>
-        <MemberItem>
-          <MemberItem1 className="aa">4</MemberItem1>
-        </MemberItem>
-        <MemberItem>
-          <MemberItem1>4</MemberItem1>
-        </MemberItem>
+        {member.map((data, index) => (
+          <MemberCard
+            className="card"
+            key={index}
+            onClick={() => {
+              setHover(true);
+              setNum(index);
+              setTop(document.querySelectorAll(".card")[0].offsetTop);
+              setLeft(document.querySelectorAll(".card")[0].offsetLeft);
+              console.log(document.querySelectorAll(".card")[0].offsetTop);
+              console.log(document.querySelectorAll(".card")[0].offsetLeft);
+            }}
+          >
+            {hover && index === num ? (
+              <Back className="back" left={left>0?left:null} top={top>0?top:null}>
+                back
+              </Back>
+            ) : (
+              <Front className="front">front</Front>
+            )}
+          </MemberCard>
+        ))}
       </Wrap>
     </Container>
   );
@@ -39,27 +51,23 @@ const Wrap = styled.div`
   padding-top: 30px;
   width: 1080px;
 `;
-const MemberItem = styled.div`
+const MemberCard = styled.div`
   width: 250px;
   height: 300px;
-  background-color: gray;
+  background-color: transparent;
   border-radius: 10px;
   color: white;
   transition: all 1s;
-  border: 12px solid black;
   display: flex;
   cursor: pointer;
   &:hover {
-    .aa {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .front {
       transform: rotateY(180deg);
     }
   }
 `;
 
-const MemberItem1 = styled.div`
+const Front = styled.div`
   width: 250px;
   height: 300px;
   background-color: gray;
@@ -68,6 +76,22 @@ const MemberItem1 = styled.div`
   transition: all 1s;
   border: 12px solid black;
   cursor: pointer;
+`;
+const spin = keyframes`
+    0%{
+        top:30px;
+        left:501px;
+    }
+    100%{
+        top: 0px;
+        left: 100px;
+    }
+`;
+const Back = styled(Front)`
+  position: absolute;
+  z-index: 5;
+  animation: ${spin} 2s;
+  -webkit-animation-fill-mode: both;
 `;
 
 export default MemberListPage;
