@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <HeaderBox>
       <HeaderWrap>
-        <Link to="/">
+        <Link to="/home">
           <Logo>Devember</Logo>
         </Link>
         <Menu>

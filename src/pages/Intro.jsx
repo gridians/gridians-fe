@@ -13,7 +13,7 @@ export default function Intro() {
         <BackdropSpanContainer>
           <BackdropSpan>getProfile();</BackdropSpan>
           <BackdropStartSpan>
-            <StyledLink to="/home">
+            <StyledLink onClick={() => window.location.replace("/home")}>
               <span className="span1">{"→"}</span>
               <span className="span2">S</span>
               <span className="span3">t</span>
