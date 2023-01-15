@@ -3,7 +3,9 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  if (window.location.pathname === "/") return null;
+  if (window.location.pathname === "/" || window.location.pathname === "/home")
+    return null;
+
   return (
     <HeaderBox>
       <HeaderWrap>

@@ -9,7 +9,6 @@ export default function Intro() {
       <IntroCircleContainer></IntroCircleContainer>
       <Backdrop>
         <BackdropLeftBracket>{"{"}</BackdropLeftBracket>
-
         <BackdropSpanContainer>
           <BackdropSpan>getProfile();</BackdropSpan>
           <BackdropStartSpan>
@@ -115,6 +114,8 @@ const BackdropSpanContainer = styled.div`
   transform: rotate(-10deg);
   display: flex;
   flex-direction: column;
+  margin-bottom: 80px;
+  margin-left: 60px;
 `;
 const BackdropSpan = styled.span`
   font-size: 8em;
@@ -125,7 +126,7 @@ const BackdropSpan = styled.span`
   text-shadow: 7px 7px 4px gray;
   overflow: hidden;
   margin-top: 100px;
-  animation: ${typing} 3s steps(30), ${blink} 0.5s step-end backwards alternate;
+  animation: ${typing} 2s steps(30), ${blink} 0.5s step-end backwards alternate;
 `;
 const BackdropStartSpan = styled.div`
   font-size: 8em;
@@ -137,8 +138,8 @@ const BackdropStartSpan = styled.div`
   border-right: 3px solid;
   overflow: hidden;
   visibility: hidden;
-  animation: ${typing1} 3s steps(22), ${blink1} 0.5s step-end infinite alternate;
-  animation-delay: 3s;
+  animation: ${typing1} 2s steps(22), ${blink1} 0.5s step-end infinite alternate;
+  animation-delay: 2s;
   position: relative;
 
   .span1 {
@@ -216,7 +217,7 @@ const BackdropLeftBracket = styled.span`
   font-weight: bold;
   transform: rotate(-10deg);
   text-shadow: 7px 7px 4px gray;
-  top: 100px;
+  top: 40px;
   right: 0px;
 `;
 const BackdropRightBracket = styled.span`
@@ -227,6 +228,6 @@ const BackdropRightBracket = styled.span`
   font-weight: bold;
   transform: rotate(-10deg);
   text-shadow: 7px 7px 4px gray;
-  bottom: 100px;
-  left: 650px;
+  bottom: 120px;
+  left: 600px;
 `;
