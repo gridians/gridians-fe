@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import Time from "../components/comment/Time";
 import weather from "../image/weather.png";
-import Comment from "../components/comment/Comment";
 
 export default function Home() {
   const [coords, saveCoords] = useState();
@@ -117,7 +117,13 @@ export default function Home() {
           </HomeSubContainer>
         </HomeLeftWrapper>
 
-        <HomeRightWrapper>ss</HomeRightWrapper>
+        <HomeRightWrapper>
+          <HomeTimeWrapper>
+            <HomeTime>
+              <Time />
+            </HomeTime>
+          </HomeTimeWrapper>
+        </HomeRightWrapper>
       </HomeWrapper>
     </HomeContainer>
   );
@@ -266,9 +272,29 @@ const HomeSubInfoTitle = styled.span`
   height: 100%;
   font-size: ${({ theme }) => theme.fontSizes.xxl};
 `;
+const marquee = keyframes`
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+`;
 
 const HomeRightWrapper = styled.div`
   width: 100%;
   height: 100%;
   flex: 1;
+  border: 1px solid black;
+`;
+const HomeTimeWrapper = styled.div`
+  background-color: ${({ theme }) => theme.colors.mainColor};
+  margin-top: 20px;
+  margin-left: 140px;
+  overflow: hidden;
+  width: 76%;
+  height: 5%;
+`;
+const HomeTime = styled.div`
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
+  font-weight: bold;
+  animation: ${marquee} 10s linear infinite;
+  width: 100%;
+  height: 100%;
 `;
