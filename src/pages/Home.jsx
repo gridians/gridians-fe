@@ -34,7 +34,6 @@ export default function Home() {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         const temp = data.main.temp;
         const weathers = data.weather[data.weather.length - 1];
         setTemp(temp);
@@ -89,16 +88,17 @@ export default function Home() {
                   <HomeSubTItle>Introduce</HomeSubTItle>
                 </HomeSubTitlePadding>
               </HomeSubTitleWrapper>
-              <HomeSubInfoWrapper>
-                <HomeSubInfoTitle>
-                  Github API를 받아와서 프로필을 보여주는 사이트
-                </HomeSubInfoTitle>
-              </HomeSubInfoWrapper>
 
               <HomeSubInfoWrapper>
-                <HomeSubInfoTitle>
-                  Github Read Me에 카드를 만들어봐요
-                </HomeSubInfoTitle>
+                <HomeSubInfoTitleWrapper>
+                  <HomeSubInfoTitle>
+                    Github API를 받아와서 프로필을 보여주는 사이트
+                  </HomeSubInfoTitle>
+
+                  <HomeSubInfoTitle>
+                    Github Read Me에 카드를 만들어봐요
+                  </HomeSubInfoTitle>
+                </HomeSubInfoTitleWrapper>
               </HomeSubInfoWrapper>
             </HomeSubWrapper>
 
@@ -108,21 +108,30 @@ export default function Home() {
                   <HomeSubTItle>CardProfile</HomeSubTItle>
                 </HomeSubTitlePadding>
               </HomeSubTitleWrapper>
+
               <HomeSubInfoWrapper>
-                <HomeSubInfoTitle>
-                  Github Read Me에 카드를 만들어봐여
-                </HomeSubInfoTitle>
+                <HomeSubInfoTitleWrapper>
+                  <HomeSubInfoTitle>
+                    Github API를 받아와서 프로필을 보여주는 사이트
+                  </HomeSubInfoTitle>
+
+                  <HomeSubInfoTitle>
+                    Github Read Me에 카드를 만들어봐요
+                  </HomeSubInfoTitle>
+                </HomeSubInfoTitleWrapper>
               </HomeSubInfoWrapper>
             </HomeSubWrapper>
           </HomeSubContainer>
         </HomeLeftWrapper>
 
         <HomeRightWrapper>
-          <HomeTimeWrapper>
-            <HomeTime>
-              <Time />
-            </HomeTime>
-          </HomeTimeWrapper>
+          <HomeRightPadding>
+            <HomeTimeWrapper>
+              <HomeTime>
+                <Time />
+              </HomeTime>
+            </HomeTimeWrapper>
+          </HomeRightPadding>
         </HomeRightWrapper>
       </HomeWrapper>
     </HomeContainer>
@@ -136,6 +145,8 @@ const HomeContainer = styled.div`
   flex-direction: column;
   background-color: ${({ theme }) => theme.colors.mainColor};
   padding: 100px;
+  border: 1px solid black;
+  align-items: center;
 `;
 const HomeWrapper = styled.div`
   width: 100%;
@@ -170,7 +181,7 @@ const HomeMainTitleWrapper = styled.div`
 const HomeMainTitlePadding = styled.div`
   width: 100%;
   height: 100%;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.subColor4};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor4};
   padding-bottom: 20px;
   display: flex;
   align-items: center;
@@ -179,7 +190,6 @@ const HomeMainTitlePadding = styled.div`
 const HomeMainTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   font-weight: bold;
-  background-color: ${({ theme }) => theme.colors.mainColor};
   padding-top: 20px;
 `;
 const HomeWeatherTitleWrapper = styled.div`
@@ -210,7 +220,7 @@ const HomeMainInfoWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding: 20px 20px 20px 0;
-  border-right: 2px solid ${({ theme }) => theme.colors.subColor4};
+  border-right: 1px solid ${({ theme }) => theme.colors.subColor4};
 `;
 const HomeMainInfoSiteWrapper = styled.div`
   width: 100%;
@@ -218,6 +228,7 @@ const HomeMainInfoSiteWrapper = styled.div`
   padding: 20px;
   background-color: ${({ theme }) => theme.colors.mainColor};
   text-align: end;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor4};
 `;
 const HomeMainInfoTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.xxxl};
@@ -226,7 +237,7 @@ const HomeMainInfoTitle = styled.span`
 
 const HomeSubContainer = styled.div`
   scroll-snap-type: y mandatory;
-  height: 100vh;
+  height: 100%;
   overflow-y: scroll;
   flex: 2;
   ::-webkit-scrollbar {
@@ -251,7 +262,7 @@ const HomeSubTitleWrapper = styled.div`
 const HomeSubTitlePadding = styled.div`
   width: 100%;
   height: 100%;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.subColor4};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor4};
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -263,10 +274,15 @@ const HomeSubTItle = styled.span`
 `;
 const HomeSubInfoWrapper = styled.div`
   width: 100%;
+  height: 100%;
   font-weight: bold;
   padding: 20px 25px;
 `;
-
+const HomeSubInfoTitleWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  border-bottom: 1px solid black;
+`;
 const HomeSubInfoTitle = styled.span`
   width: 100%;
   height: 100%;
@@ -281,7 +297,12 @@ const HomeRightWrapper = styled.div`
   width: 100%;
   height: 100%;
   flex: 1;
-  border: 1px solid black;
+  padding: 50px 0;
+`;
+const HomeRightPadding = styled.div`
+  width: 100%;
+  height: 100%;
+  border-left: 1px solid ${({ theme }) => theme.colors.subColor4};
 `;
 const HomeTimeWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.mainColor};
