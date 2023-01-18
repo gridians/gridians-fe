@@ -59,9 +59,17 @@ export default function Comment() {
           </CommentButton>
         )}
       </CommentButtonContainer>
-      {commentList.map((commentArr, i) => {
-        return <CommentListContainer key={i}>{comment}</CommentListContainer>;
-      })}
+
+      <CommentListContainer>
+        {commentList.map((commentArr, i) => {
+          return (
+            <CommentListWrapper key={i}>
+              <CommentProfile>프로필</CommentProfile>
+              <CommentList>{commentArr}</CommentList>
+            </CommentListWrapper>
+          );
+        })}
+      </CommentListContainer>
     </CommentContainer>
   );
 }
@@ -95,8 +103,8 @@ const CommentFormContainer = styled.div`
 const CommentProfile = styled.div`
   border: 1px solid white;
   border-radius: 50%;
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   color: white;
 `;
 const CommentInput = styled.textarea`
@@ -117,9 +125,9 @@ const CommentInput = styled.textarea`
 `;
 const CommentButtonContainer = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: flex-end;
+  margin-bottom: 30px;
 `;
 const CommentButton = styled.button`
   background-color: transparent;
@@ -133,4 +141,21 @@ const CommentButton = styled.button`
   cursor: pointer;
 `;
 
-const CommentListContainer = styled.div``;
+const CommentListContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+const CommentListWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+`;
+const CommentList = styled.span`
+  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  margin-left: 10px;
+`;
