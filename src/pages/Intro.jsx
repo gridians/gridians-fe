@@ -26,7 +26,8 @@ export default function Intro() {
   );
 }
 const gridAnimation = keyframes`
-  
+  from{ opacity:0;}
+  to{ opacity:1;}
 `;
 const IntroContainer = styled.div`
   width: 100%;
