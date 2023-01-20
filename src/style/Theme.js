@@ -24,8 +24,11 @@ const fontSizes = {
   xl: "20px",
   xxl: "22px",
   xxxl: "24px",
+<<<<<<< HEAD
   name: "30px",
   subTitleSize:"40px",
+=======
+>>>>>>> 6b531386bb0e7bb21759804eca2cea2962494462
   titleSize: "50px",
 };
 
@@ -61,11 +64,19 @@ const colors = {
   gray_1: "#222222",
   gray_2: "#767676",
   green_1: "#3cb46e",
+<<<<<<< HEAD
   mainColor: "#1E1E1E",
   subColor1: "#6F6F6F",
   subColor2: "#222831",
   subColor3: "#3F3B6C",
   subColor4: "#738598",
+=======
+  mainColor: "#000000",
+  subColor1: "#41442F",
+  subColor2: "#D29A25",
+  subColor3: "#868686",
+  subColor4: "#ffffff",
+>>>>>>> 6b531386bb0e7bb21759804eca2cea2962494462
 };
 
 const theme = {

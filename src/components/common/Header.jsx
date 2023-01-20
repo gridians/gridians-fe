@@ -16,6 +16,7 @@ const Header = () => {
           <Link to="/home">Home</Link>
           <Link to="/register">SignUp</Link>
           <Link to="/home">Enroll</Link>
+
         </Menu>
       </HeaderWrap>
     </HeaderBox>
@@ -30,6 +31,7 @@ const HeaderBox = styled.header`
   padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.mainColor};
   color: ${({ theme }) => theme.colors.subColor1};
+
 `;
 const HeaderWrap = styled.div`
   display: flex;
@@ -39,6 +41,7 @@ const HeaderWrap = styled.div`
 `;
 const Logo = styled.span`
   color: ${({ theme }) => theme.colors.subColor1};
+
   font-size: 2.2rem;
   font-family: ${({ theme }) => theme.fontFace.font1};
 `;
@@ -58,6 +61,7 @@ const Menu = styled.div`
     margin-left: 30px;
     &:hover {
       font-size: ${({ theme }) => theme.fontSizes.xxl};
+
     }
   }
   span {
