@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/common/Header";
+import Education from "./pages/Education";
 import Home from "./pages/Home";
 import Intro from "./pages/Intro";
 import Register from "./pages/Register";
@@ -12,6 +13,7 @@ export default function Router() {
         <Route path={"/"} element={<Intro />} />
         <Route path={"/register"} element={<Register />} />
         <Route path={"/home"} element={<Home />} />
+        <Route path={"/education"} element={<Education />} />
       </Routes>
 
       {/* <Routes>

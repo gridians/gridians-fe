@@ -321,7 +321,7 @@ const RegisterContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.mainColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   overflow: hidden;
 `;
 const RegisterWrapper = styled.div`
