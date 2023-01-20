@@ -146,7 +146,6 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
-
                     style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangeName}
                     value={name}
@@ -188,7 +187,6 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
-
                     style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangeNickname}
                     value={nickname}
@@ -229,12 +227,10 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
-
                     onChange={onChangeEmail}
                     value={email}
                     type="email"
                     placeholder="예) polymorph123@polymorph.com"
-
                     style={{ borderBottom: "2px solid #3F3B6C" }}
                   />
                 )}
@@ -297,7 +293,6 @@ export default function Register() {
             <RegisterButton
               onClick={onClickSubmit}
               style={{
-
                 backgroundColor: "#738598",
                 color: "white",
                 border: "none",
@@ -326,7 +321,7 @@ const RegisterContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.mainColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   overflow: hidden;
 `;
 const RegisterWrapper = styled.div`
@@ -363,7 +358,6 @@ const RegisterInputContainer = styled.div`
   width: 60%;
 `;
 const RegisterInputTitle = styled.span`
-
   font-size: ${({ theme }) => theme.fontSizes.lg};
   color: ${({ theme }) => theme.colors.subColor3};
   font-weight: bold;
