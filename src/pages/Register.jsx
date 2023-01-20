@@ -146,6 +146,7 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
+
                     style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangeName}
                     value={name}
@@ -187,6 +188,7 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
+
                     style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangeNickname}
                     value={nickname}
@@ -227,10 +229,12 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
+
                     onChange={onChangeEmail}
                     value={email}
                     type="email"
                     placeholder="예) polymorph123@polymorph.com"
+
                     style={{ borderBottom: "2px solid #3F3B6C" }}
                   />
                 )}
@@ -293,6 +297,7 @@ export default function Register() {
             <RegisterButton
               onClick={onClickSubmit}
               style={{
+
                 backgroundColor: "#738598",
                 color: "white",
                 border: "none",
@@ -358,6 +363,7 @@ const RegisterInputContainer = styled.div`
   width: 60%;
 `;
 const RegisterInputTitle = styled.span`
+
   font-size: ${({ theme }) => theme.fontSizes.lg};
   color: ${({ theme }) => theme.colors.subColor3};
   font-weight: bold;
@@ -374,6 +380,7 @@ const RegisterInput = styled.input`
   border: none;
   width: 100%;
   background-color: transparent;
+
   border-bottom: 2px solid ${({ theme }) => theme.colors.subColor3};
   padding: 10px 0;
   color: ${({ theme }) => theme.colors.black};
@@ -399,11 +406,13 @@ const RegisterButton = styled.div`
   text-align: center;
   padding: 10px;
   border-radius: 10px;
+
   border: 2px solid ${({ theme }) => theme.colors.subColor2};
   background-color: transparent;
   margin-top: 70px;
   font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.xxl};
+
   color: black;
   cursor: pointer;
 `;

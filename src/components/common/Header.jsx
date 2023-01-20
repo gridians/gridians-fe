@@ -28,16 +28,16 @@ const HeaderBox = styled.header`
   justify-content: center;
   width: 100%;
   height: 10vh;
-  padding: 20px 300px;
+  padding: 20px 100px;
   background-color: ${({ theme }) => theme.colors.mainColor};
-  color: ${({ theme }) => theme.colors.subColor1};
+  color: ${({ theme }) => theme.colors.black};
 
 `;
 const HeaderWrap = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 1440px;
 `;
 const Logo = styled.span`
   color: ${({ theme }) => theme.colors.subColor1};
@@ -52,6 +52,7 @@ const Menu = styled.div`
   justify-content: space-between;
   width: 15%;
   a {
+    margin-right: 15px;
     color: ${({ theme }) => theme.colors.subColor1};
     font-weight: bold;
     cursor: pointer;

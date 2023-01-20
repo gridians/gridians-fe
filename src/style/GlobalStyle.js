@@ -15,12 +15,8 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     height: 100vh;
-<<<<<<< HEAD
-    background-color: #dbdbdb;
-   
-=======
     background-color: black;
->>>>>>> 6b531386bb0e7bb21759804eca2cea2962494462
+
     #root{
         width: 100%;
         height: 100%;
