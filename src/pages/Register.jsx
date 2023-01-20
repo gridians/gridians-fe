@@ -146,7 +146,8 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
-                    style={{ borderBottom: "2px solid #D29A25" }}
+
+                    style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangeName}
                     value={name}
                     type="text"
@@ -187,7 +188,8 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
-                    style={{ borderBottom: "2px solid #D29A25" }}
+
+                    style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangeNickname}
                     value={nickname}
                     type="text"
@@ -227,11 +229,13 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
-                    style={{ borderBottom: "2px solid #D29A25" }}
+
                     onChange={onChangeEmail}
                     value={email}
                     type="email"
                     placeholder="예) polymorph123@polymorph.com"
+
+                    style={{ borderBottom: "2px solid #3F3B6C" }}
                   />
                 )}
                 <InputMessage>{emailMessage}</InputMessage>
@@ -268,7 +272,7 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
-                    style={{ borderBottom: "2px solid #D29A25" }}
+                    style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangePassword}
                     value={password}
                     type="password"
@@ -293,8 +297,10 @@ export default function Register() {
             <RegisterButton
               onClick={onClickSubmit}
               style={{
-                backgroundColor: "rgba(255, 255, 255, .9)",
-                color: "black",
+
+                backgroundColor: "#738598",
+                color: "white",
+                border: "none",
               }}
               type="submit"
             >
@@ -357,12 +363,13 @@ const RegisterInputContainer = styled.div`
   width: 60%;
 `;
 const RegisterInputTitle = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.white};
+
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  color: ${({ theme }) => theme.colors.subColor3};
   font-weight: bold;
 `;
 const RegisterErrorInputTitle = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
   color: ${({ theme }) => theme.colors.subColor2};
   font-weight: bold;
 `;
@@ -373,13 +380,14 @@ const RegisterInput = styled.input`
   border: none;
   width: 100%;
   background-color: transparent;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+
+  border-bottom: 2px solid ${({ theme }) => theme.colors.subColor3};
   padding: 10px 0;
-  color: ${({ theme }) => theme.colors.subColor4};
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   &:focus {
     outline: none;
-    border-bottom: 2px solid ${({ theme }) => theme.colors.subColor4};
+    border-bottom: 2px solid ${({ theme }) => theme.colors.black};
   }
   &::placeholder {
     font-size: ${({ theme }) => theme.fontSizes.small};
@@ -398,11 +406,13 @@ const RegisterButton = styled.div`
   text-align: center;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.colors.subColor4};
+
+  border: 2px solid ${({ theme }) => theme.colors.subColor2};
   background-color: transparent;
   margin-top: 70px;
   font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.xxl};
-  color: white;
+
+  color: black;
   cursor: pointer;
 `;

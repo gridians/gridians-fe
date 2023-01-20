@@ -6,14 +6,30 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba
     "axios": "^1.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.7.1",
+=======
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+>>>>>>> 6b531386bb0e7bb21759804eca2cea2962494462
     "react-router-dom": "^6.6.2",
     "react-scripts": "5.0.1",
     "recoil": "^0.7.6",
     "styled-components": "^5.3.6",
+<<<<<<< HEAD
     "uuid": "^9.0.0",
+=======
+<<<<<<< HEAD
+    "uuid": "^9.0.0",
+=======
+>>>>>>> 6b531386bb0e7bb21759804eca2cea2962494462
+>>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba
     "web-vitals": "^2.1.4"
   },
   "scripts": {

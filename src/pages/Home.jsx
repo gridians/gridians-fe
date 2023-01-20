@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 export default function Home() {
   return <HomeContainer></HomeContainer>;
+
 }
 
 const HomeContainer = styled.div`
@@ -12,4 +13,5 @@ const HomeContainer = styled.div`
   align-items: flex-end;
   justify-content: flex-end;
   background-color: ${({ theme }) => theme.colors.mainColor};
+
 `;

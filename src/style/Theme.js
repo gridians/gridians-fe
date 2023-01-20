@@ -24,6 +24,8 @@ const fontSizes = {
   xl: "20px",
   xxl: "22px",
   xxxl: "24px",
+  name: "30px",
+  subTitleSize:"40px",
   titleSize: "50px",
 };
 
@@ -59,8 +61,11 @@ const colors = {
   gray_1: "#222222",
   gray_2: "#767676",
   green_1: "#3cb46e",
-  mainColor: "#222831",
-  subColor1: "#DBDBDB",
+  mainColor: "#1E1E1E",
+  subColor1: "#6F6F6F",
+  subColor2: "#222831",
+  subColor3: "#3F3B6C",
+  subColor4: "#738598",
 };
 
 const theme = {

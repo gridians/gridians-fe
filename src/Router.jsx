@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/common/Header";
 import Home from "./pages/Home";
+import Intro from "./pages/Intro";
 import Register from "./pages/Register";
 
 
@@ -9,10 +10,19 @@ export default function Router() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path={"/"} element={<Home />} />
+        <Route path={"/"} element={<Intro />} />
         <Route path={"/register"} element={<Register />} />
-
+        <Route path={"/home"} element={<Home />} />
       </Routes>
+
+      {/* <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<MainPage />} />
+        </Route>
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes> */}
+
     </BrowserRouter>
   );
 }
