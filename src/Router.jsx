@@ -3,6 +3,7 @@ import Header from "./components/common/Header";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 
+
 export default function Router() {
   return (
     <BrowserRouter>
@@ -10,6 +11,7 @@ export default function Router() {
       <Routes>
         <Route path={"/"} element={<Home />} />
         <Route path={"/register"} element={<Register />} />
+
       </Routes>
     </BrowserRouter>
   );
