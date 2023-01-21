@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Intro from "./pages/Intro";
 import Register from "./pages/Register";
 
+
 export default function Router() {
   return (
     <BrowserRouter>
@@ -23,6 +24,7 @@ export default function Router() {
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
       </Routes> */}
+
     </BrowserRouter>
   );
 }

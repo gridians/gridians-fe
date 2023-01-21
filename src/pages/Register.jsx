@@ -158,6 +158,7 @@ export default function Register() {
                   />
                 ) : (
                   <RegisterInput
+
                     onChange={onChangeEmail}
                     value={email}
                     type="email"
@@ -221,6 +222,7 @@ export default function Register() {
             <RegisterButton
               onClick={onClickSubmit}
               style={{
+
                 backgroundColor: "#738598",
                 color: "white",
                 border: "none",
@@ -301,6 +303,7 @@ const RegisterInput = styled.input`
   background-color: transparent;
   border-bottom: 2px solid ${({ theme }) => theme.colors.black};
   padding: 10px;
+
   color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   &:focus {
@@ -328,6 +331,7 @@ const RegisterButton = styled.div`
   margin-top: 70px;
   font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.xxl};
+
   color: black;
   cursor: pointer;
 `;
