@@ -51,10 +51,6 @@ export default function MyPage() {
 
   const [edit, setEdit] = useState(false);
 
-  useEffect(() => {
-    // isNickname;
-    // isEmail;
-  }, []);
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
     // 한글 영어 숫자
@@ -145,6 +141,9 @@ export default function MyPage() {
     e.preventDefault();
   };
   const onClickSubmit = () => {
+    // if (isNickname === true && nicknameMessage === "") {
+    // } else if (isEmail === true && emailMessage === "") {
+    // }
     // loginApi();
     // postUserInfo();
   };
@@ -265,14 +264,14 @@ export default function MyPage() {
                         onChange={onChangePassword}
                         value={password}
                         type="password"
-                        placeholder="비밀번호"
+                        placeholder="현재 비밀번호"
                       />
                     ) : (
                       <MyPageInput
                         onChange={onChangePassword}
                         value={password}
                         type="password"
-                        placeholder="비밀번호"
+                        placeholder="현재 비밀번호"
                       />
                     )}
                     <InputMessage>{passwordMessage}</InputMessage>
@@ -286,7 +285,7 @@ export default function MyPage() {
                       onChange={onChangePassword}
                       value={password}
                       type="password"
-                      placeholder="비밀번호"
+                      placeholder="현재 비밀번호"
                     />
                   </MyPageInputWrapper>
                 </MyPageInputContainer>
@@ -356,14 +355,14 @@ export default function MyPage() {
                         onChange={onChangeNewPasswordConfirm}
                         value={newPasswordConfirm}
                         type="password"
-                        placeholder="비밀번호 확인"
+                        placeholder="새비밀번호 확인"
                       />
                     ) : (
                       <MyPageInput
                         onChange={onChangeNewPasswordConfirm}
                         value={newPasswordConfirm}
                         type="password"
-                        placeholder="비밀번호 확인"
+                        placeholder="새비밀번호 확인"
                       />
                     )}
                     <InputMessage>{newPasswordConfirmMessage}</InputMessage>
@@ -377,7 +376,7 @@ export default function MyPage() {
                       onChange={onChangeNewPasswordConfirm}
                       value={newPasswordConfirm}
                       type="password"
-                      placeholder="비밀번호 확인"
+                      placeholder="새비밀번호 확인"
                     />
                   </MyPageInputWrapper>
                 </MyPageInputContainer>
@@ -387,7 +386,7 @@ export default function MyPage() {
 
           {edit ? (
             <>
-              {isNickname && nicknameMessage === "" ? (
+              {isNickname ? (
                 <EditButtonContainer>
                   <EditButton onClick={onClickSubmit} type="submit">
                     변경완료
