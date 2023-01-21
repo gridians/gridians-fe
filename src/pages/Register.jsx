@@ -2,12 +2,13 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { AiOutlineIdcard } from "react-icons/ai";
+import { AiOutlineMail } from "react-icons/ai";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 import {
   userEmail,
   userEmailMessage,
-  userName,
-  userNameMessage,
   userNickname,
   userNicknameMessage,
   userPassword,
@@ -15,40 +16,19 @@ import {
 } from "../store/registerAtom";
 
 export default function Register() {
-  const [name, setName] = useRecoilState(userName);
   const [nickname, setNickname] = useRecoilState(userNickname);
   const [email, setEmail] = useRecoilState(userEmail);
   const [password, setPassword] = useRecoilState(userPassword);
 
-  const [nameMessage, setNameMessage] = useRecoilState(userNameMessage);
   const [nicknameMessage, setNicknameMessage] =
     useRecoilState(userNicknameMessage);
   const [emailMessage, setEmailMessage] = useRecoilState(userEmailMessage);
   const [passwordMessage, setPasswordMessage] =
     useRecoilState(userPasswordMessage);
 
-  const [isName, setIsName] = useState(false);
   const [isNickname, setIsNickname] = useState(false);
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
-
-  // 이름 유효성 검사
-  const onChangeName = (e) => {
-    // 한글만 작성
-    const regName = /^[가-힣]+$/;
-    const UserNameCurrent = e.target.value;
-    setName(e.target.value);
-
-    if (e.target.value.length < 2 || e.target.value.length > 5) {
-      setNameMessage("2~5글자 사이를 입력해주세요.");
-      setIsName(false);
-    } else if (!regName.test(UserNameCurrent)) {
-      setNameMessage("이름을 정확히 입력해주세요.");
-    } else {
-      setNameMessage("");
-      setIsName(true);
-    }
-  };
 
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
@@ -125,74 +105,26 @@ export default function Register() {
 
   return (
     <RegisterContainer>
-      <RegisterTitle>회원가입</RegisterTitle>
       <RegisterWrapper>
         <RegisterForm>
-          {/* 이름 */}
-          {name.length > 0 ? (
-            <RegisterInputContainer>
-              {isName ? (
-                <RegisterInputTitle>이름</RegisterInputTitle>
-              ) : (
-                <RegisterErrorInputTitle>이름</RegisterErrorInputTitle>
-              )}
-              <RegisterInputItem>
-                {isName ? (
-                  <RegisterInput
-                    onChange={onChangeName}
-                    value={name}
-                    type="text"
-                    placeholder="예) 홍길동"
-                  />
-                ) : (
-                  <RegisterInput
-
-                    style={{ borderBottom: "2px solid #3F3B6C" }}
-                    onChange={onChangeName}
-                    value={name}
-                    type="text"
-                    placeholder="예) 홍길동"
-                  />
-                )}
-                <InputMessage>{nameMessage}</InputMessage>
-              </RegisterInputItem>
-            </RegisterInputContainer>
-          ) : (
-            <RegisterInputContainer>
-              <RegisterInputTitle>이름</RegisterInputTitle>
-              <RegisterInputItem>
-                <RegisterInput
-                  onChange={onChangeName}
-                  value={name}
-                  type="text"
-                  placeholder="예) 홍길동"
-                />
-              </RegisterInputItem>
-            </RegisterInputContainer>
-          )}
-
           {/* 닉네임 */}
           {nickname.length > 0 ? (
             <RegisterInputContainer>
-              {isNickname ? (
-                <RegisterInputTitle>닉네임</RegisterInputTitle>
-              ) : (
-                <RegisterErrorInputTitle>닉네임</RegisterErrorInputTitle>
-              )}
+              <AiOutlineIdcard className="icon" />
               <RegisterInputItem>
                 {isNickname ? (
                   <RegisterInput
                     onChange={onChangeNickname}
                     value={nickname}
                     type="text"
+                    placeholder="닉네임"
                   />
                 ) : (
                   <RegisterInput
-
-                    style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangeNickname}
                     value={nickname}
                     type="text"
+                    placeholder="닉네임"
                   />
                 )}
                 <InputMessage>{nicknameMessage}</InputMessage>
@@ -200,12 +132,13 @@ export default function Register() {
             </RegisterInputContainer>
           ) : (
             <RegisterInputContainer>
-              <RegisterInputTitle>닉네임</RegisterInputTitle>
+              <AiOutlineIdcard className="icon" />
               <RegisterInputItem>
                 <RegisterInput
                   onChange={onChangeNickname}
                   value={nickname}
                   type="text"
+                  placeholder="닉네임"
                 />
               </RegisterInputItem>
             </RegisterInputContainer>
@@ -214,18 +147,14 @@ export default function Register() {
           {/* 이메일 */}
           {email.length > 0 ? (
             <RegisterInputContainer>
-              {isEmail ? (
-                <RegisterInputTitle>이메일</RegisterInputTitle>
-              ) : (
-                <RegisterErrorInputTitle>이메일</RegisterErrorInputTitle>
-              )}
+              <AiOutlineMail className="icon" />
               <RegisterInputItem>
                 {isEmail ? (
                   <RegisterInput
                     onChange={onChangeEmail}
                     value={email}
                     type="email"
-                    placeholder="예) polymorph123@polymorph.com"
+                    placeholder="이메일"
                   />
                 ) : (
                   <RegisterInput
@@ -233,9 +162,7 @@ export default function Register() {
                     onChange={onChangeEmail}
                     value={email}
                     type="email"
-                    placeholder="예) polymorph123@polymorph.com"
-
-                    style={{ borderBottom: "2px solid #3F3B6C" }}
+                    placeholder="이메일"
                   />
                 )}
                 <InputMessage>{emailMessage}</InputMessage>
@@ -243,13 +170,13 @@ export default function Register() {
             </RegisterInputContainer>
           ) : (
             <RegisterInputContainer>
-              <RegisterInputTitle>이메일</RegisterInputTitle>
+              <AiOutlineMail className="icon" />
               <RegisterInputItem>
                 <RegisterInput
                   onChange={onChangeEmail}
                   value={email}
                   type="email"
-                  placeholder="예) polymorph123@polymorph.com"
+                  placeholder="이메일"
                 />
               </RegisterInputItem>
             </RegisterInputContainer>
@@ -258,24 +185,21 @@ export default function Register() {
           {/* 비밀번호 */}
           {password.length > 0 ? (
             <RegisterInputContainer>
-              {isPassword ? (
-                <RegisterInputTitle>비밀번호</RegisterInputTitle>
-              ) : (
-                <RegisterErrorInputTitle>비밀번호</RegisterErrorInputTitle>
-              )}
+              <RiLockPasswordLine className="icon" />
               <RegisterInputItem>
                 {isPassword ? (
                   <RegisterInput
                     onChange={onChangePassword}
                     value={password}
                     type="password"
+                    placeholder="비밀번호"
                   />
                 ) : (
                   <RegisterInput
-                    style={{ borderBottom: "2px solid #3F3B6C" }}
                     onChange={onChangePassword}
                     value={password}
                     type="password"
+                    placeholder="비밀번호"
                   />
                 )}
                 <InputMessage>{passwordMessage}</InputMessage>
@@ -283,17 +207,18 @@ export default function Register() {
             </RegisterInputContainer>
           ) : (
             <RegisterInputContainer>
-              <RegisterInputTitle>비밀번호</RegisterInputTitle>
+              <RiLockPasswordLine className="icon" />
               <RegisterInputItem>
                 <RegisterInput
                   onChange={onChangePassword}
                   value={password}
                   type="password"
+                  placeholder="비밀번호"
                 />
               </RegisterInputItem>
             </RegisterInputContainer>
           )}
-          {isName && isNickname && isEmail && isPassword ? (
+          {isNickname && isEmail && isPassword ? (
             <RegisterButton
               onClick={onClickSubmit}
               style={{
@@ -326,71 +251,67 @@ const RegisterContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.mainColor};
+  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   overflow: hidden;
 `;
 const RegisterWrapper = styled.div`
   width: 50%;
   height: 100%;
   display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
   padding: 0 10%;
 `;
 const RegisterTitle = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
-  color: ${({ theme }) => theme.colors.subColor1};
-  margin-top: 50px;
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const RegisterForm = styled.form`
-  width: 100%;
+  width: 80%;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px solid ${({ theme }) => theme.colors.subColor4};
   border-radius: 10px;
   padding: 20px 0;
+  background-color: rgba(255, 255, 255, 0.8);
 `;
 const RegisterInputContainer = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 30px;
   padding: 10px;
   width: 60%;
-`;
-const RegisterInputTitle = styled.span`
-
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  color: ${({ theme }) => theme.colors.subColor3};
-  font-weight: bold;
-`;
-const RegisterErrorInputTitle = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  color: ${({ theme }) => theme.colors.subColor2};
-  font-weight: bold;
+  .icon {
+    width: 40px;
+    height: 40px;
+  }
 `;
 const RegisterInputItem = styled.div`
+  width: 80%;
+  height: 100%;
   position: relative;
 `;
 const RegisterInput = styled.input`
   border: none;
   width: 100%;
   background-color: transparent;
+  border-bottom: 2px solid ${({ theme }) => theme.colors.black};
+  padding: 10px;
 
-  border-bottom: 2px solid ${({ theme }) => theme.colors.subColor3};
-  padding: 10px 0;
   color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   &:focus {
     outline: none;
-    border-bottom: 2px solid ${({ theme }) => theme.colors.black};
   }
   &::placeholder {
     font-size: ${({ theme }) => theme.fontSizes.small};
+    color: ${({ theme }) => theme.colors.subColor4};
   }
 `;
 const InputMessage = styled.div`
@@ -406,8 +327,6 @@ const RegisterButton = styled.div`
   text-align: center;
   padding: 10px;
   border-radius: 10px;
-
-  border: 2px solid ${({ theme }) => theme.colors.subColor2};
   background-color: transparent;
   margin-top: 70px;
   font-weight: bold;

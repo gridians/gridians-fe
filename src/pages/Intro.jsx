@@ -32,18 +32,11 @@ import profile15 from "../image/profileImage/profile15.png";
 import profile16 from "../image/profileImage/profile16.png";
 import { useNavigate } from "react-router";
 export default function Intro() {
+  const [arrow, setArrow] = useState(false);
+  useEffect(() => {
+    setTimeout(() => setArrow(true), 7600);
+  }, []);
   const navigate = useNavigate();
-  // const timeOut = () => {
-  //   setTimeout(() => {
-  //     navigate("/home");
-  //   }, 7000);
-  // };
-  // useEffect(() => {
-  //   timeOut();
-  //   return () => {
-  //     clearTimeout(timeOut);
-  //   };
-  // });
   const navigateToHome = () => {
     navigate("/home");
   };
@@ -258,7 +251,7 @@ export default function Intro() {
       </IntroWrapper>
       <PageRouterButtonContainer>
         <ArrowContainer>
-          <FaArrowDown className="icon" />
+          {arrow === true && <FaArrowDown className="icon" />}
         </ArrowContainer>
         <PageRouterButton className="button-86" onClick={navigateToHome}>
           시작하기
@@ -302,7 +295,7 @@ const IntroContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${({ theme }) => theme.colors.mainColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   position: relative;
 `;
 const IntroOverlay = styled.div`
@@ -327,11 +320,11 @@ const IntroOverlay = styled.div`
   }
   .second-title {
     animation: ${overlayAnimation} 1s ease forwards;
-    animation-delay: 5.8s;
+    animation-delay: 6.3s;
   }
   .last-title {
     animation: ${overlayAnimation} 1s ease forwards;
-    animation-delay: 6.1s;
+    animation-delay: 7.3s;
   }
 `;
 const OverlayTitleContainer = styled.div`
@@ -595,6 +588,6 @@ const ArrowContainer = styled.div`
   .icon {
     width: 40px;
     height: 40px;
-    animation: ${arrowAnimation} 0.5s linear 6.5s infinite alternate;
+    animation: ${arrowAnimation} 0.5s linear 0s infinite alternate;
   }
 `;
