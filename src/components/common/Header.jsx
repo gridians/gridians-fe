@@ -12,9 +12,29 @@ const Header = () => {
           <Logo>Devember</Logo>
         </Link>
         <Menu>
-          <Link to="/register">SignUp</Link>
-          <Link to="/login">Login</Link>
-          <Link to="/home">Enroll</Link>
+          {location.pathname === "/register" ? (
+            <Link style={{ color: "#B3B600" }} to="/register">
+              SignUp
+            </Link>
+          ) : (
+            <Link to="/register">SignUp</Link>
+          )}
+
+          {location.pathname === "/login" ? (
+            <Link style={{ color: "#B3B600" }} to="/login">
+              Login
+            </Link>
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
+
+          {location.pathname === "/enroll" ? (
+            <Link style={{ color: "#B3B600" }} to="/enroll">
+              Enroll
+            </Link>
+          ) : (
+            <Link to="/enroll">Enroll</Link>
+          )}
         </Menu>
       </HeaderWrap>
     </HeaderBox>

@@ -66,7 +66,7 @@ const colors = {
   subColor1: "#6F6F6F",
   subColor2: "#B3B600",
   subColor3: "#222831",
-  subColor4: "#3F3B6C",
+  subColor4: "#DCC6C6",
   subColor6: "#738598",
 };
 
