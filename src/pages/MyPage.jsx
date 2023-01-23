@@ -5,6 +5,7 @@ import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { MdPassword } from "react-icons/md";
+import swal from "sweetalert";
 
 import {
   myPageUserEmail,
@@ -111,9 +112,22 @@ export default function MyPage() {
     if (!regPassword.test(userNewPasswordCurrent)) {
       setNewPasswordMessage("영어, 숫자 조합해서 입력해주세요 (8~16자)");
       setIsNewPassword(false);
+      return;
     } else {
       setNewPasswordMessage("");
       setIsNewPassword(true);
+    }
+    if (
+      newPassword.length + 1 > 7 &&
+      newPassword.length <= 16 &&
+      password === ""
+    ) {
+      swal({
+        text: "현재 비밀번호를 입력해주세요",
+        icon: "error",
+        button: "돌아가기",
+      });
+      return;
     }
   };
 
@@ -140,10 +154,25 @@ export default function MyPage() {
     setEdit((edit) => !edit);
     e.preventDefault();
   };
-  const onClickSubmit = () => {
-    // if (isNickname === true && nicknameMessage === "") {
-    // } else if (isEmail === true && emailMessage === "") {
-    // }
+  const onClickSubmit = (e) => {
+    e.preventDefault();
+    if (nicknameMessage.length > 0) {
+      swal({
+        text: "닉네임이 올바르지 않습니다",
+        icon: "error",
+        button: "돌아가기",
+      });
+    } else if (emailMessage.length > 0) {
+      console.log("이메일이 올바르지 않습니다");
+    } else if (passwordMessage.length > 0) {
+      console.log("비밀번호가 올바르지 않습니다");
+    } else if (newPasswordMessage.length > 0) {
+      console.log("새비밀번호가 올바르지 않습니다");
+    } else if (newPassword !== newPasswordConfirm) {
+      console.log("비밀번호가 일치하지 않습니다");
+    } else {
+      console.log("good");
+    }
     // loginApi();
     // postUserInfo();
   };
@@ -155,7 +184,7 @@ export default function MyPage() {
           {/* 닉네임 */}
           {edit ? (
             <>
-              {nickname.length > 0 ? (
+              {nickname || email || password ? (
                 <MyPageInputContainer>
                   <AiOutlineIdcard className="icon" />
                   <MyPageInputWrapper>
@@ -386,7 +415,7 @@ export default function MyPage() {
 
           {edit ? (
             <>
-              {isNickname ? (
+              {nickname ? (
                 <EditButtonContainer>
                   <EditButton onClick={onClickSubmit} type="submit">
                     변경완료
@@ -445,6 +474,10 @@ const MyPageForm = styled.form`
     width: 40px;
     height: 40px;
   }
+  .show-icon {
+    width: 30px;
+    height: 30px;
+  }
 `;
 const MyPageInputContainer = styled.div`
   position: relative;
@@ -453,7 +486,7 @@ const MyPageInputContainer = styled.div`
   justify-content: center;
   margin-top: 30px;
   padding: 10px;
-  width: 80%;
+  width: 100%;
 `;
 const MyPageInputWrapper = styled.div`
   width: 80%;
