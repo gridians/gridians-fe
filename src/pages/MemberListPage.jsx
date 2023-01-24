@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
+import SimpleSlider from "../components/Slide";
+import { BsFillChatDotsFill } from "react-icons/bs";
+
+//스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
+let scrollY = 0;
+window.addEventListener("scroll", function () {
+  scrollY = window.pageYOffset;
+});
 
 const MemberListPage = () => {
   //카드를 클릭한 상태인지 다시 닫은 상태인지 관리
@@ -9,9 +17,7 @@ const MemberListPage = () => {
   //클릭한 카드에 top값 left값 애니메이션후 돌아갈 값이기도 하다.
   const [top, setTop] = useState();
   const [left, setLeft] = useState();
-  useEffect(() => {
-    console.log(click);
-  }, []);
+
   const member = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
   return (
     <Container>
@@ -19,12 +25,17 @@ const MemberListPage = () => {
         click={click ? click : undefined}
         onClick={() => {
           setClick("reset");
+          setTop(document.querySelectorAll(".card")[num].offsetTop);
+          setLeft(document.querySelectorAll(".card")[num].offsetLeft);
         }}
       />
       <XBtn
+        scrollY={scrollY}
         click={click ? click : undefined}
         onClick={() => {
           setClick("reset");
+          setTop(document.querySelectorAll(".card")[num].offsetTop);
+          setLeft(document.querySelectorAll(".card")[num].offsetLeft);
         }}
       >
         X
@@ -58,13 +69,17 @@ const MemberListPage = () => {
                 <NickName>@nick_R</NickName>
                 <Role>Front-Develop</Role>
               </Front>
-              <Detail>
-                <DetailBtn click={click ? click : undefined}>Icons</DetailBtn>
-                <DetailContainer click={click ? click : undefined}>
-                  esdd
+              <Detail click={click && num === index ? click : undefined}>
+                <DetailBtn click={click ? click : undefined}>
+                  <BsFillChatDotsFill />
+                </DetailBtn>
+                <DetailContainer
+                  click={click && num === index ? click : undefined}
+                >
+                  <SimpleSlider />
                 </DetailContainer>
                 <ReviewContainer
-                  click={click ? click : undefined}
+                  click={click && num === index ? click : undefined}
                 ></ReviewContainer>
               </Detail>
             </Card>
@@ -82,19 +97,19 @@ const spin = (top, left) => keyframes`
         transform: rotateY(180deg);
     }
     100%{
-        top: 50%;
+        top: ${scrollY + 490}px;
         left: 50%;
-        width: 60%;
-        height:90%;
+        width: 70%;
+        height:70%;
         transform: rotateY(-180deg) translate(50%,-50%);
     }
 `;
 const reset = (top, left) => keyframes`
     0%{
-        top: 50%;
+      top: ${scrollY + 490}px;
         left: 50%;
-        width: 60%;
-        height:90%;
+        width: 70%;
+        height:70%;
         transform: rotateY(-180deg) translate(50%,-50%);
     }
     100%{
@@ -108,7 +123,7 @@ const reset = (top, left) => keyframes`
 
 const Container = styled.div`
   position: relative;
-  height: 94vh;
+  width: 100%;
   background-color: ${({ theme }) => theme.colors.subColor1};
   border: 2px solid black;
   overflow-x: hidden;
@@ -133,7 +148,7 @@ const Background = styled.div`
     props.click &&
     css`
       z-index: 2;
-      background-color: #353535;
+      background-color: rgba(215, 215, 215, 0.8);
     `}
   ${(props) =>
     props.click === "reset"
@@ -146,17 +161,15 @@ const Background = styled.div`
 const XBtn = styled.button`
   position: absolute;
   z-index: 2;
-  top: 30px;
+  top: ${(props) => props.scrollY}px;
   left: 30px;
   width: 40px;
   height: 40px;
   background-color: transparent;
   border: none;
+  color: #f7f7f7;
   font-size: 40px;
   cursor: pointer;
-  &:hover {
-    color: gray;
-  }
   ${(props) =>
     props.click === "click"
       ? css`
@@ -204,7 +217,7 @@ const Card = styled.div`
   ${(props) =>
     props.click === "click"
       ? css`
-          z-index: 5;
+          z-index: 3;
           animation: ${(props) => spin(props.top, props.left)} 1s forwards;
         `
       : css``}
@@ -261,46 +274,72 @@ const Detail = styled(Front)`
   display: flex;
   flex-direction: row;
   transform: perspective(500px) rotateY(180deg);
+  ${(props) =>
+    props.click === "click"
+      ? css`
+          background-color: transparent;
+        `
+      : css``}
 `;
 const DetailBtn = styled.div`
   position: absolute;
   z-index: 3;
   top: 50%;
   left: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 30px;
   transform: translate(-50%, -50%);
+  transition: all 0.5s;
   &:hover {
     font-size: 3rem;
   }
   ${(props) =>
     props.click === "click"
       ? css`
+          z-index: 1;
           display: none;
         `
       : css``}
 `;
 const DetailContainer = styled.div`
+  position: relative;
+  z-index: 1;
   opacity: 0;
-  width: 60%;
+  padding: 30px;
+  width: 70%;
   height: 100%;
-  background-color: red;
+  background-color: rgb(42 42 42 / 50%);
   transition: all 2s;
+  cursor: auto;
   ${(props) =>
     props.click === "click"
       ? css`
           opacity: 1;
         `
       : css``}
+  ${(props) =>
+    props.click === "reset"
+      ? css`
+          transition: all 1s;
+        `
+      : css``}
 `;
 const ReviewContainer = styled.div`
   opacity: 0;
-  width: 40%;
+  width: 30%;
   height: 100%;
   background-color: #738598;
   transition: all 2s;
+  cursor: auto;
   ${(props) =>
     props.click === "click"
       ? css`
           opacity: 1;
+          transition: all 1s;
         `
       : css``}
 `;
