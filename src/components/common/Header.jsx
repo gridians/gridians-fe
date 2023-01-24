@@ -49,7 +49,6 @@ const HeaderBox = styled.header`
   padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   color: ${({ theme }) => theme.colors.black};
-
 `;
 const HeaderWrap = styled.div`
   display: flex;

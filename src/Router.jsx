@@ -11,6 +11,7 @@ export default function Router() {
     <BrowserRouter>
       <Header />
       <Routes>
+        <Route path={"/memberlistpage"} element={<MemberListPage />} />
         <Route path={"/"} element={<Intro />} />
         <Route path={"/register"} element={<Register />} />
         <Route path={"/home"} element={<Home />} />
