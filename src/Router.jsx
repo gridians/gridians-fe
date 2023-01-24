@@ -5,14 +5,15 @@ import Home from "./pages/Home";
 import Intro from "./pages/Intro";
 import MyPage from "./pages/MyPage";
 import Register from "./pages/Register";
+import MemberListPage from "./pages/MemberListPage";
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path={"/memberlistpage"} element={<MemberListPage />} />
         <Route path={"/"} element={<Intro />} />
+        <Route path={"/memberlistpage"} element={<MemberListPage />} />
         <Route path={"/register"} element={<Register />} />
         <Route path={"/home"} element={<Home />} />
         <Route path={"/education"} element={<Education />} />

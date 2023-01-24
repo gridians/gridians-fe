@@ -46,6 +46,7 @@ const HeaderBox = styled.header`
   justify-content: center;
   width: 100%;
   height: 10vh;
+
   padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   color: ${({ theme }) => theme.colors.black};
@@ -75,7 +76,6 @@ const Menu = styled.div`
     &:hover {
       font-size: ${({ theme }) => theme.fontSizes.xxl};
       color: ${({ theme }) => theme.colors.subColor2};
-
     }
   }
   span {

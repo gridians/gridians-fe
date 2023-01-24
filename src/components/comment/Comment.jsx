@@ -59,7 +59,7 @@ export default function Comment() {
           </CommentButton>
         )}
       </CommentButtonContainer>
-      <CommentListContainer>
+      {/* <CommentListContainer>
         {commentList.map((commentArr, i) => {
           return (
             <CommentListWrapper key={i}>
@@ -68,7 +68,7 @@ export default function Comment() {
             </CommentListWrapper>
           );
         })}
-      </CommentListContainer>
+      </CommentListContainer> */}
       {commentList.map((commentArr, i) => {
         return <CommentListContainer key={i}>{comment}</CommentListContainer>;
       })}
@@ -144,4 +144,3 @@ const CommentButton = styled.button`
 `;
 
 const CommentListContainer = styled.div``;
-
