@@ -1,9 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/common/Header";
+import Education from "./pages/Education";
 import Home from "./pages/Home";
 import Intro from "./pages/Intro";
+import MyPage from "./pages/MyPage";
 import Register from "./pages/Register";
-
+import MemberListPage from "./pages/MemberListPage";
 
 export default function Router() {
   return (
@@ -11,18 +13,12 @@ export default function Router() {
       <Header />
       <Routes>
         <Route path={"/"} element={<Intro />} />
+        <Route path={"/memberlistpage"} element={<MemberListPage />} />
         <Route path={"/register"} element={<Register />} />
         <Route path={"/home"} element={<Home />} />
+        <Route path={"/education"} element={<Education />} />
+        <Route path={"/mypage"} element={<MyPage />} />
       </Routes>
-
-      {/* <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<MainPage />} />
-        </Route>
-        <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes> */}
-
     </BrowserRouter>
   );
 }

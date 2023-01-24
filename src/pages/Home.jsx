@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export default function Home() {
   return (
     <HomeContainer>
-      <HomeTitle>서비스 소개</HomeTitle>
-      <HomeTitle>멤버 등록</HomeTitle>
-      <HomeTitle>회원 리스트</HomeTitle>
+
+      <HomeTitle>
+        <Link to="/education">서비스 소개</Link>
+      </HomeTitle>
+      <HomeTitle>
+        <Link to="/memberlistpage">회원 리스트</Link>
+      </HomeTitle>
     </HomeContainer>
   );
 }
@@ -25,7 +30,11 @@ const HomeTitle = styled.span`
   font-weight: bolder;
   margin-top: 25px;
   cursor: pointer;
-  &:hover {
-    color: ${({ theme }) => theme.colors.subColor1};
+
+  a {
+    color: ${({ theme }) => theme.colors.black};
+    &:hover {
+      color: ${({ theme }) => theme.colors.subColor2};
+    }
   }
 `;

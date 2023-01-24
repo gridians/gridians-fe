@@ -59,9 +59,7 @@ export default function Comment() {
           </CommentButton>
         )}
       </CommentButtonContainer>
-<<<<<<< HEAD
-
-      <CommentListContainer>
+      {/* <CommentListContainer>
         {commentList.map((commentArr, i) => {
           return (
             <CommentListWrapper key={i}>
@@ -70,12 +68,10 @@ export default function Comment() {
             </CommentListWrapper>
           );
         })}
-      </CommentListContainer>
-=======
+      </CommentListContainer> */}
       {commentList.map((commentArr, i) => {
         return <CommentListContainer key={i}>{comment}</CommentListContainer>;
       })}
->>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba
     </CommentContainer>
   );
 }
@@ -97,11 +93,7 @@ const CommentTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   color: ${({ theme }) => theme.colors.subColor1};
   font-weight: bold;
-<<<<<<< HEAD
-  border-bottom: 1px solid white;
-=======
   border-bottom: 1px solid ${({ theme }) => theme.colors.subColor2};
->>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba
 `;
 
 const CommentFormContainer = styled.div`
@@ -111,28 +103,17 @@ const CommentFormContainer = styled.div`
 `;
 
 const CommentProfile = styled.div`
-<<<<<<< HEAD
-  border: 1px solid white;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-=======
   border: 1px solid ${({ theme }) => theme.colors.subColor2};
   border-radius: 50%;
   width: 70px;
   height: 70px;
->>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba
   color: white;
 `;
 const CommentInput = styled.textarea`
   width: 100%;
   border: none;
   height: 3vh;
-<<<<<<< HEAD
-  border-bottom: 1px solid white;
-=======
   border-bottom: 1px solid ${({ theme }) => theme.colors.subColor2};
->>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba
   background-color: transparent;
   resize: none;
   font-size: ${({ theme }) => theme.fontSizes.lg};
@@ -146,7 +127,6 @@ const CommentInput = styled.textarea`
 `;
 const CommentButtonContainer = styled.div`
   width: 100%;
-<<<<<<< HEAD
   display: flex;
   justify-content: flex-end;
   margin-bottom: 30px;
@@ -154,15 +134,6 @@ const CommentButtonContainer = styled.div`
 const CommentButton = styled.button`
   background-color: transparent;
   color: ${({ theme }) => theme.colors.white};
-=======
-  height: 100%;
-  display: flex;
-  justify-content: flex-end;
-`;
-const CommentButton = styled.button`
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.subColor2};
->>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba
   border: 1px solid ${({ theme }) => theme.colors.subColor1};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   font-weight: bold;
@@ -172,25 +143,4 @@ const CommentButton = styled.button`
   cursor: pointer;
 `;
 
-<<<<<<< HEAD
-const CommentListContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-`;
-const CommentListWrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 10px;
-`;
-const CommentList = styled.span`
-  font-weight: bold;
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  margin-left: 10px;
-`;
-=======
 const CommentListContainer = styled.div``;
->>>>>>> ee2a84fc93dc91ec5f02d102f78058231cdbbdba

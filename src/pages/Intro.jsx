@@ -32,11 +32,11 @@ import profile15 from "../image/profileImage/profile15.png";
 import profile16 from "../image/profileImage/profile16.png";
 import { useNavigate } from "react-router";
 export default function Intro() {
-  const navigate = useNavigate();
   const [arrow, setArrow] = useState(false);
   useEffect(() => {
     setTimeout(() => setArrow(true), 7600);
   }, []);
+  const navigate = useNavigate();
   const navigateToHome = () => {
     navigate("/home");
   };
