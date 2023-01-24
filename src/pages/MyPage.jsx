@@ -124,7 +124,6 @@ export default function MyPage() {
     ) {
       swal({
         text: "현재 비밀번호를 입력해주세요",
-        icon: "error",
         button: "돌아가기",
       });
       return;
@@ -159,17 +158,48 @@ export default function MyPage() {
     if (nicknameMessage.length > 0) {
       swal({
         text: "닉네임이 올바르지 않습니다",
-        icon: "error",
         button: "돌아가기",
       });
+      return;
     } else if (emailMessage.length > 0) {
-      console.log("이메일이 올바르지 않습니다");
+      swal({
+        text: "이메일이 올바르지 않습니다",
+        button: "돌아가기",
+      });
+      return;
     } else if (passwordMessage.length > 0) {
-      console.log("비밀번호가 올바르지 않습니다");
+      swal({
+        text: "비밀번호가 올바르지 않습니다",
+        button: "돌아가기",
+      });
+      return;
+    } else if (password.length >= 1 && newPassword.length <= 0) {
+      swal({
+        text: "새비밀번호를 입력해주세요",
+        button: "돌아가기",
+      });
+      return;
     } else if (newPasswordMessage.length > 0) {
-      console.log("새비밀번호가 올바르지 않습니다");
+      swal({
+        text: "새비밀번호가 올바르지 않습니다",
+        button: "돌아가기",
+      });
+      return;
+    } else if (
+      newPassword !== newPasswordConfirm &&
+      newPasswordConfirm.length <= 0
+    ) {
+      swal({
+        text: "비밀번호확인을 입력해주세요",
+        button: "돌아가기",
+      });
+      return;
     } else if (newPassword !== newPasswordConfirm) {
-      console.log("비밀번호가 일치하지 않습니다");
+      swal({
+        text: "비밀번호가 일치하지 않습니다",
+        button: "돌아가기",
+      });
+      return;
     } else {
       console.log("good");
     }
@@ -415,7 +445,7 @@ export default function MyPage() {
 
           {edit ? (
             <>
-              {nickname ? (
+              {nickname || email || password ? (
                 <EditButtonContainer>
                   <EditButton onClick={onClickSubmit} type="submit">
                     변경완료
