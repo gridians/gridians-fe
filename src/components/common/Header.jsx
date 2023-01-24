@@ -1,17 +1,40 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
+  const location = useLocation();
+  if (location.pathname === "/") return null;
   return (
     <HeaderBox>
       <HeaderWrap>
-        <Link to="/">
+        <Link to="/home">
           <Logo>Devember</Logo>
         </Link>
         <Menu>
-          <Link to="/">로그인</Link>
-          <Link to="/">등록하기</Link>
+          {location.pathname === "/register" ? (
+            <Link style={{ color: "#B3B600" }} to="/register">
+              SignUp
+            </Link>
+          ) : (
+            <Link to="/register">SignUp</Link>
+          )}
+
+          {location.pathname === "/login" ? (
+            <Link style={{ color: "#B3B600" }} to="/login">
+              Login
+            </Link>
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
+
+          {location.pathname === "/enroll" ? (
+            <Link style={{ color: "#B3B600" }} to="/enroll">
+              Enroll
+            </Link>
+          ) : (
+            <Link to="/enroll">Enroll</Link>
+          )}
         </Menu>
       </HeaderWrap>
     </HeaderBox>
@@ -22,10 +45,10 @@ const HeaderBox = styled.header`
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 6vh;
-  padding: 20px 100px;
-  background-color: ${({ theme }) => theme.colors.mainColor};
-  color: ${({ theme }) => theme.colors.white};
+  height: 10vh;
+  padding: 20px 300px;
+  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  color: ${({ theme }) => theme.colors.black};
 `;
 const HeaderWrap = styled.div`
   display: flex;
@@ -34,21 +57,25 @@ const HeaderWrap = styled.div`
   width: 1440px;
 `;
 const Logo = styled.span`
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 2.2rem;
   font-family: ${({ theme }) => theme.fontFace.font1};
 `;
 const Menu = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   a {
-    margin-right: 15px;
-    color: ${({ theme }) => theme.colors.subColor1};
+    color: ${({ theme }) => theme.colors.black};
     font-weight: bold;
     cursor: pointer;
-    border-radius: 10px;
     padding: 6px;
+    margin-left: 30px;
     &:hover {
-      font-size: ${({ theme }) => theme.fontSizes.xl};
+      font-size: ${({ theme }) => theme.fontSizes.xxl};
+      color: ${({ theme }) => theme.colors.subColor2};
+
     }
   }
   span {
