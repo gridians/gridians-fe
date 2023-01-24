@@ -252,7 +252,6 @@ const RegisterContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
-  overflow: hidden;
 `;
 const RegisterWrapper = styled.div`
   width: 50%;
@@ -262,10 +261,6 @@ const RegisterWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0 10%;
-`;
-const RegisterTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSizes.titleSize};
-  color: ${({ theme }) => theme.colors.black};
 `;
 
 const RegisterForm = styled.form`
@@ -300,10 +295,15 @@ const RegisterInputItem = styled.div`
 const RegisterInput = styled.input`
   border: none;
   width: 100%;
+  margin-left: 10px;
   background-color: transparent;
   border-bottom: 2px solid ${({ theme }) => theme.colors.black};
+<<<<<<< HEAD
+  padding: 10px 0;
+=======
   padding: 10px;
 
+>>>>>>> 283402d648b4d5b3a8b59044b789986139e0bf54
   color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   &:focus {
