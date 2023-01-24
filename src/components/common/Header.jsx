@@ -49,12 +49,13 @@ const HeaderBox = styled.header`
   padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   color: ${({ theme }) => theme.colors.black};
+
 `;
 const HeaderWrap = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 1440px;
 `;
 const Logo = styled.span`
   color: ${({ theme }) => theme.colors.black};
@@ -75,6 +76,7 @@ const Menu = styled.div`
     &:hover {
       font-size: ${({ theme }) => theme.fontSizes.xxl};
       color: ${({ theme }) => theme.colors.subColor2};
+
     }
   }
   span {
