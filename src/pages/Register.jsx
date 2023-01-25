@@ -14,7 +14,7 @@ import {
   userPassword,
   userPasswordMessage,
 } from "../store/registerAtom";
-import { api } from "../api/registerApi";
+import { api } from "../api/api";
 
 export default function Register() {
   const [nickname, setNickname] = useRecoilState(userNickname);
