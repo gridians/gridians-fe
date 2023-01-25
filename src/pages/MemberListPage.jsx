@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill } from "react-icons/bs";
+import Comment from "../components/comment/Comment";
 
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
@@ -80,7 +81,9 @@ const MemberListPage = () => {
                 </DetailContainer>
                 <ReviewContainer
                   click={click && num === index ? click : undefined}
-                ></ReviewContainer>
+                >
+                  <Comment />
+                </ReviewContainer>
               </Detail>
             </Card>
           </MemberCard>

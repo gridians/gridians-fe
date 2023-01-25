@@ -14,6 +14,7 @@ import {
   userPassword,
   userPasswordMessage,
 } from "../store/registerAtom";
+import { api } from "../api/registerApi";
 
 export default function Register() {
   const [nickname, setNickname] = useRecoilState(userNickname);
@@ -81,27 +82,26 @@ export default function Register() {
   };
 
   const onClickSubmit = () => {
-    // loginApi();
-    // postUserInfo();
+    postRegister();
+    console.log("click");
   };
 
-  // const loginApi = async () => {
-  //   try {
-  //     const res = await axios.post("http://58.231.19.218/user/signup", {
-  //       name,
-  //       nickname,
-  //       email,
-  //       password,
-  //     });
-  //     if (res.status === 200) {
-  //       // router.push("/");
-  //     }
-  //     console.log(res);
-  //     return res.data;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const postRegister = async () => {
+    try {
+      const res = await api.post("/user/signup", {
+        nickname,
+        email,
+        password,
+      });
+      if (res.status === 200) {
+        // router.push("/");
+      }
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <RegisterContainer>
