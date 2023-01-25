@@ -6,6 +6,8 @@ import Intro from "./pages/Intro";
 import MyPage from "./pages/MyPage";
 import Register from "./pages/Register";
 import MemberListPage from "./pages/MemberListPage";
+import Login from "./pages/Login";
+import GithubLoginPage from "./pages/GithubLoginPage";
 
 export default function Router() {
   return (
@@ -14,10 +16,12 @@ export default function Router() {
       <Routes>
         <Route path={"/"} element={<Intro />} />
         <Route path={"/memberlistpage"} element={<MemberListPage />} />
+        <Route path={"/login"} element={<Login />} />
         <Route path={"/register"} element={<Register />} />
         <Route path={"/home"} element={<Home />} />
         <Route path={"/education"} element={<Education />} />
         <Route path={"/mypage"} element={<MyPage />} />
+        <Route path={"/githubloginpage"} element={<GithubLoginPage />} />
       </Routes>
     </BrowserRouter>
   );
