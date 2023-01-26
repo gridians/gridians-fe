@@ -4,13 +4,18 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
 import GlobalStyle from "./style/GlobalStyle";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <GlobalStyle />
     <RecoilRoot>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </RecoilRoot>
   </React.StrictMode>
 );

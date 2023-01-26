@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
+import swal from "sweetalert";
 
 import {
   userEmail,
@@ -14,8 +15,11 @@ import {
   userPassword,
   userPasswordMessage,
 } from "../store/registerAtom";
+import { api } from "../apis/untils";
+import { useNavigate } from "react-router";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [nickname, setNickname] = useRecoilState(userNickname);
   const [email, setEmail] = useRecoilState(userEmail);
   const [password, setPassword] = useRecoilState(userPassword);
@@ -81,30 +85,53 @@ export default function Register() {
   };
 
   const onClickSubmit = () => {
-    // loginApi();
-    // postUserInfo();
+    postRegister();
+    console.log("click");
   };
 
-  // const loginApi = async () => {
-  //   try {
-  //     const res = await axios.post("http://58.231.19.218/user/signup", {
-  //       name,
-  //       nickname,
-  //       email,
-  //       password,
-  //     });
-  //     if (res.status === 200) {
-  //       // router.push("/");
-  //     }
-  //     console.log(res);
-  //     return res.data;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const postRegister = async () => {
+    try {
+      const res = await api.post("/user/signup", {
+        nickname,
+        email,
+        password,
+      });
+      if (res.status === 200) {
+        swal({
+          text: "회원가입 성공 😀",
+          buttons: "확인",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutUp",
+          },
+          closeOnClickOutside: false,
+        }).then(function () {
+          navigate("/login");
+        });
+      }
+      return res.data;
+    } catch (err) {
+      swal({
+        text: "회원가입 실패 😢",
+        buttons: "확인",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOutUp",
+        },
+        closeOnClickOutside: false,
+      }).then(function () {
+        return;
+      });
+    }
+  };
 
   return (
     <RegisterContainer>
+      <Title>SignUp</Title>
       <RegisterWrapper>
         <RegisterForm>
           {/* 닉네임 */}
@@ -251,11 +278,16 @@ const RegisterContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
 `;
+const Title = styled.span`
+  margin-top: 100px;
+  font-size: ${({ theme }) => theme.fontSizes.titleSize};
+  font-weight: bold;
+`;
 const RegisterWrapper = styled.div`
   width: 50%;
   height: 100%;
   display: flex;
-  justify-content: center;
+  margin-top: 20px;
   flex-direction: column;
   align-items: center;
   padding: 0 10%;
@@ -325,5 +357,6 @@ const RegisterButton = styled.div`
   font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.xxl};
   color: black;
+  transition: all 0.5s;
   cursor: pointer;
 `;
