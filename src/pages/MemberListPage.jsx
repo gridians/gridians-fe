@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import SimpleSlider from "../components/Slide";
-import { BsFillChatDotsFill } from "react-icons/bs";
-import Comment from "../components/comment/Comment";
+import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
@@ -18,26 +17,37 @@ const MemberListPage = () => {
   //클릭한 카드에 top값 left값 애니메이션후 돌아갈 값이기도 하다.
   const [top, setTop] = useState();
   const [left, setLeft] = useState();
+  //카드 정보를 수정중인지 아닌지 판별
+  const [retouch, setRetouch] = useState(false);
 
   const member = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+  const backgrounOnClick = () => {
+    setClick("reset");
+    setTop(document.querySelectorAll(".card")[num].offsetTop);
+    setLeft(document.querySelectorAll(".card")[num].offsetLeft);
+  };
+  const XBtnOnClick = () => {
+    setClick("reset");
+    setTop(document.querySelectorAll(".card")[num].offsetTop);
+    setLeft(document.querySelectorAll(".card")[num].offsetLeft);
+  };
+  const cardOnClick = (index) => {
+    setNum(index);
+    setClick("click");
+    setTop(document.querySelectorAll(".card")[index].offsetTop);
+    setLeft(document.querySelectorAll(".card")[index].offsetLeft);
+  };
+
   return (
     <Container>
       <Background
         click={click ? click : undefined}
-        onClick={() => {
-          setClick("reset");
-          setTop(document.querySelectorAll(".card")[num].offsetTop);
-          setLeft(document.querySelectorAll(".card")[num].offsetLeft);
-        }}
+        onClick={() => backgrounOnClick()}
       />
       <XBtn
         scrollY={scrollY}
         click={click ? click : undefined}
-        onClick={() => {
-          setClick("reset");
-          setTop(document.querySelectorAll(".card")[num].offsetTop);
-          setLeft(document.querySelectorAll(".card")[num].offsetLeft);
-        }}
+        onClick={() => XBtnOnClick()}
       >
         X
       </XBtn>
@@ -47,12 +57,7 @@ const MemberListPage = () => {
             className="card"
             key={index}
             click={click ? click : ""}
-            onClick={() => {
-              setNum(index);
-              setClick("click");
-              setTop(document.querySelectorAll(".card")[index].offsetTop);
-              setLeft(document.querySelectorAll(".card")[index].offsetLeft);
-            }}
+            onClick={() => cardOnClick(index)}
           >
             <Card
               left={left}
@@ -77,13 +82,21 @@ const MemberListPage = () => {
                 <DetailContainer
                   click={click && num === index ? click : undefined}
                 >
+                  <DefaultInfo>
+                    <BookMark>
+                      <BsFillBookmarkFill />
+                    </BookMark>
+                    {retouch ? <StatusMessage /> : <StatusMessage disabled />}
+                    <LanguageImg>
+                      <h4>Back-End Develop</h4>
+                      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" />
+                    </LanguageImg>
+                  </DefaultInfo>
                   <SimpleSlider />
                 </DetailContainer>
                 <ReviewContainer
                   click={click && num === index ? click : undefined}
-                >
-                  <Comment />
-                </ReviewContainer>
+                ></ReviewContainer>
               </Detail>
             </Card>
           </MemberCard>
@@ -103,7 +116,7 @@ const spin = (top, left) => keyframes`
         top: ${scrollY + 490}px;
         left: 50%;
         width: 70%;
-        height:70%;
+        height:50%;
         transform: rotateY(-180deg) translate(50%,-50%);
     }
 `;
@@ -112,7 +125,7 @@ const reset = (top, left) => keyframes`
       top: ${scrollY + 490}px;
         left: 50%;
         width: 70%;
-        height:70%;
+        height:50%;
         transform: rotateY(-180deg) translate(50%,-50%);
     }
     100%{
@@ -129,7 +142,6 @@ const Container = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.subColor1};
   border: 2px solid black;
-  overflow-x: hidden;
 `;
 
 const Wrap = styled.div`
@@ -276,6 +288,7 @@ const Role = styled.h5`
 const Detail = styled(Front)`
   display: flex;
   flex-direction: row;
+  color: ${({ theme }) => theme.colors.white};
   transform: perspective(500px) rotateY(180deg);
   ${(props) =>
     props.click === "click"
@@ -308,6 +321,7 @@ const DetailBtn = styled.div`
         `
       : css``}
 `;
+
 const DetailContainer = styled.div`
   position: relative;
   z-index: 1;
@@ -315,7 +329,7 @@ const DetailContainer = styled.div`
   padding: 30px;
   width: 70%;
   height: 100%;
-  background-color: rgb(42 42 42 / 50%);
+  background: rgba(0, 0, 0, 0.9);
   transition: all 2s;
   cursor: auto;
   ${(props) =>
@@ -331,6 +345,37 @@ const DetailContainer = styled.div`
         `
       : css``}
 `;
+const DefaultInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 20%;
+`;
+const BookMark = styled.div`
+  width: 197px;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+`;
+const StatusMessage = styled.input`
+  outline: none;
+  width: 50%;
+  height: 30px;
+  background-color: #262626;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+`;
+const LanguageImg = styled.div`
+  display: flex;
+  h4 {
+    margin: 0;
+  }
+  img {
+    width: 60px;
+    height: 60px;
+  }
+`;
+
 const ReviewContainer = styled.div`
   opacity: 0;
   width: 30%;

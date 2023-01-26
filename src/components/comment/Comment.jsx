@@ -126,6 +126,7 @@ export default function Comment() {
                       onInput={handleReplyCommentResizeHeight}
                       onChange={(e) => {
                         setReplyComment(e.target.value);
+                        console.log(e);
                       }}
                       value={replyComment}
                     />
