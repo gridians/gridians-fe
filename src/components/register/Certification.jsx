@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import swal from "sweetalert";
-import { api } from "../../api/api";
+import { api } from "../../apis/untils";
 
 export default function Certification() {
   const navigate = useNavigate();

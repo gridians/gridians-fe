@@ -15,7 +15,7 @@ import {
   userPassword,
   userPasswordMessage,
 } from "../store/registerAtom";
-import { api } from "../api/api";
+import { api } from "../apis/untils";
 import { useNavigate } from "react-router";
 
 export default function Register() {
@@ -108,7 +108,7 @@ export default function Register() {
           },
           closeOnClickOutside: false,
         }).then(function () {
-          navigate("/home");
+          navigate("/login");
         });
       }
       return res.data;
@@ -131,6 +131,7 @@ export default function Register() {
 
   return (
     <RegisterContainer>
+      <Title>SignUp</Title>
       <RegisterWrapper>
         <RegisterForm>
           {/* 닉네임 */}
@@ -277,11 +278,16 @@ const RegisterContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
 `;
+const Title = styled.span`
+  margin-top: 100px;
+  font-size: ${({ theme }) => theme.fontSizes.titleSize};
+  font-weight: bold;
+`;
 const RegisterWrapper = styled.div`
   width: 50%;
   height: 100%;
   display: flex;
-  justify-content: center;
+  margin-top: 20px;
   flex-direction: column;
   align-items: center;
   padding: 0 10%;
@@ -351,5 +357,6 @@ const RegisterButton = styled.div`
   font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.xxl};
   color: black;
+  transition: all 0.5s;
   cursor: pointer;
 `;

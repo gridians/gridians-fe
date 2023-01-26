@@ -1,39 +1,74 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { api } from "../apis/untils";
 import GithubBtn from "../components/GithubBtn";
-import axios from "axios";
+import { loginUserId, loginUserPw } from "../store/loginAtom";
+import { setRefreshToken } from "../cookie/cookie";
+import { userEmailMessage, userPasswordMessage } from "../store/registerAtom";
 
 const Login = () => {
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail] = useRecoilState(loginUserId);
+  const [password, setPassword] = useRecoilState(loginUserPw);
 
-  const idOnChange = (id) => {
-    setId(id.target.value);
+  const [emailMessage, setEmailMessage] = useRecoilState(userEmailMessage);
+  const [passwordMessage, setPasswordMessage] =
+    useRecoilState(userPasswordMessage);
+
+  const [isEmail, setIsEmail] = useState(false);
+  const [isPassword, setIsPassword] = useState(false);
+
+  const idOnChange = (e) => {
+    setEmail(e.target.value);
+    const regEmail =
+      /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    const userEmailCurrent = e.target.value;
+    setEmail(e.target.value);
+
+    if (!regEmail.test(userEmailCurrent)) {
+      setEmailMessage("이메일 형식이 올바르지 않습니다.");
+      setIsEmail(false);
+    } else {
+      setEmailMessage("");
+      setIsEmail(true);
+    }
   };
-  const pwOnChange = (pw) => {
-    setPw(pw.target.value);
+  const pwOnChange = (e) => {
+    setPassword(e.target.value);
+    const regPassword = /(?=.*\d)(?=.*[a-zA-ZS]).{8,16}/;
+    const userPasswordCurrent = e.target.value;
+
+    if (!regPassword.test(userPasswordCurrent)) {
+      setPasswordMessage("영어, 숫자 조합해서 입력해주세요 (8~16자)");
+      setIsPassword(false);
+    } else {
+      setPasswordMessage("");
+      setIsPassword(true);
+    }
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://58.231.19.218:8000/user/login",
+      const res = await api.post(
+        "/user/login",
         {
-          email: id,
-          password: pw,
+          email,
+          password,
         },
         { withCredentials: true }
       );
       if (res.status === 200) {
-        // router.push("/");
+        setRefreshToken("accessToken", res.data.token);
+        navigate("/home");
+        setEmail("");
+        setPassword("");
       }
       console.log(res);
-      return res.data;
     } catch (err) {
-      console.log(err);
+      return;
     }
   };
 
@@ -42,32 +77,76 @@ const Login = () => {
       <Title>Login</Title>
       <LoginForm>
         <IdContainer>
-          <p>
-            아이디<span>(E-mail)</span>
-          </p>
-          <IdInput
-            value={id}
-            onChange={(id) => idOnChange(id)}
-            placeholder="아이디(E-mail)를 입력해주세요"
-          />
+          <p>이메일</p>
+          {email.length > 0 ? (
+            <>
+              <IdInput
+                value={email}
+                onChange={idOnChange}
+                placeholder="이메일을 입력해주세요"
+              />
+              <InputMessage>{emailMessage}</InputMessage>
+            </>
+          ) : (
+            <>
+              <IdInput
+                value={email}
+                onChange={idOnChange}
+                placeholder="이메일을 입력해주세요"
+              />
+            </>
+          )}
         </IdContainer>
         <PwContainer>
           <p>비밀번호</p>
-          <PwInput
-            type={"password"}
-            value={pw}
-            onChange={(pw) => pwOnChange(pw)}
-            placeholder="영어, 숫자 조합해서 입력해주세요 (8~16자)"
-          />
+          {password.length > 0 ? (
+            <>
+              <PwInput
+                type={"password"}
+                value={password}
+                onChange={pwOnChange}
+                placeholder="비밀번호를 입력해주세요"
+              />
+              <InputMessage>{passwordMessage}</InputMessage>
+            </>
+          ) : (
+            <>
+              <PwInput
+                type={"password"}
+                value={password}
+                onChange={pwOnChange}
+                placeholder="비밀번호를 입력해주세요"
+              />
+            </>
+          )}
         </PwContainer>
-        <LoginBtn onClick={(e) => onSubmit(e)}>로그인</LoginBtn>
+        {isEmail && isPassword ? (
+          <LoginBtn
+            style={{
+              backgroundColor: "#738598",
+              color: "white",
+              border: "none",
+            }}
+            onClick={(e) => onSubmit(e)}
+          >
+            로그인
+          </LoginBtn>
+        ) : (
+          <LoginBtn
+            style={{ pointerEvents: "none" }}
+            onClick={(e) => onSubmit(e)}
+          >
+            로그인
+          </LoginBtn>
+        )}
+
         <GithubBtn />
         <MenuList>
           <MenuItem>
             <Link to="/findid">아이디 찾기</Link>
           </MenuItem>
           <MenuItem>
-            <Link to={"/findpw"}>비밀번호 찾기</Link>
+            <Link to="/findpw">비밀번호 찾기</Link>
           </MenuItem>
         </MenuList>
       </LoginForm>
@@ -107,17 +186,13 @@ const LoginBtn = styled.button`
   margin: 15px 0;
   width: 100%;
   height: 40px;
-  background-color: ${({ theme }) => theme.colors.subColor2};
-  border: 1px solid;
   border-radius: 10px;
-  color: ${({ theme }) => theme.colors.white};
+  border: none;
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.lg};
+  background-color: transparent;
   transition: all 0.5s;
   cursor: pointer;
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.black};
-  }
 `;
 
 const IdContainer = styled.div`
@@ -125,6 +200,8 @@ const IdContainer = styled.div`
   flex-direction: column;
   margin-top: 20px;
   padding: 10px 0;
+  position: relative;
+  height: 100px;
   p {
     margin-bottom: 10px;
     font-size: ${({ theme }) => theme.fontSizes.base};
@@ -176,5 +253,22 @@ const RegisterMoveBtn = styled.div`
   }
 `;
 
+const InputContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding: 10px;
+  width: 60%;
+`;
 
+const InputMessage = styled.div`
+  display: block;
+  position: absolute;
+  color: ${({ theme }) => theme.colors.subColor2};
+  line-height: 16px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  bottom: 0;
+`;
 export default Login;

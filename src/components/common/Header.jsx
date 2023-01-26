@@ -1,41 +1,58 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
+import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 
 const Header = () => {
   const location = useLocation();
   if (location.pathname === "/") return null;
+
+  const onCLickLogOut = () => {
+    removeCookieToken();
+  };
+
+  // useEffect(() => {
+
+  // },[])
   return (
     <HeaderBox>
       <HeaderWrap>
         <Link to="/home">
           <Logo>Devember</Logo>
         </Link>
-        <Menu>
-          {location.pathname === "/register" ? (
-            <Link style={{ color: "#B3B600" }} to="/register">
-              SignUp
-            </Link>
-          ) : (
-            <Link to="/register">SignUp</Link>
-          )}
+        {getCookieToken("accessToken") === undefined ? (
+          <Menu>
+            {location.pathname === "/register" ? (
+              <Link style={{ color: "#B3B600" }} to="/register">
+                SignUp
+              </Link>
+            ) : (
+              <Link to="/register">SignUp</Link>
+            )}
 
-          {location.pathname === "/login" ? (
-            <Link style={{ color: "#B3B600" }} to="/login">
-              Login
+            {location.pathname === "/login" ? (
+              <Link style={{ color: "#B3B600" }} to="/login">
+                Login
+              </Link>
+            ) : (
+              <Link to="/login">Login</Link>
+            )}
+          </Menu>
+        ) : (
+          <Menu>
+            <Link to="/login" onClick={onCLickLogOut}>
+              LogOut
             </Link>
-          ) : (
-            <Link to="/login">Login</Link>
-          )}
 
-          {location.pathname === "/enroll" ? (
-            <Link style={{ color: "#B3B600" }} to="/enroll">
-              Enroll
-            </Link>
-          ) : (
-            <Link to="/enroll">Enroll</Link>
-          )}
-        </Menu>
+            {location.pathname === "/enroll" ? (
+              <Link style={{ color: "#B3B600" }} to="/enroll">
+                Enroll
+              </Link>
+            ) : (
+              <Link to="/enroll">Enroll</Link>
+            )}
+          </Menu>
+        )}
       </HeaderWrap>
     </HeaderBox>
   );
