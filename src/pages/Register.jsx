@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
+import swal from "sweetalert";
 
 import {
   userEmail,
@@ -15,8 +16,10 @@ import {
   userPasswordMessage,
 } from "../store/registerAtom";
 import { api } from "../api/api";
+import { useNavigate } from "react-router";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [nickname, setNickname] = useRecoilState(userNickname);
   const [email, setEmail] = useRecoilState(userEmail);
   const [password, setPassword] = useRecoilState(userPassword);
@@ -94,12 +97,35 @@ export default function Register() {
         password,
       });
       if (res.status === 200) {
-        // router.push("/");
+        swal({
+          text: "회원가입 성공 😀",
+          buttons: "확인",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutUp",
+          },
+          closeOnClickOutside: false,
+        }).then(function () {
+          navigate("/home");
+        });
       }
-      console.log(res);
       return res.data;
     } catch (err) {
-      console.log(err);
+      swal({
+        text: "회원가입 실패 😢",
+        buttons: "확인",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOutUp",
+        },
+        closeOnClickOutside: false,
+      }).then(function () {
+        return;
+      });
     }
   };
 

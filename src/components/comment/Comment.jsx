@@ -15,6 +15,7 @@ export default function Comment() {
   const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
+  const replyCommentRef = useRef();
 
   const postComment = () => {
     const newCommentList = [...commentList];
@@ -52,6 +53,16 @@ export default function Comment() {
     }
     textRef.current.style.height = "23px";
     textRef.current.style.height = textRef.current.scrollHeight + "px";
+  }, []);
+
+  const handleReplyCommentResizeHeight = useCallback(() => {
+    if (textRef === null || textRef.current === null) {
+      return;
+    }
+    textRef.current.style.height = "23px";
+    textRef.current.style.height = textRef.current.scrollHeight + "px";
+    replyCommentRef.current.disabled = false;
+    replyCommentRef.current.focus();
   }, []);
 
   return (
@@ -111,8 +122,8 @@ export default function Comment() {
                     <CommentInput
                       type="text"
                       placeholder="댓글 입력하기.."
-                      ref={textRef}
-                      onInput={handleResizeHeight}
+                      ref={replyCommentRef}
+                      onInput={handleReplyCommentResizeHeight}
                       onChange={(e) => {
                         setReplyComment(e.target.value);
                       }}
@@ -149,8 +160,8 @@ export default function Comment() {
                           <CommentInput
                             type="text"
                             placeholder="댓글 입력하기.."
-                            ref={textRef}
-                            onInput={handleResizeHeight}
+                            ref={replyCommentRef}
+                            onInput={handleReplyCommentResizeHeight}
                             onChange={(e) => {
                               setReplyComment(e.target.value);
                             }}
