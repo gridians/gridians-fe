@@ -7,10 +7,8 @@ const GithubLoginPage = () => {
 
   useEffect(() => {
     const code = location.search.split("=")[1];
-    console.log(typeof null);
     axios.post(`http://58.231.19.218:8000/user/social-login`, {
-      token: code,
-      status: "GITHUB",
+      token: code
     });
   }, [location.hash, location.search]);
   return <div></div>;
