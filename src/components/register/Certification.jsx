@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { api } from "../../apis/untils";
 
 export default function Certification() {
@@ -22,8 +23,9 @@ export default function Certification() {
         },
       });
       if (res.status === 200) {
-        swal({
-          text: "이메일 인증 완료 😀",
+        Swal.fire({
+          title: "이메일 인증 완료 😀",
+          padding: "3em",
           buttons: "확인",
           showClass: {
             popup: "animate__animated animate__fadeInDown",
@@ -38,9 +40,10 @@ export default function Certification() {
       }
       return res.data;
     } catch (err) {
-      swal({
-        text: "이메일 인증 실패 😢",
+      Swal.fire({
+        title: "이메일 인증 실패 😢",
         buttons: "확인",
+        padding: "3em",
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },

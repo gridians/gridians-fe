@@ -7,6 +7,8 @@ import GithubBtn from "../components/GithubBtn";
 import { loginUserId, loginUserPw } from "../store/loginAtom";
 import { setRefreshToken } from "../cookie/cookie";
 import { userEmailMessage, userPasswordMessage } from "../store/registerAtom";
+// import swal from "sweetalert";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -62,7 +64,16 @@ const Login = () => {
       );
       if (res.status === 200) {
         setRefreshToken("accessToken", res.data.token);
-        navigate("/home");
+        Swal.fire({
+          title: "로그인 중...",
+          padding: "3em",
+          timer: 1500,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        }).then(function () {
+          navigate("/home");
+        });
         setEmail("");
         setPassword("");
       }
@@ -127,15 +138,12 @@ const Login = () => {
               color: "white",
               border: "none",
             }}
-            onClick={(e) => onSubmit(e)}
+            onClick={onSubmit}
           >
             로그인
           </LoginBtn>
         ) : (
-          <LoginBtn
-            style={{ pointerEvents: "none" }}
-            onClick={(e) => onSubmit(e)}
-          >
+          <LoginBtn style={{ pointerEvents: "none" }} onClick={onSubmit}>
             로그인
           </LoginBtn>
         )}

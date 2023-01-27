@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
+import Comment from "../components/comment/Comment";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { commentListAtom, getUserComment } from "../store/commentAtom";
+import axios from "axios";
 
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
@@ -20,6 +24,20 @@ const MemberListPage = () => {
   //카드 정보를 수정중인지 아닌지 판별
   const [retouch, setRetouch] = useState(false);
 
+  // const postRegister = async () => {
+  //   try {
+  //     const res = await axios.get(
+  //       "http://175.215.143.189:8080/cards/1/comments/3"
+  //     );
+  //     console.log(res);
+  //     if (res.status === 200) {
+  //       return res.data;
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
   const member = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
   const backgrounOnClick = () => {
     setClick("reset");
@@ -36,6 +54,7 @@ const MemberListPage = () => {
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
     setLeft(document.querySelectorAll(".card")[index].offsetLeft);
+    // postRegister();
   };
 
   return (
@@ -96,7 +115,9 @@ const MemberListPage = () => {
                 </DetailContainer>
                 <ReviewContainer
                   click={click && num === index ? click : undefined}
-                ></ReviewContainer>
+                >
+                  <Comment />
+                </ReviewContainer>
               </Detail>
             </Card>
           </MemberCard>

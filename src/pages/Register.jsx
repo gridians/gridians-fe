@@ -1,11 +1,10 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 
 import {
   userEmail,
@@ -97,8 +96,9 @@ export default function Register() {
         password,
       });
       if (res.status === 200) {
-        swal({
-          text: "회원가입 성공 😀",
+        Swal.fire({
+          padding: "3em",
+          title: "이메일을 확인해주세요 😀",
           buttons: "확인",
           showClass: {
             popup: "animate__animated animate__fadeInDown",
@@ -113,8 +113,9 @@ export default function Register() {
       }
       return res.data;
     } catch (err) {
-      swal({
-        text: "회원가입 실패 😢",
+      Swal.fire({
+        padding: "3em",
+        title: "회원가입 실패 😢",
         buttons: "확인",
         showClass: {
           popup: "animate__animated animate__fadeInDown",
