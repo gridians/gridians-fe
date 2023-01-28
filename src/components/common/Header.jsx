@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
+import swal from "sweetalert";
 
 const Header = () => {
   const location = useLocation();
@@ -49,7 +50,23 @@ const Header = () => {
                 Enroll
               </Link>
             ) : (
-              <Link to="/enroll">Enroll</Link>
+              <Link
+                onClick={() => {
+                  swal({
+                    text: "등록하시겠습니까?",
+                    button: "확인",
+                    showClass: {
+                      popup: "animate__animated animate__fadeInDown",
+                    },
+                    hideClass: {
+                      popup: "animate__animated animate__fadeOutUp",
+                    },
+                    closeOnClickOutside: false,
+                  });
+                }}
+              >
+                Enroll
+              </Link>
             )}
           </Menu>
         )}
