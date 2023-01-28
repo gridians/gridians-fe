@@ -41,7 +41,9 @@ const StyledSlider = styled(Slider)`
 `;
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
-  const [introduce,setIntroduce] = useState("I've developed Web application since 2022")
+  const [introduce, setIntroduce] = useState(
+    "I've developed Web application since 2022"
+  );
 
   const settings = {
     dots: true,
@@ -51,9 +53,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
     slidesToScroll: 1,
   };
 
-  const introduceOnClick = (text) =>{
+  const introduceOnClick = (text) => {
     setIntroduce(text.target.value);
-  }
+  };
 
   const reTouchOnClick = () => {
     setRetouch(!retouch);
@@ -101,7 +103,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           {retouch ? (
             <Introduce
               value={introduce}
-              onChange={(text)=>introduceOnClick(text)}
+              onChange={(text) => introduceOnClick(text)}
               retouch={retouch}
             />
           ) : (
@@ -131,9 +133,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       </div>
       <div>
         <Third>
-            <UserIcon>
-              <FaUser/>
-            </UserIcon>
+          <UserIcon>
+            <FaUser />
+          </UserIcon>
         </Third>
       </div>
     </StyledSlider>
@@ -167,6 +169,7 @@ const Name = styled.input`
   margin: 20px 0 0 0;
   width: 80%;
   background-color: transparent;
+  border-radius: 10px;
   outline: none;
   border: none;
   text-align: center;
@@ -192,19 +195,23 @@ const SnsItem = styled.li`
   }
 `;
 const SnsAdressInput = styled.input`
+  outline: 1px solid;
   padding: 5px;
   font-size: ${({ theme }) => theme.fontSizes.lg};
+  background-color: #262626;
+  border-radius: 10px;
+  color: ${({ theme }) => theme.colors.white};
   &::placeholder {
     font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
 const Introduce = styled.textarea`
   margin-top: 30px;
+  padding: 10px;
   width: 80%;
-  height:200px;
+  height: 200px;
   background-color: transparent;
-  resize: vertical;
-  outline: none;
+  resize: none;
   border: none;
   text-align: center;
   font-size: 32px;
@@ -212,8 +219,10 @@ const Introduce = styled.textarea`
   ${(props) =>
     props.retouch
       ? css`
-          background-color: white;
-          color: ${({ theme }) => theme.colors.black};
+          background-color: #262626;
+          outline: 1px solid;
+          border-radius: 10px;
+          color: ${({ theme }) => theme.colors.white};
         `
       : css`
           resize: none;
@@ -262,16 +271,17 @@ const TagInputDiv = styled.form`
 `;
 const TagInput = styled.input`
   padding: 5px;
+  background-color: #262626;
+  border-radius: 10px;
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.base};
-  outline: none;
+  outline: 1px solid white;
 `;
 
-const Second = styled(First)`
-`
-const Third = styled(First)`
-`
+const Second = styled(First)``;
+const Third = styled(First)``;
 const UserIcon = styled(ProfileImg)`
   font-size: 50px;
-`
+`;
 
 export default SimpleSlider;
