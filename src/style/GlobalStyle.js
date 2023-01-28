@@ -11,7 +11,6 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    /* line-height: 1.5; */
     margin: 0;
     padding: 0;
     #root{

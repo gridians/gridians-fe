@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import MemberListPage from "./pages/MemberListPage";
 import Login from "./pages/Login";
 import GithubLoginPage from "./pages/GithubLoginPage";
+import Certification from "./components/register/Certification";
 
 export default function Router() {
   return (
@@ -22,6 +23,7 @@ export default function Router() {
         <Route path={"/education"} element={<Education />} />
         <Route path={"/mypage"} element={<MyPage />} />
         <Route path={"/githubloginpage"} element={<GithubLoginPage />} />
+        <Route path={"/certification"} element={<Certification />} />
       </Routes>
     </BrowserRouter>
   );

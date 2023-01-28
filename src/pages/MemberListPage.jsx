@@ -4,6 +4,7 @@ import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import axios from "axios";
 
+
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
 window.addEventListener("scroll", function () {
@@ -20,6 +21,7 @@ const MemberListPage = () => {
   const [left, setLeft] = useState();
   //카드 정보를 수정중인지 아닌지 판별
   const [retouch, setRetouch] = useState(false);
+
   const [list, setList] = useState();
   useEffect(() => {
     axios.get(`http://175.215.143.189:8080/cards`).then((data) => {
