@@ -4,7 +4,6 @@ import { v1 } from "uuid";
 export const userNickname = atom({
   key: `userNickname/${v1()}`,
   default: "",
-  
 });
 export const userEmail = atom({
   key: `userEmail/${v1()}`,

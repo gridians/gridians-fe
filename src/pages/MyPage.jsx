@@ -19,6 +19,8 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
+import { api } from "../apis/untils";
+import { setRefreshToken } from "../cookie/cookie";
 
 export default function MyPage() {
   const [nickname, setNickname] = useRecoilState(myPageUserNickname);
@@ -51,6 +53,8 @@ export default function MyPage() {
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
   const [edit, setEdit] = useState(false);
+
+  const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
 
   // console.log(userNickname);
 
@@ -91,12 +95,11 @@ export default function MyPage() {
   //비밀번호 유효성 검사
   const onChangePassword = (e) => {
     //  문자, 숫자 1개이상 포함, 8자리 이상
-    const regPassword = /(?=.*\d)(?=.*[a-zA-ZS]).{8,16}/;
     const userPasswordCurrent = e.target.value;
     setPassword(e.target.value);
 
     if (!regPassword.test(userPasswordCurrent)) {
-      setPasswordMessage("영어, 숫자 조합해서 입력해주세요 (8~16자)");
+      setPasswordMessage("영어, 숫자, 특수문자 조합해서 입력해주세요 (8~16자)");
       setIsPassword(false);
     } else {
       setPasswordMessage("");
@@ -107,12 +110,11 @@ export default function MyPage() {
   const onChangeNewPassword = (e) => {
     // 새 비밀번호
     //  문자, 숫자 1개이상 포함, 8자리 이상
-    const regPassword = /(?=.*\d)(?=.*[a-zA-ZS]).{8,16}/;
     const userNewPasswordCurrent = e.target.value;
     setNewPassword(e.target.value);
 
     if (!regPassword.test(userNewPasswordCurrent)) {
-      setNewPasswordMessage("영어, 숫자 조합해서 입력해주세요 (8~16자)");
+      setNewPasswordMessage("영어, 숫자, 특수문자 입력해주세요 (8~16자)");
       setIsNewPassword(false);
       return;
     } else {
@@ -134,13 +136,14 @@ export default function MyPage() {
 
   const onChangeNewPasswordConfirm = (e) => {
     // 새 비밀번호 확인
-    //  문자, 숫자 1개이상 포함, 8자리 이상
-    const regPassword = /(?=.*\d)(?=.*[a-zA-ZS]).{8,16}/;
+    //  문자, 숫자, 특수문자 1개이상 포함, 8자리 이상
     const userNewPasswordConfirmCurrent = e.target.value;
     setNewPasswordConfirm(e.target.value);
 
     if (!regPassword.test(userNewPasswordConfirmCurrent)) {
-      setNewPasswordConfirmMessage("영어, 숫자 조합해서 입력해주세요 (8~16자)");
+      setNewPasswordConfirmMessage(
+        "영어, 숫자, 특수문자 입력해주세요 (8~16자)"
+      );
       setIsNewPasswordConfirm(false);
     } else if (newPassword !== userNewPasswordConfirmCurrent) {
       setNewPasswordConfirmMessage("비밀번호가 일치하지 않습니다");
@@ -205,8 +208,31 @@ export default function MyPage() {
     } else {
       console.log("good");
     }
+    onSubmit();
+
     // loginApi();
     // postUserInfo();
+  };
+
+  const onSubmit = async (e) => {
+    try {
+      const res = await api.post(
+        "/user/update-user",
+        {
+          nickname,
+          password,
+          newPassword,
+        },
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        setRefreshToken("accessToken", res.data.token);
+      }
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+      return;
+    }
   };
 
   return (
