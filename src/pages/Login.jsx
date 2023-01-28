@@ -43,7 +43,7 @@ const Login = () => {
     const userPasswordCurrent = e.target.value;
 
     if (!regPassword.test(userPasswordCurrent)) {
-      setPasswordMessage("영어, 숫자 조합해서 입력해주세요 (8~16자)");
+      setPasswordMessage("영어, 숫자, 특수문자 조합해서 입력해주세요 (8~16자)");
       setIsPassword(false);
     } else {
       setPasswordMessage("");

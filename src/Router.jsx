@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/common/Header";
 import Education from "./pages/Education";
 import Home from "./pages/Home";
@@ -9,21 +9,21 @@ import MemberListPage from "./pages/MemberListPage";
 import Login from "./pages/Login";
 import GithubLoginPage from "./pages/GithubLoginPage";
 import Certification from "./components/register/Certification";
-import { Cookies } from "react-cookie";
+import { getCookieToken } from "./cookie/cookie";
 
 export default function Router() {
-  const isLogin = () => !!Cookies.get("accessToken");
+  const isLogin = getCookieToken("accessToken");
   return (
     <BrowserRouter>
       <Header />
       <Routes>
         <Route path={"/"} element={<Intro />} />
         <Route path={"/memberlistpage"} element={<MemberListPage />} />
-        {isLogin ? (
-          <Route path={"/home"} element={<Home />} />
-        ) : (
-          <Route path={"/login"} element={<Login />} />
-        )}
+
+        <Route
+          path={"/login"}
+          element={isLogin ? <Navigate to="/home" /> : <Login />}
+        />
         <Route path={"/register"} element={<Register />} />
         <Route path={"/home"} element={<Home />} />
         <Route path={"/education"} element={<Education />} />

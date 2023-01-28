@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
@@ -51,6 +51,8 @@ export default function MyPage() {
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
   const [edit, setEdit] = useState(false);
+
+  // console.log(userNickname);
 
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
