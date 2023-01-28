@@ -4,7 +4,6 @@ import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import axios from "axios";
 
-
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
 window.addEventListener("scroll", function () {
@@ -31,11 +30,13 @@ const MemberListPage = () => {
   }, []);
 
   const backgrounOnClick = () => {
+    setRetouch(false);
     setClick("reset");
     setTop(document.querySelectorAll(".card")[num].offsetTop);
     setLeft(document.querySelectorAll(".card")[num].offsetLeft);
   };
   const XBtnOnClick = () => {
+    setRetouch(false);
     setClick("reset");
     setTop(document.querySelectorAll(".card")[num].offsetTop);
     setLeft(document.querySelectorAll(".card")[num].offsetLeft);
@@ -45,6 +46,9 @@ const MemberListPage = () => {
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
     setLeft(document.querySelectorAll(".card")[index].offsetLeft);
+    axios.get(`http://175.215.143.189:8080/cards/${index + 1}`).then((data) => {
+      console.log(data.data);
+    });
   };
 
   return (
@@ -80,7 +84,7 @@ const MemberListPage = () => {
                     <img src={data.skillSrc} alt="34" />
                   </Skill>
                   <ProfileImg>
-                    <img src={data.imageSrc} alt="앗 안나와여"/>
+                    <img src={data.imageSrc} alt="앗 안나와여" />
                   </ProfileImg>
                   <NickName>{data.nickname}</NickName>
                   <Role>{data.field}</Role>
@@ -96,7 +100,11 @@ const MemberListPage = () => {
                       <BookMark>
                         <BsFillBookmarkFill />
                       </BookMark>
-                      {retouch ? <StatusMessage /> : <StatusMessage disabled />}
+                      {retouch ? (
+                        <StatusMessage retouch={retouch} />
+                      ) : (
+                        <StatusMessage disabled />
+                      )}
                       <LanguageImg>
                         {retouch ? (
                           <select>
@@ -158,7 +166,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   min-height: 90vh;
-  background-color: ${({ theme }) => theme.colors.subColor1};
+  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   border: 2px solid black;
 `;
 
@@ -219,7 +227,7 @@ const MemberCard = styled.div`
   height: 250px;
   background-color: transparent;
   border-radius: 10px;
-  transition: all 1s;
+  transition: all .5s;
   cursor: pointer;
   &:hover {
     .front {
@@ -246,18 +254,18 @@ const Card = styled.div`
   height: 250px;
   color: black;
   transform-style: preserve-3d;
-  transition: all 1s;
+  transition: all .5s;
   ${(props) =>
     props.click === "click"
       ? css`
           z-index: 3;
-          animation: ${(props) => spin(props.top, props.left)} 1s forwards;
+          animation: ${(props) => spin(props.top, props.left)} 0.5s forwards;
         `
       : css``}
   ${(props) =>
     props.click === "reset"
       ? css`
-          animation: ${(props) => reset(props.top, props.left)} 0.8s ease-in-out;
+          animation: ${(props) => reset(props.top, props.left)} 0.5s ease-in-out;
         `
       : css``}
 `;
@@ -340,7 +348,7 @@ const DetailBtn = styled.div`
       : css``}
 `;
 
-const DetailContainer = styled.div`
+const DetailContainer = styled.form`
   position: relative;
   z-index: 1;
   opacity: 0;
@@ -348,7 +356,7 @@ const DetailContainer = styled.div`
   width: 70%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  transition: all 2s;
+  transition: all .5s;
   cursor: auto;
   ${(props) =>
     props.click === "click"
@@ -377,13 +385,18 @@ const BookMark = styled.div`
   }
 `;
 const StatusMessage = styled.input`
-  outline: none;
   width: 50%;
   height: 30px;
   background-color: #262626;
   border-radius: 10px;
   text-align: center;
   color: white;
+  ${(props) =>
+    props.retouch
+      ? css`
+          outline: 1px solid;
+        `
+      : css``}
 `;
 const LanguageImg = styled.div`
   display: flex;
