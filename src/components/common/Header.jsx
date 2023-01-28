@@ -53,7 +53,7 @@ const Header = () => {
     <HeaderBox>
       <HeaderWrap>
         <Link to="/home">
-          <Logo>Devember</Logo>
+          <Logo>Gradient</Logo>
         </Link>
         {getCookieToken("accessToken") === undefined ? (
           <Menu>

@@ -99,7 +99,9 @@ export default function MyPage() {
     setPassword(e.target.value);
 
     if (!regPassword.test(userPasswordCurrent)) {
-      setPasswordMessage("영어, 숫자, 특수문자 조합해서 입력해주세요 (8~16자)");
+      setPasswordMessage(
+        "영어, 숫자, 특수문자를 조합해서 입력해주세요 (8~16자)"
+      );
       setIsPassword(false);
     } else {
       setPasswordMessage("");
@@ -114,7 +116,9 @@ export default function MyPage() {
     setNewPassword(e.target.value);
 
     if (!regPassword.test(userNewPasswordCurrent)) {
-      setNewPasswordMessage("영어, 숫자, 특수문자 입력해주세요 (8~16자)");
+      setNewPasswordMessage(
+        "영어, 숫자, 특수문자를 조합해서 입력해주세요 (8~16자)"
+      );
       setIsNewPassword(false);
       return;
     } else {
@@ -142,7 +146,7 @@ export default function MyPage() {
 
     if (!regPassword.test(userNewPasswordConfirmCurrent)) {
       setNewPasswordConfirmMessage(
-        "영어, 숫자, 특수문자 입력해주세요 (8~16자)"
+        "영어, 숫자, 특수문자를 조합해서 입력해주세요 (8~16자)"
       );
       setIsNewPasswordConfirm(false);
     } else if (newPassword !== userNewPasswordConfirmCurrent) {
@@ -158,17 +162,21 @@ export default function MyPage() {
     setEdit((edit) => !edit);
     e.preventDefault();
   };
+
+  const onClickEmailSubmit = (e) => {
+    if (emailMessage.length > 0) {
+      swal({
+        text: "이메일이 올바르지 않습니다",
+        button: "돌아가기",
+      });
+      return;
+    }
+  };
   const onClickSubmit = (e) => {
     e.preventDefault();
     if (nicknameMessage.length > 0) {
       swal({
         text: "닉네임이 올바르지 않습니다",
-        button: "돌아가기",
-      });
-      return;
-    } else if (emailMessage.length > 0) {
-      swal({
-        text: "이메일이 올바르지 않습니다",
         button: "돌아가기",
       });
       return;
@@ -239,6 +247,98 @@ export default function MyPage() {
     <MyPageContainer>
       <MyPageWrapper>
         <MyPageForm>
+          {/* 이메일 */}
+          {edit ? (
+            <>
+              {email.length > 0 ? (
+                <MyPageInputContainer>
+                  <AiOutlineMail className="icon" />
+                  <MyPageInputWrapper>
+                    {isEmail ? (
+                      <MyPageInput
+                        onChange={onChangeEmail}
+                        value={email}
+                        type="email"
+                        placeholder="이메일"
+                      />
+                    ) : (
+                      <>
+                        <MyPageInput
+                          onChange={onChangeEmail}
+                          value={email}
+                          type="email"
+                          placeholder="이메일"
+                        />
+                        {email ? (
+                          <EditButtonContainer className="email-button-container">
+                            <EditButton
+                              onClick={onClickEmailSubmit}
+                              type="submit"
+                            >
+                              이메일 인증하기
+                            </EditButton>
+                          </EditButtonContainer>
+                        ) : (
+                          <EditButtonContainer className="email-button-container">
+                            <EditButton
+                              style={{ pointerEvents: "none" }}
+                              onClick={onClickEdit}
+                            >
+                              이메일 인증하기
+                            </EditButton>
+                          </EditButtonContainer>
+                        )}
+                      </>
+                    )}
+                    <InputMessage>{emailMessage}</InputMessage>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
+              ) : (
+                <MyPageInputContainer>
+                  <AiOutlineMail className="icon" />
+                  <MyPageInputWrapper>
+                    <MyPageInput
+                      onChange={onChangeEmail}
+                      value={email}
+                      type="email"
+                      placeholder="이메일"
+                    />
+                    <>
+                      {email ? (
+                        <EditButtonContainer className="email-button-container">
+                          <EditButton
+                            onClick={onClickEmailSubmit}
+                            type="submit"
+                          >
+                            이메일 인증하기
+                          </EditButton>
+                        </EditButtonContainer>
+                      ) : (
+                        <EditButtonContainer className="email-button-container">
+                          <EditButton
+                            style={{ pointerEvents: "none" }}
+                            onClick={onClickEdit}
+                          >
+                            이메일 인증하기
+                          </EditButton>
+                        </EditButtonContainer>
+                      )}
+                    </>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
+              )}
+            </>
+          ) : (
+            <MyPageInputContainer>
+              <AiOutlineMail className="icon" />
+              <MyPageInputWrapper>
+                <MyPageSpanContainer>
+                  <MyPageSpan>이메일</MyPageSpan>
+                </MyPageSpanContainer>
+              </MyPageInputWrapper>
+            </MyPageInputContainer>
+          )}
+
           {/* 닉네임 */}
           {edit ? (
             <>
@@ -284,56 +384,6 @@ export default function MyPage() {
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
                   <MyPageSpan>닉네임</MyPageSpan>
-                </MyPageSpanContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
-          )}
-
-          {/* 이메일 */}
-          {edit ? (
-            <>
-              {email.length > 0 ? (
-                <MyPageInputContainer>
-                  <AiOutlineMail className="icon" />
-                  <MyPageInputWrapper>
-                    {isEmail ? (
-                      <MyPageInput
-                        onChange={onChangeEmail}
-                        value={email}
-                        type="email"
-                        placeholder="이메일"
-                      />
-                    ) : (
-                      <MyPageInput
-                        onChange={onChangeEmail}
-                        value={email}
-                        type="email"
-                        placeholder="이메일"
-                      />
-                    )}
-                    <InputMessage>{emailMessage}</InputMessage>
-                  </MyPageInputWrapper>
-                </MyPageInputContainer>
-              ) : (
-                <MyPageInputContainer>
-                  <AiOutlineMail className="icon" />
-                  <MyPageInputWrapper>
-                    <MyPageInput
-                      onChange={onChangeEmail}
-                      value={email}
-                      type="email"
-                      placeholder="이메일"
-                    />
-                  </MyPageInputWrapper>
-                </MyPageInputContainer>
-              )}
-            </>
-          ) : (
-            <MyPageInputContainer>
-              <AiOutlineMail className="icon" />
-              <MyPageInputWrapper>
-                <MyPageSpanContainer>
-                  <MyPageSpan>이메일</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
@@ -473,7 +523,7 @@ export default function MyPage() {
 
           {edit ? (
             <>
-              {nickname || email || password ? (
+              {nickname || password ? (
                 <EditButtonContainer>
                   <EditButton onClick={onClickSubmit} type="submit">
                     변경완료
@@ -519,7 +569,7 @@ const MyPageWrapper = styled.div`
 `;
 
 const MyPageForm = styled.form`
-  width: 80%;
+  width: 90%;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -550,6 +600,11 @@ const MyPageInputWrapper = styled.div`
   width: 80%;
   height: 100%;
   position: relative;
+  display: flex;
+  align-items: center;
+  .email-button-container {
+    margin: 0;
+  }
 `;
 const MyPageInput = styled.input`
   border: none;
@@ -586,7 +641,7 @@ const InputMessage = styled.div`
   color: ${({ theme }) => theme.colors.subColor2};
   line-height: 16px;
   font-size: ${({ theme }) => theme.fontSizes.small};
-  margin-top: 5px;
+  margin-top: 80px;
   margin-left: 40px;
 `;
 
