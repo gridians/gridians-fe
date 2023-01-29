@@ -23,17 +23,17 @@ export const loginUserPw = atom({
 //   },
 // });
 
-// export const userEmailSelector = selector({
-//   key: `user/${v1()}`,
-//   get: ({ get }) => {
-//     const email = get(userEmail);
-//     return email;
-//   },
-//   set: ({ set }, newValue) => {
-//     console.log(newValue);
-//     set(userEmail, newValue);
-//   },
-// });
+export const userEmailSelector = selector({
+  key: `user/${v1()}`,
+  get: ({ get }) => {
+    const email = get(loginUserId);
+    return email;
+  },
+  set: ({ set }, newValue) => {
+    console.log(newValue);
+    set(loginUserId, newValue);
+  },
+});
 
 // export const userPasswordSelector = selector({
 //   key: `user/${v1()}`,

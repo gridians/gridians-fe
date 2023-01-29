@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { selector, useRecoilState } from "recoil";
 import styled from "styled-components";
 import { api } from "../apis/untils";
 import GithubBtn from "../components/GithubBtn";
 import { loginUserId, loginUserPw } from "../store/loginAtom";
 import { setRefreshToken } from "../cookie/cookie";
 import { userEmailMessage, userPasswordMessage } from "../store/registerAtom";
-// import swal from "sweetalert";
 import Swal from "sweetalert2";
+import { v1 } from "uuid";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -64,6 +64,8 @@ const Login = () => {
       );
       if (res.status === 200) {
         setRefreshToken("accessToken", res.data.token);
+        setEmail(res.data.email);
+
         Swal.fire({
           title: "로그인 중...",
           padding: "3em",
@@ -82,7 +84,6 @@ const Login = () => {
       return;
     }
   };
-
   return (
     <LoginContainer>
       <Title>Login</Title>
@@ -139,6 +140,7 @@ const Login = () => {
               border: "none",
             }}
             onClick={onSubmit}
+            type="submit"
           >
             로그인
           </LoginBtn>

@@ -21,6 +21,7 @@ import {
 } from "../store/myPageAtom";
 import { api } from "../apis/untils";
 import { setRefreshToken } from "../cookie/cookie";
+import { loginUserId, userEmailSelector } from "../store/loginAtom";
 
 export default function MyPage() {
   const [nickname, setNickname] = useRecoilState(myPageUserNickname);
@@ -30,6 +31,10 @@ export default function MyPage() {
   const [newPasswordConfirm, setNewPasswordConfirm] = useRecoilState(
     myPageUserNewPasswordConfirm
   );
+
+  const userEmailValue = useRecoilValue(loginUserId);
+
+  console.log(userEmailValue);
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
     myPageUserNicknameMessage
@@ -56,7 +61,8 @@ export default function MyPage() {
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
 
-  // console.log(userNickname);
+  const aa = useRecoilValue(userEmailSelector);
+  console.log(aa);
 
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
@@ -275,7 +281,7 @@ export default function MyPage() {
                               onClick={onClickEmailSubmit}
                               type="submit"
                             >
-                              이메일 인증하기
+                              이메일 인증
                             </EditButton>
                           </EditButtonContainer>
                         ) : (
