@@ -8,7 +8,6 @@ import { loginUserId, loginUserPw } from "../store/loginAtom";
 import { setRefreshToken } from "../cookie/cookie";
 import { userEmailMessage, userPasswordMessage } from "../store/registerAtom";
 import Swal from "sweetalert2";
-import { v1 } from "uuid";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -65,6 +64,7 @@ const Login = () => {
       if (res.status === 200) {
         setRefreshToken("accessToken", res.data.token);
         setEmail(res.data.email);
+        console.log(email);
 
         Swal.fire({
           title: "로그인 중...",
@@ -76,8 +76,6 @@ const Login = () => {
         }).then(function () {
           navigate("/home");
         });
-        setEmail("");
-        setPassword("");
       }
       console.log(res);
     } catch (err) {

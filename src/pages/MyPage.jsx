@@ -33,8 +33,9 @@ export default function MyPage() {
   );
 
   const userEmailValue = useRecoilValue(loginUserId);
-
   console.log(userEmailValue);
+  // const aa = useRecoilValue(userEmailSelector);
+  // console.log(aa);
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
     myPageUserNicknameMessage
@@ -60,9 +61,6 @@ export default function MyPage() {
   const [edit, setEdit] = useState(false);
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
-
-  const aa = useRecoilValue(userEmailSelector);
-  console.log(aa);
 
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
@@ -339,7 +337,7 @@ export default function MyPage() {
               <AiOutlineMail className="icon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>이메일</MyPageSpan>
+                  <MyPageSpan>{userEmailValue}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
