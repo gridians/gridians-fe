@@ -1,22 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { selector, useRecoilState } from "recoil";
 import styled from "styled-components";
 import { api } from "../apis/untils";
 import GithubBtn from "../components/GithubBtn";
-import { loginUserId, loginUserPw } from "../store/loginAtom";
 import { setRefreshToken } from "../cookie/cookie";
-import { userEmailMessage, userPasswordMessage } from "../store/registerAtom";
 import Swal from "sweetalert2";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useRecoilState(loginUserId);
-  const [password, setPassword] = useRecoilState(loginUserPw);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [emailMessage, setEmailMessage] = useRecoilState(userEmailMessage);
-  const [passwordMessage, setPasswordMessage] =
-    useRecoilState(userPasswordMessage);
+  const [emailMessage, setEmailMessage] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
 
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
@@ -54,7 +50,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await api.post(
-        "/user/login",
+        "/user/auth/login",
         {
           email,
           password,
@@ -63,9 +59,6 @@ const Login = () => {
       );
       if (res.status === 200) {
         setRefreshToken("accessToken", res.data.token);
-        setEmail(res.data.email);
-        console.log(email);
-
         Swal.fire({
           title: "로그인 중...",
           padding: "3em",

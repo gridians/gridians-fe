@@ -1,21 +1,18 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
 import GlobalStyle from "./style/GlobalStyle";
-import { QueryClient, QueryClientProvider } from "react-query";
-
-const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <GlobalStyle />
     <RecoilRoot>
-      <QueryClientProvider client={queryClient}>
+      <Suspense fallback={<div>Loading...</div>}>
         <App />
-      </QueryClientProvider>
+      </Suspense>
     </RecoilRoot>
   </React.StrictMode>
 );

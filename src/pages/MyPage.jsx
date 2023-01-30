@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { AiOutlineIdcard } from "react-icons/ai";
@@ -19,11 +19,19 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { api } from "../apis/untils";
-import { setRefreshToken } from "../cookie/cookie";
-import { loginUserId, userEmailSelector } from "../store/loginAtom";
+import { api, cookieApi } from "../apis/untils";
+import { getCookieToken, setRefreshToken } from "../cookie/cookie";
+import {
+  loginUserEmail,
+  loginUserNickname,
+  loginUserPasswordLength,
+  userEmailSelector,
+} from "../store/userInfoAtom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function MyPage() {
+  const navigate = useNavigate();
   const [nickname, setNickname] = useRecoilState(myPageUserNickname);
   const [email, setEmail] = useRecoilState(myPageUserEmail);
   const [password, setPassword] = useRecoilState(myPageUserPassword);
@@ -32,7 +40,9 @@ export default function MyPage() {
     myPageUserNewPasswordConfirm
   );
 
-  const userEmailValue = useRecoilValue(loginUserId);
+  const userNicknameValue = useRecoilValue(loginUserNickname);
+  const userPasswordLengthValue = useRecoilValue(loginUserPasswordLength);
+  const userEmailValue = useRecoilValue(userEmailSelector);
   console.log(userEmailValue);
   // const aa = useRecoilValue(userEmailSelector);
   // console.log(aa);
@@ -59,6 +69,34 @@ export default function MyPage() {
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
   const [edit, setEdit] = useState(false);
+
+  const token = getCookieToken("accessToken");
+  useEffect(() => {
+    if (token === undefined) {
+      navigate("/login");
+    }
+    return () => {};
+  }, [navigate, token]);
+
+  const cc = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.get("/user/valid", {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          accept: "application/json,",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200) {
+      }
+      console.log(res);
+    } catch (err) {
+      console.log(token);
+
+      return;
+    }
+  };
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
 
@@ -333,11 +371,11 @@ export default function MyPage() {
               )}
             </>
           ) : (
-            <MyPageInputContainer>
+            <MyPageInputContainer onClick={cc}>
               <AiOutlineMail className="icon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>{userEmailValue}</MyPageSpan>
+                  <MyPageSpan>{}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
@@ -387,7 +425,7 @@ export default function MyPage() {
               <AiOutlineIdcard className="icon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>닉네임</MyPageSpan>
+                  <MyPageSpan>{userNicknameValue}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
@@ -437,7 +475,7 @@ export default function MyPage() {
               <RiLockPasswordLine className="icon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>***</MyPageSpan>
+                  <MyPageSpan>{userPasswordLengthValue}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>

@@ -12,7 +12,7 @@ import Certification from "./components/register/Certification";
 import { getCookieToken } from "./cookie/cookie";
 
 export default function Router() {
-  const isLogin = getCookieToken("accessToken");
+  const isLogin = !!getCookieToken("accessToken");
   return (
     <BrowserRouter>
       <Header />
