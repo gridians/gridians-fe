@@ -5,6 +5,8 @@ import { api } from "../apis/untils";
 import GithubBtn from "../components/GithubBtn";
 import { setRefreshToken } from "../cookie/cookie";
 import Swal from "sweetalert2";
+import { useMutation } from "react-query";
+import { postLoginUseQueryUserInfo } from "../apis/queries/query";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,6 +18,28 @@ const Login = () => {
 
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
+
+  const { mutate: postLoginInfo } = useMutation(
+    "postLoginUserInfo",
+    () => postLoginUseQueryUserInfo(userLoginInfo),
+    {
+      onSuccess: (res) => {
+        setRefreshToken("accessToken", res.data.token);
+        Swal.fire({
+          title: "로그인 중...",
+          padding: "3em",
+          timer: 1500,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        }).then(function () {
+          navigate("/home");
+        });
+      },
+    }
+  );
+
+  const userLoginInfo = { email, password };
 
   const idOnChange = (e) => {
     setEmail(e.target.value);
@@ -48,32 +72,33 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await api.post(
-        "/user/auth/login",
-        {
-          email,
-          password,
-        },
-        { withCredentials: true }
-      );
-      if (res.status === 200) {
-        setRefreshToken("accessToken", res.data.token);
-        Swal.fire({
-          title: "로그인 중...",
-          padding: "3em",
-          timer: 1500,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        }).then(function () {
-          navigate("/home");
-        });
-      }
-      console.log(res);
-    } catch (err) {
-      return;
-    }
+    postLoginInfo();
+    // try {
+    //   const res = await api.post(
+    //     "/user/auth/login",
+    //     {
+    //       email,
+    //       password,
+    //     },
+    //     { withCredentials: true }
+    //   );
+    //   if (res.status === 200) {
+    //     setRefreshToken("accessToken", res.data.token);
+    //     Swal.fire({
+    //       title: "로그인 중...",
+    //       padding: "3em",
+    //       timer: 1500,
+    //       didOpen: () => {
+    //         Swal.showLoading();
+    //       },
+    //     }).then(function () {
+    //       navigate("/home");
+    //     });
+    //   }
+    //   console.log(res);
+    // } catch (err) {
+    //   return;
+    // }
   };
   return (
     <LoginContainer>

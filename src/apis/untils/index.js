@@ -17,6 +17,7 @@ export const cookieApi = axios.create({
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${getCookieToken("accessToken")}`,
   },
+  ithCredentials: true,
 });

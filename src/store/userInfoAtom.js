@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { atom, selector, selectorFamily } from "recoil";
+import { atom, selector } from "recoil";
 import { v1 } from "uuid";
 import { api, cookieApi } from '../apis/untils';
-import { getCookieToken } from '../cookie/cookie';
 
 export const loginUserNickname = atom({
   key: `loginUserNickname/${v1()}`,
@@ -41,9 +40,8 @@ export const loginUserPasswordLength = atom({
 export const userEmailSelector = selector({
   key: `user/${v1()}`,
     get: async ({ get }) => {
-      const res = await cookieApi.get("/user/valid"
-      );
-        return res.data.email;
+      const res = await cookieApi.get("/user/valid");
+      return res.data.email;
     },
     set: ({ set }, newValue) => {
       console.log(newValue);

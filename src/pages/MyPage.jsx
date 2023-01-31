@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
@@ -19,16 +19,15 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { api, cookieApi } from "../apis/untils";
-import { getCookieToken, setRefreshToken } from "../cookie/cookie";
-import {
-  loginUserEmail,
-  loginUserNickname,
-  loginUserPasswordLength,
-  userEmailSelector,
-} from "../store/userInfoAtom";
+import { getCookieToken } from "../cookie/cookie";
+
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useMutation, useQuery } from "react-query";
+import {
+  getMyPageUseQueryUserInfo,
+  postMyPageUserQueryEditEmail,
+  putMyPageUserQueryEditUserInfo,
+} from "../apis/queries/query";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -40,12 +39,35 @@ export default function MyPage() {
     myPageUserNewPasswordConfirm
   );
 
-  const userNicknameValue = useRecoilValue(loginUserNickname);
-  const userPasswordLengthValue = useRecoilValue(loginUserPasswordLength);
-  const userEmailValue = useRecoilValue(userEmailSelector);
-  console.log(userEmailValue);
-  // const aa = useRecoilValue(userEmailSelector);
-  // console.log(aa);
+  const { data: userInfoValue } = useQuery(
+    ["userEmail", "userNickname"],
+    getMyPageUseQueryUserInfo
+  );
+
+  const { mutate: postEditEmail } = useMutation(
+    "postEditUserEmail",
+    () => postMyPageUserQueryEditEmail(email),
+    {
+      onSuccess: () => {
+        // console.log("성공");
+      },
+    }
+  );
+
+  const { mutate: putUserInfo } = useMutation(
+    "putUserInfo",
+    () => putMyPageUserQueryEditUserInfo(userInfo),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  const userInfo = { nickname, password, newPassword };
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
     myPageUserNicknameMessage
@@ -77,26 +99,6 @@ export default function MyPage() {
     }
     return () => {};
   }, [navigate, token]);
-
-  const cc = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.get("/user/valid", {
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          accept: "application/json,",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.status === 200) {
-      }
-      console.log(res);
-    } catch (err) {
-      console.log(token);
-
-      return;
-    }
-  };
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
 
@@ -206,14 +208,24 @@ export default function MyPage() {
   };
 
   const onClickEmailSubmit = (e) => {
+    e.preventDefault();
+    postEditEmail(email);
+    setEmail("");
     if (emailMessage.length > 0) {
       swal({
         text: "이메일이 올바르지 않습니다",
         button: "돌아가기",
       });
       return;
+    } else {
+      swal({
+        text: "이메일을 확인해주세요",
+        button: "돌아가기",
+      });
+      return;
     }
   };
+
   const onClickSubmit = (e) => {
     e.preventDefault();
     if (nicknameMessage.length > 0) {
@@ -222,21 +234,16 @@ export default function MyPage() {
         button: "돌아가기",
       });
       return;
-    } else if (passwordMessage.length > 0) {
+    } else if (password.length >= 1 && passwordMessage.length > 0) {
       swal({
         text: "비밀번호가 올바르지 않습니다",
         button: "돌아가기",
       });
+
       return;
     } else if (password.length >= 1 && newPassword.length <= 0) {
       swal({
         text: "새비밀번호를 입력해주세요",
-        button: "돌아가기",
-      });
-      return;
-    } else if (newPasswordMessage.length > 0) {
-      swal({
-        text: "새비밀번호가 올바르지 않습니다",
         button: "돌아가기",
       });
       return;
@@ -256,32 +263,12 @@ export default function MyPage() {
       });
       return;
     } else {
-      console.log("good");
-    }
-    onSubmit();
-
-    // loginApi();
-    // postUserInfo();
-  };
-
-  const onSubmit = async (e) => {
-    try {
-      const res = await api.post(
-        "/user/update-user",
-        {
-          nickname,
-          password,
-          newPassword,
-        },
-        { withCredentials: true }
-      );
-      if (res.status === 200) {
-        setRefreshToken("accessToken", res.data.token);
-      }
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-      return;
+      putUserInfo(userInfo);
+      setNickname("");
+      setPassword("");
+      setNewPassword("");
+      setNewPasswordConfirm("");
+      navigate("/home");
     }
   };
 
@@ -304,35 +291,19 @@ export default function MyPage() {
                         placeholder="이메일"
                       />
                     ) : (
-                      <>
-                        <MyPageInput
-                          onChange={onChangeEmail}
-                          value={email}
-                          type="email"
-                          placeholder="이메일"
-                        />
-                        {email ? (
-                          <EditButtonContainer className="email-button-container">
-                            <EditButton
-                              onClick={onClickEmailSubmit}
-                              type="submit"
-                            >
-                              이메일 인증
-                            </EditButton>
-                          </EditButtonContainer>
-                        ) : (
-                          <EditButtonContainer className="email-button-container">
-                            <EditButton
-                              style={{ pointerEvents: "none" }}
-                              onClick={onClickEdit}
-                            >
-                              이메일 인증하기
-                            </EditButton>
-                          </EditButtonContainer>
-                        )}
-                      </>
+                      <MyPageInput
+                        onChange={onChangeEmail}
+                        value={email}
+                        type="email"
+                        placeholder="이메일"
+                      />
                     )}
                     <InputMessage>{emailMessage}</InputMessage>
+                    <EditButtonContainer className="email-button-container">
+                      <EditButton onClick={onClickEmailSubmit} type="submit">
+                        인증하기
+                      </EditButton>
+                    </EditButtonContainer>
                   </MyPageInputWrapper>
                 </MyPageInputContainer>
               ) : (
@@ -345,37 +316,21 @@ export default function MyPage() {
                       type="email"
                       placeholder="이메일"
                     />
-                    <>
-                      {email ? (
-                        <EditButtonContainer className="email-button-container">
-                          <EditButton
-                            onClick={onClickEmailSubmit}
-                            type="submit"
-                          >
-                            이메일 인증하기
-                          </EditButton>
-                        </EditButtonContainer>
-                      ) : (
-                        <EditButtonContainer className="email-button-container">
-                          <EditButton
-                            style={{ pointerEvents: "none" }}
-                            onClick={onClickEdit}
-                          >
-                            이메일 인증하기
-                          </EditButton>
-                        </EditButtonContainer>
-                      )}
-                    </>
+                    <EditButtonContainer className="email-button-container">
+                      <EditButton style={{ pointerEvents: "none" }}>
+                        인증하기
+                      </EditButton>
+                    </EditButtonContainer>
                   </MyPageInputWrapper>
                 </MyPageInputContainer>
               )}
             </>
           ) : (
-            <MyPageInputContainer onClick={cc}>
+            <MyPageInputContainer>
               <AiOutlineMail className="icon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>{}</MyPageSpan>
+                  <MyPageSpan>{userInfoValue?.email}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
@@ -384,7 +339,7 @@ export default function MyPage() {
           {/* 닉네임 */}
           {edit ? (
             <>
-              {nickname || email || password ? (
+              {nickname.length > 0 ? (
                 <MyPageInputContainer>
                   <AiOutlineIdcard className="icon" />
                   <MyPageInputWrapper>
@@ -425,7 +380,7 @@ export default function MyPage() {
               <AiOutlineIdcard className="icon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>{userNicknameValue}</MyPageSpan>
+                  <MyPageSpan>{userInfoValue?.nickname}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
@@ -470,16 +425,7 @@ export default function MyPage() {
                 </MyPageInputContainer>
               )}
             </>
-          ) : (
-            <MyPageInputContainer>
-              <RiLockPasswordLine className="icon" />
-              <MyPageInputWrapper>
-                <MyPageSpanContainer>
-                  <MyPageSpan>{userPasswordLengthValue}</MyPageSpan>
-                </MyPageSpanContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
-          )}
+          ) : null}
 
           {/* 비밀번호 변경 */}
           {edit && (
@@ -601,7 +547,7 @@ const MyPageContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
 `;
 const MyPageWrapper = styled.div`
-  width: 50%;
+  width: 60%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -645,7 +591,11 @@ const MyPageInputWrapper = styled.div`
   display: flex;
   align-items: center;
   .email-button-container {
+    padding: 10px;
     margin: 0;
+    position: absolute;
+    right: -30px;
+    width: 100px;
   }
 `;
 const MyPageInput = styled.input`
