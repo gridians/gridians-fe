@@ -2,14 +2,48 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 
 const Header = () => {
   const location = useLocation();
   if (location.pathname === "/") return null;
 
-  const onCLickLogOut = () => {
-    removeCookieToken();
+  const onClickLogOut = () => {
+    Swal.fire({
+      title: "로그아웃 하시겠습니까?",
+      confirmButtonColor: "#DCC6C6",
+      cancelButtonColor: "#738598",
+      showCancelButton: true,
+      confirmButtonText: "로그아웃",
+      cancelButtonText: "돌아가기",
+      padding: "3em",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCookieToken();
+        window.location.replace("/login");
+      } else {
+        return;
+      }
+    });
+  };
+
+  const onClickEnroll = () => {
+    Swal.fire({
+      title: "등록 하시겠습니까?",
+      confirmButtonColor: "#DCC6C6",
+      cancelButtonColor: "#738598",
+      showCancelButton: true,
+      confirmButtonText: "등록하기",
+      cancelButtonText: "돌아가기",
+      padding: "3em",
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutUp",
+      },
+      closeOnClickOutside: false,
+    });
   };
 
   // useEffect(() => {
@@ -19,7 +53,7 @@ const Header = () => {
     <HeaderBox>
       <HeaderWrap>
         <Link to="/home">
-          <Logo>Devember</Logo>
+          <Logo>Gradient</Logo>
         </Link>
         {getCookieToken("accessToken") === undefined ? (
           <Menu>
@@ -41,32 +75,18 @@ const Header = () => {
           </Menu>
         ) : (
           <Menu>
-            <Link to="/login" onClick={onCLickLogOut}>
-              LogOut
-            </Link>
+            <Link onClick={onClickLogOut}>LogOut</Link>
 
             {location.pathname === "/enroll" ? (
-              <Link style={{ color: "#B3B600" }} to="/enroll">
-                Enroll
-              </Link>
+              <Link style={{ color: "#B3B600" }}>Enroll</Link>
             ) : (
-              <Link
-                onClick={() => {
-                  swal({
-                    text: "등록하시겠습니까?",
-                    button: "확인",
-                    showClass: {
-                      popup: "animate__animated animate__fadeInDown",
-                    },
-                    hideClass: {
-                      popup: "animate__animated animate__fadeOutUp",
-                    },
-                    closeOnClickOutside: false,
-                  });
-                }}
-              >
-                Enroll
-              </Link>
+              <Link onClick={onClickEnroll}>Enroll</Link>
+            )}
+
+            {location.pathname === "/mypage" ? (
+              <Link style={{ color: "#B3B600" }}>Mypage</Link>
+            ) : (
+              <Link to="/mypage">Mypage</Link>
             )}
           </Menu>
         )}

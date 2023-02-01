@@ -1,17 +1,43 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
+import {
+  getMyPageUseQueryUserInfo,
+  putMyPageUserQueryEditEmail,
+} from "../../apis/queries/query";
 import { api } from "../../apis/untils";
+import { removeCookieToken } from "../../cookie/cookie";
 
 export default function Certification() {
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.search.split("=")[1];
 
-  const onCLickLogin = () => {
-    postCertification();
+  const { data: userInfoValue } = useQuery(
+    ["userEmail", "userNickname"],
+    getMyPageUseQueryUserInfo
+  );
+
+  const { mutate: putEditEmail } = useMutation(
+    "puttEditUserEmail",
+    () => putMyPageUserQueryEditEmail(id),
+    {
+      onSuccess: () => {
+        removeCookieToken();
+        navigate("/login");
+      },
+    }
+  );
+
+  const onClickLogin = () => {
+    if (userInfoValue?.email === id) {
+      postCertification();
+    } else {
+      putEditEmail(id);
+    }
   };
 
   const postCertification = async () => {
@@ -22,8 +48,9 @@ export default function Certification() {
         },
       });
       if (res.status === 200) {
-        swal({
-          text: "이메일 인증 완료 😀",
+        Swal.fire({
+          title: "이메일 인증 완료 😀",
+          padding: "3em",
           buttons: "확인",
           showClass: {
             popup: "animate__animated animate__fadeInDown",
@@ -38,9 +65,10 @@ export default function Certification() {
       }
       return res.data;
     } catch (err) {
-      swal({
-        text: "이메일 인증 실패 😢",
+      Swal.fire({
+        title: "이메일 인증 실패 😢",
         buttons: "확인",
+        padding: "3em",
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
@@ -48,8 +76,6 @@ export default function Certification() {
           popup: "animate__animated animate__fadeOutUp",
         },
         closeOnClickOutside: false,
-      }).then(function () {
-        return;
       });
     }
   };
@@ -57,7 +83,7 @@ export default function Certification() {
   return (
     <CertificationContainer>
       이메일 인증이 완료 되었습니다.
-      <CretificationButton onClick={onCLickLogin}>
+      <CretificationButton onClick={onClickLogin}>
         로그인 하러가기
       </CretificationButton>
     </CertificationContainer>

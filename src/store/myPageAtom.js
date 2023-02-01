@@ -43,3 +43,4 @@ export const myPageUserNewPasswordConfirmMessage = atom({
   key: `myPageUserNewPasswordConfirmMessage/${v1()}`,
   default: "",
 });
+

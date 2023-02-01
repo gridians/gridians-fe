@@ -1,9 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
-import { useRecoilState } from "recoil";
+import axios from "axios";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
   commentAtom,
   commentListAtom,
+  getUserComment,
   validAtom,
 } from "../../store/commentAtom";
 
@@ -16,6 +18,9 @@ export default function Comment() {
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
   const replyCommentRef = useRef();
+  const commentArray = useRecoilValue(getUserComment);
+
+  // console.log(commentArray);
 
   const postComment = () => {
     const newCommentList = [...commentList];
@@ -110,7 +115,10 @@ export default function Comment() {
               <CommentProfile>프로필</CommentProfile>
               <CommentListNicknameWrapper>
                 <CommentListNickname>ss</CommentListNickname>
-                <CommentListComment>{commentArr}</CommentListComment>
+                <CommentListComment>
+                  {commentArray}
+                  {commentArr}
+                </CommentListComment>
                 <CommentListReplyComment onClick={onClick}>
                   답글
                 </CommentListReplyComment>

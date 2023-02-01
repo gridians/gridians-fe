@@ -5,7 +5,6 @@ import styled from "styled-components";
 export default function Home() {
   return (
     <HomeContainer>
-
       <HomeTitle>
         <Link to="/education">서비스 소개</Link>
       </HomeTitle>
