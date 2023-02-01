@@ -36,6 +36,7 @@ const Login = () => {
           navigate("/home");
         });
       },
+      onError: () => {},
     }
   );
 
@@ -237,7 +238,7 @@ const LoginForm = styled.form`
   width: 100%;
   height: 100%;
   background-color: ${({ theme }) => theme.colors.subColor3};
-  padding: 40px 80px;
+  padding: 40px 100px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 `;
@@ -280,7 +281,7 @@ const IdContainer = styled.div`
 `;
 const IdInput = styled.input`
   padding: 5px;
-  width: 400px;
+  width: 100%;
   background-color: transparent;
   outline: none;
   border: none;

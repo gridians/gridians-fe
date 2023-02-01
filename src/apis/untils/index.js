@@ -2,7 +2,6 @@ import axios from "axios";
 import { getCookieToken } from '../../cookie/cookie';
 
 
-const token = getCookieToken("accessToken");
 export const api = axios.create({
   // baseURL: `${process.env.REACT_APP_BASE_URL}`,
   baseURL: "http://58.231.19.218:8000",
@@ -12,12 +11,12 @@ export const api = axios.create({
   },
 });
 
-export const cookieApi = axios.create({
-  baseURL: "http://58.231.19.218:8000",
-  headers: {
-    "Content-type": "application/json; charset=UTF-8",
-    accept: "application/json,",
-    Authorization: `Bearer ${getCookieToken("accessToken")}`,
-  },
-  ithCredentials: true,
-});
+// export const cookieApi = axios.create({
+//   baseURL: "http://58.231.19.218:8000",
+//   headers: {
+//     "Content-type": "application/json; charset=UTF-8",
+//     accept: "application/json,",
+//     Authorization: `Bearer ${getCookieToken("accessToken")}`,
+//   },
+//   ithCredentials: true,
+// });

@@ -90,8 +90,6 @@ export default function MyPage() {
   const [isNewPassword, setIsNewPassword] = useState(false);
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
-  const [edit, setEdit] = useState(false);
-
   // const token = getCookieToken("accessToken");
   // useEffect(() => {
   //   if (token === undefined) {
