@@ -102,83 +102,91 @@ const Login = () => {
   };
   return (
     <LoginContainer>
-      <Title>Login</Title>
-      <LoginForm>
-        <IdContainer>
-          <p>이메일</p>
-          {email.length > 0 ? (
-            <>
-              <IdInput
-                value={email}
-                onChange={idOnChange}
-                placeholder="이메일을 입력해주세요"
-              />
-              <InputMessage>{emailMessage}</InputMessage>
-            </>
-          ) : (
-            <>
-              <IdInput
-                value={email}
-                onChange={idOnChange}
-                placeholder="이메일을 입력해주세요"
-              />
-            </>
-          )}
-        </IdContainer>
-        <PwContainer>
-          <p>비밀번호</p>
-          {password.length > 0 ? (
-            <>
-              <PwInput
-                type={"password"}
-                value={password}
-                onChange={pwOnChange}
-                placeholder="비밀번호를 입력해주세요"
-              />
-              <InputMessage>{passwordMessage}</InputMessage>
-            </>
-          ) : (
-            <>
-              <PwInput
-                type={"password"}
-                value={password}
-                onChange={pwOnChange}
-                placeholder="비밀번호를 입력해주세요"
-              />
-            </>
-          )}
-        </PwContainer>
-        {isEmail && isPassword ? (
-          <LoginBtn
-            style={{
-              backgroundColor: "#738598",
-              color: "white",
-              border: "none",
-            }}
-            onClick={onSubmit}
-            type="submit"
-          >
-            로그인
-          </LoginBtn>
-        ) : (
-          <LoginBtn style={{ pointerEvents: "none" }} onClick={onSubmit}>
-            로그인
-          </LoginBtn>
-        )}
+      <LoginFormWrapper>
+        <LoginTitleListWrapper>
+          <LoginTitleWrapper>
+            <MainTitle>Login</MainTitle>
+          </LoginTitleWrapper>
+        </LoginTitleListWrapper>
+        <LoginForm>
+          <LoginFormInnerWrapper>
+            <IdContainer>
+              <p>이메일</p>
+              {email.length > 0 ? (
+                <>
+                  <IdInput
+                    value={email}
+                    onChange={idOnChange}
+                    placeholder="이메일을 입력해주세요"
+                  />
+                  <InputMessage>{emailMessage}</InputMessage>
+                </>
+              ) : (
+                <>
+                  <IdInput
+                    value={email}
+                    onChange={idOnChange}
+                    placeholder="이메일을 입력해주세요"
+                  />
+                </>
+              )}
+            </IdContainer>
+            <PwContainer>
+              <p>비밀번호</p>
+              {password.length > 0 ? (
+                <>
+                  <PwInput
+                    type={"password"}
+                    value={password}
+                    onChange={pwOnChange}
+                    placeholder="비밀번호를 입력해주세요"
+                  />
+                  <InputMessage>{passwordMessage}</InputMessage>
+                </>
+              ) : (
+                <>
+                  <PwInput
+                    type={"password"}
+                    value={password}
+                    onChange={pwOnChange}
+                    placeholder="비밀번호를 입력해주세요"
+                  />
+                </>
+              )}
+            </PwContainer>
+            {isEmail && isPassword ? (
+              <LoginBtn
+                style={{
+                  backgroundColor: "#738598",
+                  color: "white",
+                  border: "none",
+                }}
+                onClick={onSubmit}
+                type="submit"
+              >
+                로그인
+              </LoginBtn>
+            ) : (
+              <LoginBtn style={{ pointerEvents: "none" }} onClick={onSubmit}>
+                로그인
+              </LoginBtn>
+            )}
 
-        <GithubBtn />
-        <MenuList>
-          <MenuItem>
-            <Link to="/findid">아이디 찾기</Link>
-          </MenuItem>
-          <MenuItem>
-            <Link to="/findpw">비밀번호 찾기</Link>
-          </MenuItem>
-        </MenuList>
-      </LoginForm>
-      <RegisterMoveBtn>
-        <Link to="/register">가입이 아직이신가요?</Link>
-      </RegisterMoveBtn>
+            <GithubBtn />
+            <MenuList>
+              <MenuItem>
+                <Link to="/findid">아이디 찾기</Link>
+              </MenuItem>
+              <MenuItem>
+                <Link to="/findpw">비밀번호 찾기</Link>
+              </MenuItem>
+            </MenuList>
+            <RegisterMoveBtn>
+              <Link to="/register">가입이 아직이신가요?</Link>
+            </RegisterMoveBtn>
+          </LoginFormInnerWrapper>
+        </LoginForm>
+      </LoginFormWrapper>
     </LoginContainer>
   );
 };
@@ -187,24 +195,56 @@ const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 100px 350px;
   height: 90vh;
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   a {
-    color: ${({ theme }) => theme.colors.black};
+    color: ${({ theme }) => theme.colors.white};
   }
 `;
 
-const Title = styled.h1`
+const LoginFormWrapper = styled.div`
+  width: 80%;
+  height: 100%;
+  display: flex;
+`;
+
+const LoginTitleListWrapper = styled.div`
+  width: 40%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const LoginTitleWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
   margin-top: 100px;
+  background-color: ${({ theme }) => theme.colors.subColor3};
+  color: white;
+`;
+const MainTitle = styled.span`
+  font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
+  color: ${({ theme }) => theme.colors.white};
+  margin-bottom: 10px;
 `;
 
 const LoginForm = styled.form`
-  margin-top: 20px;
-  padding: 40px 40px;
-  background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.subColor3};
+  padding: 40px 80px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+`;
+
+const LoginFormInnerWrapper = styled.div`
+  width: 100%;
+  height: 100%;
 `;
 
 const LoginBtn = styled.button`
@@ -214,7 +254,7 @@ const LoginBtn = styled.button`
   height: 40px;
   border-radius: 10px;
   border: none;
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   background-color: transparent;
   transition: all 0.5s;
@@ -228,6 +268,8 @@ const IdContainer = styled.div`
   padding: 10px 0;
   position: relative;
   height: 100px;
+  color: ${({ theme }) => theme.colors.white};
+
   p {
     margin-bottom: 10px;
     font-size: ${({ theme }) => theme.fontSizes.base};
@@ -242,7 +284,9 @@ const IdInput = styled.input`
   background-color: transparent;
   outline: none;
   border: none;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.black};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.white};
+
   font-size: ${({ theme }) => theme.fontSizes.base};
   &::placeholder {
     color: ${({ theme }) => theme.colors.subColor4};
@@ -277,16 +321,6 @@ const RegisterMoveBtn = styled.div`
       font-weight: bold;
     }
   }
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 30px;
-  padding: 10px;
-  width: 60%;
 `;
 
 const InputMessage = styled.div`

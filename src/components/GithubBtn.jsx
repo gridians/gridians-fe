@@ -15,11 +15,9 @@ const Github = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
   border-radius: 5px;
   img {
     width: 100%;
-    height: 90%;
   }
 `;
 
