@@ -3,6 +3,8 @@ import styled, { css, keyframes } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { imgSrc, introduceText, position, statusMessage, tag } from "../store/cardInfoAtom";
 
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
@@ -20,15 +22,22 @@ const MemberListPage = () => {
   const [left, setLeft] = useState();
   //카드 정보를 수정중인지 아닌지 판별
   const [retouch, setRetouch] = useState(false);
-
+  const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
+  const [field, setField] = useRecoilState(position);
   const [list, setList] = useState();
+  const [tagList, setTagList] = useRecoilState(tag);
+  const [introduce, setIntroduce] = useRecoilState(introduceText);
+  const [img, setImg] = useRecoilState(imgSrc);
   useEffect(() => {
-    axios.get(`http://175.215.143.189:8080/cards`).then((data) => {
-      setList(data.data);
-      console.log(data.data);
-    });
+    axios
+      .get(`http://175.215.143.189:8080/cards?page=0&size=1`)
+      .then((data) => {
+        setList(data.data);
+        console.log(data.data);
+      });
   }, []);
 
+  //onClick
   const backgrounOnClick = () => {
     setRetouch(false);
     setClick("reset");
@@ -46,11 +55,81 @@ const MemberListPage = () => {
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
     setLeft(document.querySelectorAll(".card")[index].offsetLeft);
-    axios.get(`http://175.215.143.189:8080/cards/${index + 1}`).then((data) => {
-      console.log(data.data);
+    //카드 상세정보를 받아온다
+    axios.get(`http://175.215.143.189:8080/cards/1`).then((data) => {
+      console.log(data.data)
+      setImg(data.data.imageSrc);
+      setStatusMsg(data.data.statusMessage);
+      setField(data.data.field);
+      setTagList(data.data.tagSet);
+      setIntroduce(data.data.introduction);
     });
   };
 
+  //onChange
+  const statusMsgOnChange = (text) => {
+    setStatusMsg(text.target.value);
+    console.log(statusMsg);
+  };
+  const positionOnChange = (text) => {
+    setField(text.target.value);
+  };
+
+  const language = [
+    "Back-end Developer",
+    "Front-end Developer",
+    "Software Engineer",
+    "Publisher",
+    "Android",
+    "IOS",
+    "Nerwork Engineer",
+    "Machine Learning",
+    "PM",
+    "Data Scientist",
+    "QA",
+    "Big Data Enineer",
+    "Security Engineer",
+    "Embebdded",
+    "Block Chain",
+    "Designer",
+    "DBA",
+    "VR Engineer",
+    "Hardware Engineer",
+  ];
+  const skill = [
+    "javaScript",
+    "TypeScript",
+    "React",
+    "Vue",
+    "Svelte",
+    "Next",
+    "Java",
+    "Spring",
+    "Node.js",
+    "Nest.js",
+    "Go",
+    "Kotlin",
+    "Express",
+    "MySQL",
+    "MongoDB",
+    "Python",
+    "Django",
+    "php",
+    "GraphQL",
+    "Firebase",
+    "Flutter",
+    "Swift",
+    "ReactNative",
+    "Unity",
+    "AWS",
+    "Kubernetes",
+    "Docker",
+    "Git",
+    "Figma",
+    "Zeplin",
+    "Jest",
+  ];
+  const member = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   return (
     <Container>
       <Background
@@ -81,7 +160,10 @@ const MemberListPage = () => {
               >
                 <Front>
                   <Skill>
-                    <img src={data.skillSrc} alt="34" />
+                    <img
+                      src="http://175.215.143.189:8080/cards/images/skills/"
+                      alt="34"
+                    />
                   </Skill>
                   <ProfileImg>
                     <img src={data.imageSrc} alt="앗 안나와여" />
@@ -101,23 +183,45 @@ const MemberListPage = () => {
                         <BsFillBookmarkFill />
                       </BookMark>
                       {retouch ? (
-                        <StatusMessage retouch={retouch} />
+                        <StatusMessage
+                          value={statusMsg}
+                          onChange={(text) => statusMsgOnChange(text)}
+                          retouch={retouch}
+                        />
                       ) : (
-                        <StatusMessage disabled />
+                        <StatusMessage value={statusMsg} disabled />
                       )}
-                      <LanguageImg>
+                      <LanguageImg retouch={retouch}>
                         {retouch ? (
-                          <select>
-                            <option>Back-End Develop</option>
-                            <option>Front-End Develop</option>
-                          </select>
+                          <>
+                            <select
+                              value={field}
+                              onChange={(text) => positionOnChange(text)}
+                              placeholder="포지션을 선택"
+                            >
+                              {language.map((name) => (
+                                <option key={name}>{name}</option>
+                              ))}
+                            </select>
+                            <select>
+                              {skill.map((name) => (
+                                <option key={name}>{name}</option>
+                              ))}
+                            </select>
+                          </>
                         ) : (
-                          <h4>{data.field}</h4>
+                          <>
+                            <h4>{data.field}</h4>
+                            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" />
+                          </>
                         )}
-                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" />
                       </LanguageImg>
                     </DefaultInfo>
-                    <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
+                    <SimpleSlider
+                      setRetouch={setRetouch}
+                      retouch={retouch}
+                      index={index}
+                    />
                   </DetailContainer>
                   <ReviewContainer
                     click={click && num === index ? click : undefined}
@@ -348,7 +452,7 @@ const DetailBtn = styled.div`
       : css``}
 `;
 
-const DetailContainer = styled.form`
+const DetailContainer = styled.div`
   position: relative;
   z-index: 1;
   opacity: 0;
@@ -399,10 +503,19 @@ const StatusMessage = styled.input`
       : css``}
 `;
 const LanguageImg = styled.div`
-  display: flex;
+  ${(props) =>
+    props.retouch
+      ? css`
+          display: flex;
+          flex-direction: column;
+        `
+      : css`
+          display: flex;
+        `}
   select {
     height: 30px;
     background-color: transparent;
+    outline: none;
     color: ${({ theme }) => theme.colors.white};
     option {
       color: ${({ theme }) => theme.colors.black};

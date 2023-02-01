@@ -90,13 +90,13 @@ export default function MyPage() {
   const [isNewPassword, setIsNewPassword] = useState(false);
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
-  // const token = getCookieToken("accessToken");
-  // useEffect(() => {
-  //   if (token === undefined) {
-  //     navigate("/login");
-  //   }
-  //   return () => {};
-  // }, [navigate, token]);
+  const token = getCookieToken("accessToken");
+  useEffect(() => {
+    if (token === undefined) {
+      navigate("/login");
+    }
+    return () => {};
+  }, [navigate, token]);
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
 

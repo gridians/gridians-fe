@@ -7,6 +7,19 @@ import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { useState } from "react";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import {
+  github,
+  imgSrc,
+  instagram,
+  introduceText,
+  language,
+  position,
+  statusMessage,
+  tag,
+  twitter,
+} from "../store/cardInfoAtom";
 
 const StyledSlider = styled(Slider)`
   height: 75%;
@@ -40,10 +53,18 @@ const StyledSlider = styled(Slider)`
   }
 `;
 
-const SimpleSlider = ({ setRetouch, retouch }) => {
-  const [introduce, setIntroduce] = useState(
-    "I've developed Web application since 2022"
-  );
+const SimpleSlider = ({ setRetouch, retouch, index }) => {
+  const [tagText, setTagText] = useState("");
+
+  const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
+  const [field, setField] = useRecoilState(position);
+  const [skill, setSkill] = useRecoilState(language);
+  const [githubId, setGithubId] = useRecoilState(github);
+  const [instagramId, setInstagramId] = useRecoilState(instagram);
+  const [twitterId, setTwitterId] = useRecoilState(twitter);
+  const [tagList, setTagList] = useRecoilState(tag);
+  const [introduce, setIntroduce] = useRecoilState(introduceText);
+  const [img, setImg] = useRecoilState(imgSrc);
 
   const settings = {
     dots: true,
@@ -53,12 +74,53 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
     slidesToScroll: 1,
   };
 
-  const introduceOnClick = (text) => {
+  //onChange
+  const introduceOnChange = (text) => {
     setIntroduce(text.target.value);
   };
+  const githubOnChange = (text) => {
+    setGithubId(text.target.value);
+  };
+  const instagramOnChange = (text) => {
+    setInstagramId(text.target.value);
+  };
+  const twitterOnChange = (text) => {
+    setTwitterId(text.target.value);
+  };
+  const tagOnChange = (text) => {
+    setTagText(text.target.value);
+  };
 
+  //onClick
   const reTouchOnClick = () => {
     setRetouch(!retouch);
+  };
+  const submitBtnOnClick = (e) => {
+    e.preventDefault();
+    axios.post(`http://175.215.143.189:8080/cards/3`, {
+      statusMessage: statusMsg,
+      field: field,
+      skillSet: ["Git"],
+      introduction:introduce,
+      snsSet: [
+        { id: githubId, name: "github" },
+        { id: instagramId, name: "instagram" },
+        { id: twitterId, name: "twitter" },
+      ],
+      tagSet: tagList,
+    });
+  };
+  const tagXBtnOnClick = (index) => {
+    setTagList((tagList) => [...tagList].filter((value, i) => i !== index));
+  };
+
+  //onSubmit
+  const tagOnSubmit = (e) => {
+    e.preventDefault();
+    if (tagText.length > 0) {
+      setTagList((tagList) => [...tagList, tagText]);
+      setTagText("");
+    }
   };
 
   return (
@@ -67,7 +129,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
         <First>
           <ProfileImg>
             <AiFillSetting onClick={() => reTouchOnClick()} />
-            <img src="https://i.ytimg.com/vi/jjqTY0PUoLs/maxresdefault.jpg" />
+            <img src={img} alt="d"/>
           </ProfileImg>
           <Name value="jay" disabled />
           <SnsList>
@@ -75,15 +137,27 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <>
                 <SnsItem>
                   <span>Github</span>
-                  <SnsAdressInput placeholder="깃헙 name을 입력해주세요" />
+                  <SnsAdressInput
+                    value={githubId}
+                    onChange={(text) => githubOnChange(text)}
+                    placeholder="깃헙 name을 입력해주세요"
+                  />
                 </SnsItem>
                 <SnsItem>
                   <span>Instagram</span>
-                  <SnsAdressInput placeholder="인스타 @XXXXX를 입력해주세요" />
+                  <SnsAdressInput
+                    value={instagramId}
+                    onChange={(text) => instagramOnChange(text)}
+                    placeholder="Instagram @XXX를 입력해주세요"
+                  />
                 </SnsItem>
                 <SnsItem>
                   <span>Twitter</span>
-                  <SnsAdressInput placeholder="트위터 @XXXXX를 입력해주세요" />
+                  <SnsAdressInput
+                    value={twitterId}
+                    onChange={(text) => twitterOnChange(text)}
+                    placeholder="트위터 @XXX를 입력해주세요"
+                  />
                 </SnsItem>
               </>
             ) : (
@@ -103,28 +177,39 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           {retouch ? (
             <Introduce
               value={introduce}
-              onChange={(text) => introduceOnClick(text)}
+              onChange={(text) => introduceOnChange(text)}
               retouch={retouch}
             />
           ) : (
             <Introduce
-              value={"I've developed Web application since 2022"}
+              value={introduce}
               disabled
             />
           )}
-
           <TagList>
-            <TagItem>#개발자{retouch ? <TagXBtn>X</TagXBtn> : null}</TagItem>
-            <TagItem>#개발자{retouch ? <TagXBtn>X</TagXBtn> : null}</TagItem>
-            <TagItem>#개발자{retouch ? <TagXBtn>X</TagXBtn> : null}</TagItem>
-            <TagItem>#개발자{retouch ? <TagXBtn>X</TagXBtn> : null}</TagItem>
-            <TagItem>#개발자{retouch ? <TagXBtn>X</TagXBtn> : null}</TagItem>
+            {tagList &&
+              tagList.map((tag, index) => (
+                <TagItem key={tag}>
+                  #{tag}
+                  {retouch ? (
+                    <TagXBtn onClick={() => tagXBtnOnClick(index)}>X</TagXBtn>
+                  ) : null}
+                </TagItem>
+              ))}
           </TagList>
           {retouch ? (
-            <TagInputDiv retouch={retouch}>
-              <span>태그 추가하기</span>
-              <TagInput />
-            </TagInputDiv>
+            <>
+              <TagInputDiv onSubmit={(e) => tagOnSubmit(e)} retouch={retouch}>
+                <span>태그 추가하기</span>
+                <TagInput
+                  value={tagText}
+                  onChange={(text) => tagOnChange(text)}
+                />
+              </TagInputDiv>
+              <SubmitBtn type="button" onClick={(e) => submitBtnOnClick(e)}>
+                완료
+              </SubmitBtn>
+            </>
           ) : null}
         </First>
       </div>
@@ -192,6 +277,11 @@ const SnsItem = styled.li`
   cursor: pointer;
   span {
     font-size: ${({ theme }) => theme.fontSizes.lg};
+  }
+  svg {
+    &:hover {
+      color: ${({ theme }) => theme.colors.subColor1};
+    }
   }
 `;
 const SnsAdressInput = styled.input`
@@ -276,6 +366,13 @@ const TagInput = styled.input`
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.base};
   outline: 1px solid white;
+`;
+const SubmitBtn = styled.button`
+margin-bottom:20px;
+  width: 100px;
+  height: 30px;
+  outline: none;
+  cursor: pointer;
 `;
 
 const Second = styled(First)``;

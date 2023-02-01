@@ -24,7 +24,7 @@ export default function Router() {
           path={"/login"}
           element={isLogin ? <Navigate to="/home" /> : <Login />}
         />
-        <Route path={"/register"} element={<SignUp />} />
+        <Route path={"/signup"} element={<SignUp />} />
         <Route path={"/home"} element={<Home />} />
         <Route path={"/education"} element={<Education />} />
         <Route path={"/mypage"} element={<MyPage />} />
