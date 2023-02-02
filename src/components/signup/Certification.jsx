@@ -9,17 +9,17 @@ import {
   putMyPageUserQueryEditEmail,
 } from "../../apis/queries/query";
 import { api } from "../../apis/untils";
-import { removeCookieToken } from "../../cookie/cookie";
+import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 
 export default function Certification() {
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.search.split("=")[1];
-
-  const { data: userInfoValue } = useQuery(
-    ["userEmail", "userNickname"],
-    getMyPageUseQueryUserInfo
-  );
+  const token = getCookieToken("accessToken");
+  // const { data: userInfoValue } = useQuery(
+  //   ["userEmail", "userNickname"],
+  //   getMyPageUseQueryUserInfo
+  // );
 
   const { mutate: putEditEmail } = useMutation(
     "puttEditUserEmail",
@@ -33,7 +33,7 @@ export default function Certification() {
   );
 
   const onClickLogin = () => {
-    if (userInfoValue?.email === id) {
+    if (token === undefined) {
       postCertification();
     } else {
       putEditEmail(id);
@@ -42,7 +42,7 @@ export default function Certification() {
 
   const postCertification = async () => {
     try {
-      const res = await api.get("/user/email-auth", {
+      const res = await api.get("/user/auth/email-auth", {
         params: {
           id,
         },

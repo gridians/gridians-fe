@@ -83,14 +83,15 @@ export default function SignUp() {
     }
   };
 
-  const onClickSubmit = () => {
+  const onClickSubmit = (e) => {
+    e.preventDefault();
     postRegister();
     console.log("click");
   };
 
   const postRegister = async () => {
     try {
-      const res = await api.post("/user/signup", {
+      const res = await api.post("/user/auth/signup", {
         nickname,
         email,
         password,
@@ -124,8 +125,6 @@ export default function SignUp() {
           popup: "animate__animated animate__fadeOutUp",
         },
         closeOnClickOutside: false,
-      }).then(function () {
-        return;
       });
     }
   };
@@ -295,6 +294,8 @@ const SignUpTitleListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 `;
 const TitleWrapper = styled.div`
   display: flex;
@@ -319,10 +320,12 @@ const SignUpForm = styled.form`
   border-bottom-right-radius: 10px;
   padding: 40px 80px;
   background-color: ${({ theme }) => theme.colors.subColor3};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 const SignUpInnerWrapper = styled.div`
   width: 100%;
-  margin-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;

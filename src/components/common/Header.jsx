@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
@@ -57,12 +57,12 @@ const Header = () => {
         </Link>
         {getCookieToken("accessToken") === undefined ? (
           <Menu>
-            {location.pathname === "/register" ? (
-              <Link style={{ color: "#B3B600" }} to="/register">
+            {location.pathname === "/signup" ? (
+              <Link style={{ color: "#B3B600" }} to="/signup">
                 SignUp
               </Link>
             ) : (
-              <Link to="/register">SignUp</Link>
+              <Link to="/signup">SignUp</Link>
             )}
 
             {location.pathname === "/login" ? (

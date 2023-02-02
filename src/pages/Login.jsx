@@ -24,7 +24,7 @@ const Login = () => {
     () => postLoginUseQueryUserInfo(userLoginInfo),
     {
       onSuccess: (res) => {
-        setRefreshToken("accessToken", res.data.token);
+        setRefreshToken("accessToken", res.token);
         Swal.fire({
           title: "로그인 중...",
           padding: "3em",
@@ -74,32 +74,6 @@ const Login = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     postLoginInfo();
-    // try {
-    //   const res = await api.post(
-    //     "/user/auth/login",
-    //     {
-    //       email,
-    //       password,
-    //     },
-    //     { withCredentials: true }
-    //   );
-    //   if (res.status === 200) {
-    //     setRefreshToken("accessToken", res.data.token);
-    //     Swal.fire({
-    //       title: "로그인 중...",
-    //       padding: "3em",
-    //       timer: 1500,
-    //       didOpen: () => {
-    //         Swal.showLoading();
-    //       },
-    //     }).then(function () {
-    //       navigate("/home");
-    //     });
-    //   }
-    //   console.log(res);
-    // } catch (err) {
-    //   return;
-    // }
   };
   return (
     <LoginContainer>
@@ -218,6 +192,8 @@ const LoginTitleListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 `;
 const LoginTitleWrapper = styled.div`
   display: flex;
@@ -241,11 +217,18 @@ const LoginForm = styled.form`
   padding: 40px 100px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const LoginFormInnerWrapper = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const LoginBtn = styled.button`
