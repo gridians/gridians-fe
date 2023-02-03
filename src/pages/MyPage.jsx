@@ -19,19 +19,18 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { getCookieToken, removeCookieToken } from "../cookie/cookie";
+import { removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import {
-  deleteMyPageUserQueryUser,
-  getMyPageUseQueryUserInfo,
-  postMyPageUserQueryEditEmail,
-  putMyPageUseQueryUserProfile,
-  putMyPageUserQueryEditUserInfo,
-} from "../apis/queries/query";
+  MyPageUseQueryGetUserInfo,
+  MyPageUserQueryPostEditEmail,
+  MyPageUseQueryPutUserProfile,
+  MyPageUserQueryPutEditUserInfo,
+  MyPageUserQueryDeleteUserInfo,
+} from "../apis/queries/myPage";
 import Swal from "sweetalert2";
-import axios from "axios";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -45,36 +44,23 @@ export default function MyPage() {
   const [imageSrc, setImageSrc] = useState(null);
   const fileInputRef = useRef(null);
 
-  const [deletePassword, setDeletePassword] = useState("");
-
-  const { data: userInfoValue } = useQuery(
+  const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
     ["userEmail", "userNickname"],
-    getMyPageUseQueryUserInfo
+    MyPageUseQueryGetUserInfo
   );
   const { mutate: postEditEmail } = useMutation(
     "postEditUserEmail",
-    () => postMyPageUserQueryEditEmail(email),
+    () => MyPageUserQueryPostEditEmail(email),
     {
       onSuccess: () => {
         // console.log("성공");
       },
     }
   );
-  const uploadProfile = (e) => {
-    const fileList = e.target.files;
-    if (fileList && fileList[0]) {
-      const reader = new FileReader();
-      reader.readAsDataURL(fileList[0]);
-      reader.onload = () => {
-        const base64data = reader.result;
-        setImageSrc(base64data);
-      };
-    }
-  };
   const userInfo = { nickname, password, newPassword };
-  const { mutate: putUserInfo } = useMutation(
+  const { mutate: putUserInfo, isLoading: UserInfoLoading } = useMutation(
     "putUserInfo",
-    () => putMyPageUserQueryEditUserInfo(userInfo),
+    () => MyPageUserQueryPutEditUserInfo(userInfo),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -85,9 +71,9 @@ export default function MyPage() {
     }
   );
 
-  const { mutate: putUserProfile } = useMutation(
+  const { mutate: putUserProfile, isLoading: UserProfileLoading } = useMutation(
     "putUserProfile",
-    () => putMyPageUseQueryUserProfile(imageSrc),
+    () => MyPageUseQueryPutUserProfile(imageSrc),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -105,6 +91,38 @@ export default function MyPage() {
       },
     }
   );
+
+  const { mutate: deleteUserInfo } = useMutation(
+    "putUserProfile",
+    (password) => MyPageUserQueryDeleteUserInfo(password),
+    {
+      onSuccess: () => {
+        Swal.fire({
+          title: "탈퇴되었습니다",
+          cancelButtonColor: "#738598",
+          button: "확인",
+        }).then(() => {
+          removeCookieToken();
+          window.location.replace("/home");
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  const uploadProfile = (e) => {
+    const fileList = e.target.files;
+    if (fileList && fileList[0]) {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileList[0]);
+      reader.onload = () => {
+        const base64data = reader.result;
+        setImageSrc(base64data);
+      };
+    }
+  };
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
     myPageUserNicknameMessage
@@ -127,7 +145,6 @@ export default function MyPage() {
   const [isNewPassword, setIsNewPassword] = useState(false);
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
-  const token = getCookieToken("accessToken");
   // useEffect(() => {
   //   if (token === undefined) {
   //     navigate("/login");
@@ -308,54 +325,21 @@ export default function MyPage() {
   const onClickDeleteUser = (e) => {
     e.preventDefault();
     Swal.fire({
-      text: "탈퇴하시겠습니까?",
+      title: "탈퇴하시겠습니까?",
+      input: "password",
       confirmButtonColor: "#DCC6C6",
       cancelButtonColor: "#738598",
       showCancelButton: true,
       confirmButtonText: "탈퇴하기",
       cancelButtonText: "취소하기",
-    }).then(async () => {
-      const res = await axios.delete("http://58.231.19.218:8000/user/delete", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      try {
-        if (res.status === 200) {
-          Swal.fire({
-            title: "탈퇴되었습니다.",
-            button: "확인",
-          }).then(() => {
-            removeCookieToken();
-            window.location.replace("/home");
-          });
-        }
-      } catch (err) {
-        console.log(err);
-      }
+      preConfirm: (password) => {
+        console.log(password);
+        deleteUserInfo(password);
+      },
     });
   };
-
-  // const onClickDeleteUser = (e) => {
-  //   e.preventDefault();
-  //   Swal.fire({
-  //     html: `
-  //   <input type="password" id="password" class="swal2-input" placeholder="Password">`,
-  //     title: "탈퇴하시겠습니까?",
-  //     text: "비밀번호를 입력해주세요",
-  //     confirmButtonColor: "#DCC6C6",
-  //     cancelButtonColor: "#738598",
-  //     showCancelButton: true,
-  //     confirmButtonText: "탈퇴하기",
-  //     cancelButtonText: "취소하기",
-  //     preConfirm: () => {
-  //       const deletePassword = Swal.getPopup().querySelector("#password").value;
-  //       setDeletePassword(deletePassword);
-  //     },
-  //   }).then(() => {
-  //     console.log("aa");
-  //     deleteUser(deletePassword);
-  //   });
-  // };
+  const isLoading =
+    userInfoValueLoading || UserInfoLoading || UserProfileLoading;
 
   return (
     <MyPageContainer>
@@ -535,7 +519,6 @@ export default function MyPage() {
             )}
 
             {/* 비밀번호 변경 */}
-
             {newPassword.length > 0 ? (
               <MyPageInputContainer>
                 <MdPassword className="icon" />
@@ -573,7 +556,6 @@ export default function MyPage() {
             )}
 
             {/* 비밀번호 확인 */}
-
             {newPasswordConfirm.length > 0 ? (
               <MyPageInputContainer>
                 <MdPassword className="icon" />

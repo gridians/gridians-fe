@@ -1,13 +1,10 @@
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import {
-  getMyPageUseQueryUserInfo,
-  putMyPageUserQueryEditEmail,
-} from "../../apis/queries/query";
+import { MyPageUserQueryPutEditEmail } from "../../apis/queries/myPage";
 import { api } from "../../apis/untils";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 
@@ -16,27 +13,24 @@ export default function Certification() {
   const location = useLocation();
   const id = location.search.split("=")[1];
   const token = getCookieToken("accessToken");
-  // const { data: userInfoValue } = useQuery(
-  //   ["userEmail", "userNickname"],
-  //   getMyPageUseQueryUserInfo
-  // );
 
   const { mutate: putEditEmail } = useMutation(
-    "puttEditUserEmail",
-    () => putMyPageUserQueryEditEmail(id),
+    (id) => MyPageUserQueryPutEditEmail(id),
     {
       onSuccess: () => {
         removeCookieToken();
-        navigate("/login");
+        window.location.replace("/login");
       },
     }
   );
 
   const onClickLogin = () => {
     if (token === undefined) {
-      postCertification();
-    } else {
+      postCertification(id);
+    } else if (token) {
       putEditEmail(id);
+    } else {
+      return;
     }
   };
 
@@ -52,12 +46,6 @@ export default function Certification() {
           title: "이메일 인증 완료 😀",
           padding: "3em",
           buttons: "확인",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp",
-          },
           closeOnClickOutside: false,
         }).then(function () {
           navigate("/login");
@@ -69,12 +57,6 @@ export default function Certification() {
         title: "이메일 인증 실패 😢",
         buttons: "확인",
         padding: "3em",
-        showClass: {
-          popup: "animate__animated animate__fadeInDown",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOutUp",
-        },
         closeOnClickOutside: false,
       });
     }

@@ -86,7 +86,6 @@ export default function SignUp() {
   const onClickSubmit = (e) => {
     e.preventDefault();
     postRegister();
-    console.log("click");
   };
 
   const postRegister = async () => {
@@ -99,7 +98,8 @@ export default function SignUp() {
       if (res.status === 200) {
         Swal.fire({
           padding: "3em",
-          title: "이메일을 확인해주세요 😀",
+          title: "회원가입 성공",
+          text: "이메일을 확인해주세요",
           buttons: "확인",
           showClass: {
             popup: "animate__animated animate__fadeInDown",
@@ -114,18 +114,33 @@ export default function SignUp() {
       }
       return res.data;
     } catch (err) {
-      Swal.fire({
-        padding: "3em",
-        title: "회원가입 실패 😢",
-        buttons: "확인",
-        showClass: {
-          popup: "animate__animated animate__fadeInDown",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOutUp",
-        },
-        closeOnClickOutside: false,
-      });
+      if (err.response.status === 409) {
+        Swal.fire({
+          padding: "3em",
+          title: "이미 가입한 이메일입니다",
+          buttons: "확인",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutUp",
+          },
+          closeOnClickOutside: false,
+        });
+      } else {
+        Swal.fire({
+          padding: "3em",
+          title: "회원가입에 실패했습니다",
+          buttons: "확인",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutUp",
+          },
+          closeOnClickOutside: false,
+        });
+      }
     }
   };
 
