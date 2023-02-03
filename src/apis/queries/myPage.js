@@ -63,31 +63,14 @@ export const MyPageUserQueryPutEditEmail = async (id) => {
 
 // 유저닉네임, 아이디, 비밀번호 수정
 export const MyPageUserQueryPutEditUserInfo = async (userInfo) => {
-  const res = await cookieApi.put(
+  const token = getCookieToken("accessToken");
+  const res = await api.put(
     "/user/update-user",
     {
       nickname: userInfo.nickname,
       password: userInfo.password,
       updatePassword: userInfo.newPassword,
     },
-    // {
-    //   headers: {
-    //     "Content-type": "application/json; charset=UTF-8",
-    //     accept: "application/json,",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // }
-  );
-  return res.data;
-};
-
-// 유저 회원탈퇴
-export const MyPageUserQueryDeleteUserInfo = async (password) => {
-  const token = getCookieToken("accessToken");
-  console.log(password);
-  const res = await cookieApi.delete(
-    "/user/delete",
-    { data: { password: password }, withCredentials: true },
     {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -96,5 +79,22 @@ export const MyPageUserQueryDeleteUserInfo = async (password) => {
       },
     }
   );
-   return res.data;
+  return res.data;
+};
+
+// 유저 회원탈퇴
+export const MyPageUserQueryDeleteUserInfo = async (deleteInfo) => {
+  console.log(deleteInfo);
+  const res = await api.delete(
+    "/user/delete",
+    { data: { password: deleteInfo.password } },
+    {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        accept: "application/json,",
+        Authorization: `Bearer ${deleteInfo.token}`,
+      },
+    }
+  );
+  return res.data;
 };

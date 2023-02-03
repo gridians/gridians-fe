@@ -19,7 +19,7 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { removeCookieToken } from "../cookie/cookie";
+import { getCookieToken, removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
@@ -33,6 +33,7 @@ import {
 import Swal from "sweetalert2";
 
 export default function MyPage() {
+  const token = getCookieToken("accessToken");
   const navigate = useNavigate();
   const [nickname, setNickname] = useRecoilState(myPageUserNickname);
   const [email, setEmail] = useRecoilState(myPageUserEmail);
@@ -43,6 +44,8 @@ export default function MyPage() {
   );
   const [imageSrc, setImageSrc] = useState(null);
   const fileInputRef = useRef(null);
+
+  const [deletePassword, setDeletePassword] = useState("");
 
   const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
     ["userEmail", "userNickname"],
@@ -93,8 +96,7 @@ export default function MyPage() {
   );
 
   const { mutate: deleteUserInfo } = useMutation(
-    "putUserProfile",
-    (password) => MyPageUserQueryDeleteUserInfo(password),
+    (deleteInfo) => MyPageUserQueryDeleteUserInfo(deleteInfo),
     {
       onSuccess: () => {
         Swal.fire({
@@ -321,7 +323,7 @@ export default function MyPage() {
       navigate("/home");
     }
   };
-
+  const deleteInfo = { token, deletePassword };
   const onClickDeleteUser = (e) => {
     e.preventDefault();
     Swal.fire({
@@ -334,7 +336,8 @@ export default function MyPage() {
       cancelButtonText: "취소하기",
       preConfirm: (password) => {
         console.log(password);
-        deleteUserInfo(password);
+        setDeletePassword(password);
+        deleteUserInfo(deleteInfo);
       },
     });
   };

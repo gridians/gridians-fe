@@ -9,6 +9,7 @@ export const api = axios.create({
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
   },
+  withCredentials: true,
 });
 
 export const cookieApi = axios.create({
@@ -21,25 +22,22 @@ export const cookieApi = axios.create({
   ithCredentials: true,
 });
 
-axios.interceptors.request.use(
-  async (config) => {
-    const accessToken = getCookieToken("accessToken");
-
-    if (accessToken?.accessToken) {
-      config.headers = {
-        ...config.headers,
-        authorization: `Bearer ${accessToken?.accessToken}`,
-      };
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// axios.interceptors.request.use(
+//   async (config) => {
+//     const accessToken = getCookieToken("accessToken");
+//     console.log(accessToken);
+//       config.headers = {
+//         ...config.headers,
+//         authorization: `Bearer ${accessToken}`,
+//       };
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
 api.interceptors.response.use(
   function (response) {
-    console.log("get response", response);
+    console.log(response)
     return response;
   },
   async (error) => {
@@ -48,28 +46,27 @@ api.interceptors.response.use(
       response: { status },
     } = error;
     if (status === 401) {
-      // if (error.response.data.message === "expire") {
+      console.log(error);
+      if (error.response.data.message === "expire") {
         const originalRequest = config;
         const refreshToken = await localStorage.getItem("refreshToken");
-        console.log(refreshToken);
+        
         // token refresh요청
-        const { data } = await axios.post(
+        const  {data}  = await axios.post(
           "http://58.231.19.218:8000/user/auth/reissue",
           { refreshToken: `${refreshToken}` },
           { headers: {} }
         );
-        console.log(data);
-        // 새로운 토큰 저장
-        const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-          data;
-        await localStorage.setItem("refreshToken", newAccessToken);
+      console.log(data);
+        // refreshToken을 통해 새로운 accessToken 토큰 저장
+        const  newAccessToken  =
+          data.accessToken;
         await setCookieToken("accessToken", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axios(originalRequest);
-      // };
+      };
     }
 
-    console.log("response error", error);
     return Promise.reject(error);
   }
 )
