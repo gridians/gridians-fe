@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { AiOutlineFileImage } from "react-icons/ai";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { MdPassword } from "react-icons/md";
-import swal from "sweetalert";
 
 import {
   myPageUserEmail,
@@ -19,17 +19,21 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { getCookieToken } from "../cookie/cookie";
+import { getCookieToken, removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import {
-  getMyPageUseQueryUserInfo,
-  postMyPageUserQueryEditEmail,
-  putMyPageUserQueryEditUserInfo,
-} from "../apis/queries/query";
+  MyPageUseQueryGetUserInfo,
+  MyPageUseQueryPostEditEmail,
+  MyPageUseQueryPutUserProfile,
+  MyPageUseQueryPutEditUserInfo,
+  MyPageUseQueryDeleteUserInfo,
+} from "../apis/queries/myPageQuery";
+import Swal from "sweetalert2";
 
 export default function MyPage() {
+  const token = getCookieToken("accessToken");
   const navigate = useNavigate();
   const [nickname, setNickname] = useRecoilState(myPageUserNickname);
   const [email, setEmail] = useRecoilState(myPageUserEmail);
@@ -38,27 +42,28 @@ export default function MyPage() {
   const [newPasswordConfirm, setNewPasswordConfirm] = useRecoilState(
     myPageUserNewPasswordConfirm
   );
+  const [imageSrc, setImageSrc] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const { data: userInfoValue } = useQuery(
+  const [deletePassword, setDeletePassword] = useState("");
+
+  const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
     ["userEmail", "userNickname"],
-    getMyPageUseQueryUserInfo
+    MyPageUseQueryGetUserInfo
   );
-
   const { mutate: postEditEmail } = useMutation(
     "postEditUserEmail",
-    () => postMyPageUserQueryEditEmail(email),
+    () => MyPageUseQueryPostEditEmail(email),
     {
       onSuccess: () => {
         // console.log("성공");
       },
     }
   );
-
   const userInfo = { nickname, password, newPassword };
-
-  const { mutate: putUserInfo } = useMutation(
+  const { mutate: putUserInfo, isLoading: UserInfoLoading } = useMutation(
     "putUserInfo",
-    () => putMyPageUserQueryEditUserInfo(userInfo),
+    () => MyPageUseQueryPutEditUserInfo(userInfo),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -68,6 +73,58 @@ export default function MyPage() {
       },
     }
   );
+
+  const { mutate: putUserProfile, isLoading: UserProfileLoading } = useMutation(
+    "putUserProfile",
+    () => MyPageUseQueryPutUserProfile(imageSrc),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        window.location.reload();
+      },
+      onError: (error) => {
+        console.log(error);
+        if (error.response.data.status === 500) {
+          Swal.fire({
+            text: "이미지를 넣어주세요",
+            button: "돌아가기",
+          });
+          return;
+        }
+      },
+    }
+  );
+
+  const { mutate: deleteUserInfo } = useMutation(
+    (deleteInfo) => MyPageUseQueryDeleteUserInfo(deleteInfo),
+    {
+      onSuccess: () => {
+        Swal.fire({
+          title: "탈퇴되었습니다",
+          cancelButtonColor: "#738598",
+          button: "확인",
+        }).then(() => {
+          removeCookieToken();
+          window.location.replace("/home");
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  const uploadProfile = (e) => {
+    const fileList = e.target.files;
+    if (fileList && fileList[0]) {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileList[0]);
+      reader.onload = () => {
+        const base64data = reader.result;
+        setImageSrc(base64data);
+      };
+    }
+  };
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
     myPageUserNicknameMessage
@@ -90,16 +147,14 @@ export default function MyPage() {
   const [isNewPassword, setIsNewPassword] = useState(false);
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
-  const token = getCookieToken("accessToken");
-  useEffect(() => {
-    if (token === undefined) {
-      navigate("/login");
-    }
-    return () => {};
-  }, [navigate, token]);
+  // useEffect(() => {
+  //   if (token === undefined) {
+  //     navigate("/login");
+  //   }
+  //   return () => {};
+  // }, [navigate, token]);
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
-
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
     // 한글 영어 숫자
@@ -172,14 +227,13 @@ export default function MyPage() {
       newPassword.length <= 16 &&
       password === ""
     ) {
-      swal({
+      Swal.fire({
         text: "현재 비밀번호를 입력해주세요",
         button: "돌아가기",
       });
       return;
     }
   };
-
   const onChangeNewPasswordConfirm = (e) => {
     // 새 비밀번호 확인
     //  문자, 숫자, 특수문자 1개이상 포함, 8자리 이상
@@ -200,18 +254,23 @@ export default function MyPage() {
     }
   };
 
+  const onClickInputFile = (e) => {
+    e.preventDefault();
+    putUserProfile();
+  };
+
   const onClickEmailSubmit = (e) => {
     e.preventDefault();
     postEditEmail(email);
     setEmail("");
     if (emailMessage.length > 0) {
-      swal({
+      Swal.fire({
         text: "이메일이 올바르지 않습니다",
         button: "돌아가기",
       });
       return;
     } else {
-      swal({
+      Swal.fire({
         text: "이메일을 확인해주세요",
         button: "돌아가기",
       });
@@ -222,20 +281,20 @@ export default function MyPage() {
   const onClickSubmit = (e) => {
     e.preventDefault();
     if (nicknameMessage.length > 0) {
-      swal({
+      Swal.fire({
         text: "닉네임이 올바르지 않습니다",
         button: "돌아가기",
       });
       return;
     } else if (password.length >= 1 && passwordMessage.length > 0) {
-      swal({
+      Swal.fire({
         text: "비밀번호가 올바르지 않습니다",
         button: "돌아가기",
       });
 
       return;
     } else if (password.length >= 1 && newPassword.length <= 0) {
-      swal({
+      Swal.fire({
         text: "새비밀번호를 입력해주세요",
         button: "돌아가기",
       });
@@ -244,13 +303,13 @@ export default function MyPage() {
       newPassword !== newPasswordConfirm &&
       newPasswordConfirm.length <= 0
     ) {
-      swal({
+      Swal.fire({
         text: "비밀번호확인을 입력해주세요",
         button: "돌아가기",
       });
       return;
     } else if (newPassword !== newPasswordConfirm) {
-      swal({
+      Swal.fire({
         text: "비밀번호가 일치하지 않습니다",
         button: "돌아가기",
       });
@@ -264,6 +323,26 @@ export default function MyPage() {
       navigate("/home");
     }
   };
+  const deleteInfo = { token, deletePassword };
+  const onClickDeleteUser = (e) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "탈퇴하시겠습니까?",
+      input: "password",
+      confirmButtonColor: "#DCC6C6",
+      cancelButtonColor: "#738598",
+      showCancelButton: true,
+      confirmButtonText: "탈퇴하기",
+      cancelButtonText: "취소하기",
+      preConfirm: (password) => {
+        console.log(password);
+        setDeletePassword(password);
+        deleteUserInfo(deleteInfo);
+      },
+    });
+  };
+  const isLoading =
+    userInfoValueLoading || UserInfoLoading || UserProfileLoading;
 
   return (
     <MyPageContainer>
@@ -274,8 +353,14 @@ export default function MyPage() {
           </MyPageFormInfoTitleWrapper>
 
           <MyPageInputContainerInnerWrapper>
+            <MyPageInputWrapper className="profileImageContainer">
+              {userInfoValue?.email !== undefined && (
+                <ProfileImage
+                  src={`http://58.231.19.218:8000/image/${userInfoValue?.email}`}
+                />
+              )}
+            </MyPageInputWrapper>
             <MyPageInputContainer className="editInputContainer">
-              <AiOutlineMail className="editIcon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
                   <MyPageSpan>{userInfoValue?.email}</MyPageSpan>
@@ -284,7 +369,6 @@ export default function MyPage() {
             </MyPageInputContainer>
 
             <MyPageInputContainer className="editInputContainer">
-              <AiOutlineIdcard className="editIcon" />
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
                   <MyPageSpan>{userInfoValue?.nickname}</MyPageSpan>
@@ -297,6 +381,25 @@ export default function MyPage() {
         <MyPageForm>
           {/* EditContainer */}
           <MyPageFormEditInfoWrapper>
+            {/* 이미지 업로드 */}
+            <MyPageInputContainer>
+              <AiOutlineFileImage className="icon" />
+              <MyPageInputWrapper>
+                <MyPageInput
+                  type="file"
+                  className="fileInput"
+                  accept="image/jpg, image/jpeg, image/png"
+                  ref={fileInputRef}
+                  onChange={uploadProfile}
+                />
+                <EditButtonContainer className="email-button-container">
+                  <EditButton onClick={onClickInputFile} type="submit">
+                    변경하기
+                  </EditButton>
+                </EditButtonContainer>
+              </MyPageInputWrapper>
+            </MyPageInputContainer>
+
             {/* 이메일 */}
             {email.length > 0 ? (
               <MyPageInputContainer>
@@ -419,7 +522,6 @@ export default function MyPage() {
             )}
 
             {/* 비밀번호 변경 */}
-
             {newPassword.length > 0 ? (
               <MyPageInputContainer>
                 <MdPassword className="icon" />
@@ -457,7 +559,6 @@ export default function MyPage() {
             )}
 
             {/* 비밀번호 확인 */}
-
             {newPasswordConfirm.length > 0 ? (
               <MyPageInputContainer>
                 <MdPassword className="icon" />
@@ -499,7 +600,7 @@ export default function MyPage() {
                 변경하기
               </EditButton>
               <EditButton>연동해제</EditButton>
-              <EditButton>회원탈퇴</EditButton>
+              <EditButton onClick={onClickDeleteUser}>회원탈퇴</EditButton>
             </EditButtonContainer>
           </MyPageFormEditInfoWrapper>
         </MyPageForm>
@@ -512,7 +613,7 @@ const MyPageContainer = styled.div`
   width: 100%;
   height: 90vh;
   display: flex;
-  padding: 100px 350px;
+  padding: 70px 350px;
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
@@ -531,9 +632,13 @@ const MyPageFormInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   color: white;
+  .profileImageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .editInputContainer {
-    margin-top: 30px;
-    margin-bottom: 4 0px;
+    margin-top: 10px;
   }
   .editIcon {
     width: 40px;
@@ -580,9 +685,23 @@ const MyPageFormEditInfoWrapper = styled.div`
   width: 80%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  .preview {
+    width: 100px;
+    height: 100px;
+  }
 `;
 const MyPageInputContainerInnerWrapper = styled.div`
   margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const ShowFileImage = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 9999px;
 `;
 const MyPageInputContainer = styled.div`
   position: relative;
@@ -599,6 +718,14 @@ const MyPageInputWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  .fileInput::file-selector-button {
+    display: none;
+  }
+  .fileInput {
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    color: ${({ theme }) => theme.colors.subColor4};
+    cursor: pointer;
+  }
   .email-button-container {
     padding: 10px;
     margin: 0;
@@ -607,6 +734,15 @@ const MyPageInputWrapper = styled.div`
     width: 100px;
   }
 `;
+const ProfileImage = styled.img`
+  width: 120px;
+  height: 120px;
+  border-radius: 9999px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+`;
+
 const MyPageInput = styled.input`
   border: none;
   width: 70%;
@@ -632,8 +768,8 @@ const MyPageSpanContainer = styled.div`
   justify-content: center;
 `;
 const MyPageSpan = styled.span`
-  color: ${({ theme }) => theme.colors.black};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: bold;
 `;
 const InputMessage = styled.div`
@@ -648,7 +784,7 @@ const InputMessage = styled.div`
 
 const EditButtonContainer = styled.div`
   width: 100%;
-  margin-top: 70px;
+  margin-top: 30px;
   display: flex;
   align-items: center;
   justify-content: space-around;

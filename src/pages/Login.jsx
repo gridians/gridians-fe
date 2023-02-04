@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { api } from "../apis/untils";
 import GithubBtn from "../components/GithubBtn";
-import { setRefreshToken } from "../cookie/cookie";
+import { setCookieToken } from "../cookie/cookie";
 import Swal from "sweetalert2";
 import { useMutation } from "react-query";
-import { postLoginUseQueryUserInfo } from "../apis/queries/query";
+import {
+  postLoginQueryFindUserPassword,
+  postLoginUseQueryUserInfo,
+} from "../apis/queries/loginQuery";
+import LoadingSpinner from "../components/loading/LoadingSpinner";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,23 +21,28 @@ const Login = () => {
 
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { mutate: postLoginInfo } = useMutation(
-    "postLoginUserInfo",
     () => postLoginUseQueryUserInfo(userLoginInfo),
     {
       onSuccess: (res) => {
-        setRefreshToken("accessToken", res.data.token);
-        Swal.fire({
-          title: "로그인 중...",
-          padding: "3em",
-          timer: 1500,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        }).then(function () {
+        setCookieToken("accessToken", res.accessToken);
+        localStorage.setItem("refreshToken", res.refreshToken);
+        setIsLoading(true);
+        setTimeout(() => {
           navigate("/home");
-        });
+        }, 2000);
+      },
+      onError: () => {},
+    }
+  );
+
+  const { mutate: loginFindUserPassword } = useMutation(
+    (email) => postLoginQueryFindUserPassword(email),
+    {
+      onSuccess: (res) => {
+        console.log(res);
       },
       onError: () => {},
     }
@@ -71,123 +79,120 @@ const Login = () => {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     postLoginInfo();
-    // try {
-    //   const res = await api.post(
-    //     "/user/auth/login",
-    //     {
-    //       email,
-    //       password,
-    //     },
-    //     { withCredentials: true }
-    //   );
-    //   if (res.status === 200) {
-    //     setRefreshToken("accessToken", res.data.token);
-    //     Swal.fire({
-    //       title: "로그인 중...",
-    //       padding: "3em",
-    //       timer: 1500,
-    //       didOpen: () => {
-    //         Swal.showLoading();
-    //       },
-    //     }).then(function () {
-    //       navigate("/home");
-    //     });
-    //   }
-    //   console.log(res);
-    // } catch (err) {
-    //   return;
-    // }
   };
+
+  const onClickFindPw = (e) => {
+    e.preventDefault();
+    Swal.fire({
+      text: "비밀번호 찾을 이메일을 입력해주세요",
+      input: "text",
+      showCancelButton: true,
+      confirmButtonText: "확인",
+      cancelButtonText: "돌아가기",
+      preConfirm: (email) => {
+        loginFindUserPassword(email);
+      },
+    });
+  };
+
   return (
     <LoginContainer>
-      <LoginFormWrapper>
-        <LoginTitleListWrapper>
-          <LoginTitleWrapper>
-            <MainTitle>Login</MainTitle>
-          </LoginTitleWrapper>
-        </LoginTitleListWrapper>
-        <LoginForm>
-          <LoginFormInnerWrapper>
-            <IdContainer>
-              <p>이메일</p>
-              {email.length > 0 ? (
-                <>
-                  <IdInput
-                    value={email}
-                    onChange={idOnChange}
-                    placeholder="이메일을 입력해주세요"
-                  />
-                  <InputMessage>{emailMessage}</InputMessage>
-                </>
+      {isLoading === true ? (
+        <LoadingSpinner />
+      ) : (
+        <LoginFormWrapper>
+          <LoginTitleListWrapper>
+            <LoginTitleWrapper>
+              <MainTitle>Login</MainTitle>
+            </LoginTitleWrapper>
+          </LoginTitleListWrapper>
+          <LoginForm>
+            <LoginFormInnerWrapper>
+              <IdContainer>
+                <p>이메일</p>
+                {email.length > 0 ? (
+                  <>
+                    <IdInput
+                      value={email}
+                      onChange={idOnChange}
+                      placeholder="이메일을 입력해주세요"
+                    />
+                    <InputMessage>{emailMessage}</InputMessage>
+                  </>
+                ) : (
+                  <>
+                    <IdInput
+                      value={email}
+                      onChange={idOnChange}
+                      placeholder="이메일을 입력해주세요"
+                    />
+                  </>
+                )}
+              </IdContainer>
+              <PwContainer>
+                <p>비밀번호</p>
+                {password.length > 0 ? (
+                  <>
+                    <PwInput
+                      type={"password"}
+                      value={password}
+                      onChange={pwOnChange}
+                      placeholder="비밀번호를 입력해주세요"
+                    />
+                    <InputMessage>{passwordMessage}</InputMessage>
+                  </>
+                ) : (
+                  <>
+                    <PwInput
+                      type={"password"}
+                      value={password}
+                      onChange={pwOnChange}
+                      placeholder="비밀번호를 입력해주세요"
+                    />
+                  </>
+                )}
+              </PwContainer>
+              {isEmail && isPassword ? (
+                <LoginBtn
+                  style={{
+                    backgroundColor: "#738598",
+                    color: "white",
+                    border: "none",
+                  }}
+                  onClick={onSubmit}
+                  type="submit"
+                >
+                  로그인
+                </LoginBtn>
               ) : (
-                <>
-                  <IdInput
-                    value={email}
-                    onChange={idOnChange}
-                    placeholder="이메일을 입력해주세요"
-                  />
-                </>
+                <LoginBtn style={{ pointerEvents: "none" }} onClick={onSubmit}>
+                  로그인
+                </LoginBtn>
               )}
-            </IdContainer>
-            <PwContainer>
-              <p>비밀번호</p>
-              {password.length > 0 ? (
-                <>
-                  <PwInput
-                    type={"password"}
-                    value={password}
-                    onChange={pwOnChange}
-                    placeholder="비밀번호를 입력해주세요"
-                  />
-                  <InputMessage>{passwordMessage}</InputMessage>
-                </>
-              ) : (
-                <>
-                  <PwInput
-                    type={"password"}
-                    value={password}
-                    onChange={pwOnChange}
-                    placeholder="비밀번호를 입력해주세요"
-                  />
-                </>
-              )}
-            </PwContainer>
-            {isEmail && isPassword ? (
-              <LoginBtn
-                style={{
-                  backgroundColor: "#738598",
-                  color: "white",
-                  border: "none",
-                }}
-                onClick={onSubmit}
-                type="submit"
-              >
-                로그인
-              </LoginBtn>
-            ) : (
-              <LoginBtn style={{ pointerEvents: "none" }} onClick={onSubmit}>
-                로그인
-              </LoginBtn>
-            )}
 
-            <GithubBtn />
-            <MenuList>
-              <MenuItem>
+              <GithubBtn />
+              <MenuList>
+                {/* <MenuItem>
                 <Link to="/findid">아이디 찾기</Link>
-              </MenuItem>
-              <MenuItem>
-                <Link to="/findpw">비밀번호 찾기</Link>
-              </MenuItem>
-            </MenuList>
-            <RegisterMoveBtn>
-              <Link to="/register">가입이 아직이신가요?</Link>
-            </RegisterMoveBtn>
-          </LoginFormInnerWrapper>
-        </LoginForm>
-      </LoginFormWrapper>
+              </MenuItem> */}
+                <MenuItem>
+                  <FindPwContainer onClick={onClickFindPw}>
+                    비밀번호 찾기
+                  </FindPwContainer>
+                </MenuItem>
+              </MenuList>
+              <RegisterMoveBtn>
+                <Link className="signupButton" to="/signup">
+                  가입이 아직이신가요?
+                </Link>
+              </RegisterMoveBtn>
+            </LoginFormInnerWrapper>
+          </LoginForm>
+        </LoginFormWrapper>
+      )}
     </LoginContainer>
   );
 };
@@ -218,6 +223,8 @@ const LoginTitleListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 `;
 const LoginTitleWrapper = styled.div`
   display: flex;
@@ -241,11 +248,18 @@ const LoginForm = styled.form`
   padding: 40px 100px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const LoginFormInnerWrapper = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const LoginBtn = styled.button`
@@ -317,7 +331,8 @@ const RegisterMoveBtn = styled.div`
   margin-top: 20px;
   width: 490px;
   a {
-    text-decoration: underline;
+    border-bottom: 1px solid white;
+    padding-bottom: 2px;
     &:hover {
       font-weight: bold;
     }
@@ -331,5 +346,20 @@ const InputMessage = styled.div`
   line-height: 16px;
   font-size: ${({ theme }) => theme.fontSizes.small};
   bottom: 0;
+`;
+
+const FindPwContainer = styled.button`
+  border-bottom: 1px solid white;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  padding: 2px;
+  background-color: transparent;
+  color: white;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  cursor: pointer;
+  &:hover {
+    font-weight: bold;
+  }
 `;
 export default Login;

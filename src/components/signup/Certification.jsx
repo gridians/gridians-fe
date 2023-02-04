@@ -1,48 +1,42 @@
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import {
-  getMyPageUseQueryUserInfo,
-  putMyPageUserQueryEditEmail,
-} from "../../apis/queries/query";
+import { MyPageUseQueryPutEditEmail } from "../../apis/queries/myPageQuery";
 import { api } from "../../apis/untils";
-import { removeCookieToken } from "../../cookie/cookie";
+import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 
 export default function Certification() {
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.search.split("=")[1];
-
-  const { data: userInfoValue } = useQuery(
-    ["userEmail", "userNickname"],
-    getMyPageUseQueryUserInfo
-  );
+  const token = getCookieToken("accessToken");
 
   const { mutate: putEditEmail } = useMutation(
-    "puttEditUserEmail",
-    () => putMyPageUserQueryEditEmail(id),
+    (id) => MyPageUseQueryPutEditEmail(id),
     {
       onSuccess: () => {
         removeCookieToken();
-        navigate("/login");
+        window.location.replace("/login");
       },
     }
   );
 
   const onClickLogin = () => {
-    if (userInfoValue?.email === id) {
-      postCertification();
-    } else {
+    if (token === undefined) {
+      postCertification(id);
+    } else if (token) {
       putEditEmail(id);
+    } else {
+      return;
     }
   };
 
   const postCertification = async () => {
     try {
-      const res = await api.get("/user/email-auth", {
+      const res = await api.get("/user/auth/email-auth", {
         params: {
           id,
         },
@@ -52,12 +46,6 @@ export default function Certification() {
           title: "이메일 인증 완료 😀",
           padding: "3em",
           buttons: "확인",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp",
-          },
           closeOnClickOutside: false,
         }).then(function () {
           navigate("/login");
@@ -69,12 +57,6 @@ export default function Certification() {
         title: "이메일 인증 실패 😢",
         buttons: "확인",
         padding: "3em",
-        showClass: {
-          popup: "animate__animated animate__fadeInDown",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOutUp",
-        },
         closeOnClickOutside: false,
       });
     }
