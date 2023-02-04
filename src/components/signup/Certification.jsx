@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import { MyPageUserQueryPutEditEmail } from "../../apis/queries/myPage";
+import { MyPageUseQueryPutEditEmail } from "../../apis/queries/myPageQuery";
 import { api } from "../../apis/untils";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 
@@ -15,7 +15,7 @@ export default function Certification() {
   const token = getCookieToken("accessToken");
 
   const { mutate: putEditEmail } = useMutation(
-    (id) => MyPageUserQueryPutEditEmail(id),
+    (id) => MyPageUseQueryPutEditEmail(id),
     {
       onSuccess: () => {
         removeCookieToken();

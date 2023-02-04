@@ -3,9 +3,9 @@ import { api, cookieApi } from "../untils";
 
 // mypage query
 // 유저프로필 이미지
-export const MyPageUseQueryPutUserProfile = async (uploadProfile) => {
+export const MyPageUseQueryPutUserProfile =  (uploadProfile) => {
   const token = getCookieToken("accessToken");
-  const res = await api.put(
+  const res =  api.put(
     `/user/profile`,
     {
       base64Image: uploadProfile,
@@ -22,9 +22,9 @@ export const MyPageUseQueryPutUserProfile = async (uploadProfile) => {
 };
 
 // 유저정보 받아오기
-export const MyPageUseQueryGetUserInfo = async () => {
+export const MyPageUseQueryGetUserInfo =  () => {
   const token = getCookieToken("accessToken");
-  const res = await api.get("/user/valid", {
+  const res =  api.get("/user/valid", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       accept: "application/json,",
@@ -35,9 +35,9 @@ export const MyPageUseQueryGetUserInfo = async () => {
 };
 
 // 유저이메일 보내기
-export const MyPageUserQueryPostEditEmail = async (email) => {
+export const MyPageUseQueryPostEditEmail =  (email) => {
   const token = getCookieToken("accessToken");
-  const res = await api.post(
+  const res =  api.post(
     "/user/update-email",
     { email: email },
     {
@@ -52,9 +52,9 @@ export const MyPageUserQueryPostEditEmail = async (email) => {
 };
 
 // 유저이메일 수정
-export const MyPageUserQueryPutEditEmail = async (id) => {
+export const MyPageUseQueryPutEditEmail =  (id) => {
   console.log(id);
-  const res = await cookieApi.put(
+  const res =  cookieApi.put(
     "/user/update-email",
     { email: id },
   );
@@ -62,9 +62,9 @@ export const MyPageUserQueryPutEditEmail = async (id) => {
 };
 
 // 유저닉네임, 아이디, 비밀번호 수정
-export const MyPageUserQueryPutEditUserInfo = async (userInfo) => {
+export const MyPageUseQueryPutEditUserInfo =  (userInfo) => {
   const token = getCookieToken("accessToken");
-  const res = await api.put(
+  const res =  api.put(
     "/user/update-user",
     {
       nickname: userInfo.nickname,
@@ -83,9 +83,9 @@ export const MyPageUserQueryPutEditUserInfo = async (userInfo) => {
 };
 
 // 유저 회원탈퇴
-export const MyPageUserQueryDeleteUserInfo = async (deleteInfo) => {
+export const MyPageUseQueryDeleteUserInfo =  (deleteInfo) => {
   console.log(deleteInfo);
-  const res = await api.delete(
+  const res =  api.delete(
     "/user/delete",
     { data: { password: deleteInfo.password } },
     {

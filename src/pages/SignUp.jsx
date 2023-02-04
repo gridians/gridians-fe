@@ -16,6 +16,8 @@ import {
 } from "../store/registerAtom";
 import { api } from "../apis/untils";
 import { useNavigate } from "react-router";
+import { useMutation } from "react-query";
+import { signUpuseQueryPostInfo } from "../apis/queries/signUpQuery";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -32,6 +34,58 @@ export default function SignUp() {
   const [isNickname, setIsNickname] = useState(false);
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
+
+  const { mutate: loginFindUserPassword } = useMutation(
+    (userInfo) => signUpuseQueryPostInfo(userInfo),
+    {
+      onSuccess: (res) => {
+        Swal.fire({
+          padding: "3em",
+          title: "회원가입 성공",
+          text: "이메일을 확인해주세요",
+          buttons: "확인",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutUp",
+          },
+          closeOnClickOutside: false,
+        }).then(function () {
+          navigate("/login");
+        });
+      },
+      onError: (err) => {
+        if (err.response.status === 409) {
+          Swal.fire({
+            padding: "3em",
+            title: "이미 가입한 이메일입니다",
+            buttons: "확인",
+            showClass: {
+              popup: "animate__animated animate__fadeInDown",
+            },
+            hideClass: {
+              popup: "animate__animated animate__fadeOutUp",
+            },
+            closeOnClickOutside: false,
+          });
+        } else {
+          Swal.fire({
+            padding: "3em",
+            title: "회원가입에 실패했습니다",
+            buttons: "확인",
+            showClass: {
+              popup: "animate__animated animate__fadeInDown",
+            },
+            hideClass: {
+              popup: "animate__animated animate__fadeOutUp",
+            },
+            closeOnClickOutside: false,
+          });
+        }
+      },
+    }
+  );
 
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
@@ -82,67 +136,28 @@ export default function SignUp() {
       setIsPassword(true);
     }
   };
+  const userInfo = { nickname, email, password };
 
   const onClickSubmit = (e) => {
     e.preventDefault();
-    postRegister();
+    loginFindUserPassword(userInfo);
   };
 
-  const postRegister = async () => {
-    try {
-      const res = await api.post("/user/auth/signup", {
-        nickname,
-        email,
-        password,
-      });
-      if (res.status === 200) {
-        Swal.fire({
-          padding: "3em",
-          title: "회원가입 성공",
-          text: "이메일을 확인해주세요",
-          buttons: "확인",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp",
-          },
-          closeOnClickOutside: false,
-        }).then(function () {
-          navigate("/login");
-        });
-      }
-      return res.data;
-    } catch (err) {
-      if (err.response.status === 409) {
-        Swal.fire({
-          padding: "3em",
-          title: "이미 가입한 이메일입니다",
-          buttons: "확인",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp",
-          },
-          closeOnClickOutside: false,
-        });
-      } else {
-        Swal.fire({
-          padding: "3em",
-          title: "회원가입에 실패했습니다",
-          buttons: "확인",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp",
-          },
-          closeOnClickOutside: false,
-        });
-      }
-    }
-  };
+  // const postRegister = async () => {
+  //   try {
+  //     const res = await api.post("/user/auth/signup", {
+  //       nickname,
+  //       email,
+  //       password,
+  //     });
+  //     if (res.status === 200) {
+
+  //     }
+  //     return res.data;
+  //   } catch (err) {
+
+  //   }
+  // };
 
   return (
     <SignUpContainer>

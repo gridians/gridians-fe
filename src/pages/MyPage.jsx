@@ -25,11 +25,11 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import {
   MyPageUseQueryGetUserInfo,
-  MyPageUserQueryPostEditEmail,
+  MyPageUseQueryPostEditEmail,
   MyPageUseQueryPutUserProfile,
-  MyPageUserQueryPutEditUserInfo,
-  MyPageUserQueryDeleteUserInfo,
-} from "../apis/queries/myPage";
+  MyPageUseQueryPutEditUserInfo,
+  MyPageUseQueryDeleteUserInfo,
+} from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
 
 export default function MyPage() {
@@ -53,7 +53,7 @@ export default function MyPage() {
   );
   const { mutate: postEditEmail } = useMutation(
     "postEditUserEmail",
-    () => MyPageUserQueryPostEditEmail(email),
+    () => MyPageUseQueryPostEditEmail(email),
     {
       onSuccess: () => {
         // console.log("성공");
@@ -63,7 +63,7 @@ export default function MyPage() {
   const userInfo = { nickname, password, newPassword };
   const { mutate: putUserInfo, isLoading: UserInfoLoading } = useMutation(
     "putUserInfo",
-    () => MyPageUserQueryPutEditUserInfo(userInfo),
+    () => MyPageUseQueryPutEditUserInfo(userInfo),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -96,7 +96,7 @@ export default function MyPage() {
   );
 
   const { mutate: deleteUserInfo } = useMutation(
-    (deleteInfo) => MyPageUserQueryDeleteUserInfo(deleteInfo),
+    (deleteInfo) => MyPageUseQueryDeleteUserInfo(deleteInfo),
     {
       onSuccess: () => {
         Swal.fire({
