@@ -3,7 +3,7 @@ import { api, cookieApi } from "../untils";
 
 // mypage query
 // 유저프로필 이미지
-export const MyPageUseQueryPutUserProfile =  (uploadProfile) => {
+export const myPageUseMutationPutUserProfile =  (uploadProfile) => {
   const token = getCookieToken("accessToken");
   const res =  api.put(
     `/user/profile`,
@@ -22,7 +22,7 @@ export const MyPageUseQueryPutUserProfile =  (uploadProfile) => {
 };
 
 // 유저정보 받아오기
-export const MyPageUseQueryGetUserInfo =  () => {
+export const myPageUseQueryGetUserInfo =  () => {
   const token = getCookieToken("accessToken");
   const res =  api.get("/user/valid", {
     headers: {
@@ -35,9 +35,9 @@ export const MyPageUseQueryGetUserInfo =  () => {
 };
 
 // 유저이메일 보내기
-export const MyPageUseQueryPostEditEmail =  (email) => {
+export const myPageUseMutationPostEditEmail = (email) => {
   const token = getCookieToken("accessToken");
-  const res =  api.post(
+  const res = api.post(
     "/user/update-email",
     { email: email },
     {
@@ -52,19 +52,16 @@ export const MyPageUseQueryPostEditEmail =  (email) => {
 };
 
 // 유저이메일 수정
-export const MyPageUseQueryPutEditEmail =  (id) => {
+export const myPageUseMutationPutEditEmail = (id) => {
   console.log(id);
-  const res =  cookieApi.put(
-    "/user/update-email",
-    { email: id },
-  );
+  const res = cookieApi.put("/user/update-email", { email: id });
   return res.data;
 };
 
 // 유저닉네임, 아이디, 비밀번호 수정
-export const MyPageUseQueryPutEditUserInfo =  (userInfo) => {
+export const myPageUseMutationPutEditUserInfo = (userInfo) => {
   const token = getCookieToken("accessToken");
-  const res =  api.put(
+  const res = api.put(
     "/user/update-user",
     {
       nickname: userInfo.nickname,
@@ -83,9 +80,9 @@ export const MyPageUseQueryPutEditUserInfo =  (userInfo) => {
 };
 
 // 유저 회원탈퇴
-export const MyPageUseQueryDeleteUserInfo =  (deleteInfo) => {
+export const myPageUseMutationDeleteUserInfo = (deleteInfo) => {
   console.log(deleteInfo);
-  const res =  api.delete(
+  const res = api.delete(
     "/user/delete",
     { data: { password: deleteInfo.password } },
     {

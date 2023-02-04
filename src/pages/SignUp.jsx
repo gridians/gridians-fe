@@ -14,7 +14,6 @@ import {
   userPassword,
   userPasswordMessage,
 } from "../store/registerAtom";
-import { api } from "../apis/untils";
 import { useNavigate } from "react-router";
 import { useMutation } from "react-query";
 import { signUpuseQueryPostInfo } from "../apis/queries/signUpQuery";

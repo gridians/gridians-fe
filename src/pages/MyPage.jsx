@@ -24,11 +24,11 @@ import { getCookieToken, removeCookieToken } from "../cookie/cookie";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import {
-  MyPageUseQueryGetUserInfo,
-  MyPageUseQueryPostEditEmail,
-  MyPageUseQueryPutUserProfile,
-  MyPageUseQueryPutEditUserInfo,
-  MyPageUseQueryDeleteUserInfo,
+  myPageUseQueryGetUserInfo,
+  myPageUseMutationPostEditEmail,
+  myPageUseMutationPutUserProfile,
+  myPageUseMutationPutEditUserInfo,
+  myPageUseMutationDeleteUserInfo,
 } from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
 
@@ -49,11 +49,11 @@ export default function MyPage() {
 
   const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
     ["userEmail", "userNickname"],
-    MyPageUseQueryGetUserInfo
+    myPageUseQueryGetUserInfo
   );
   const { mutate: postEditEmail } = useMutation(
     "postEditUserEmail",
-    () => MyPageUseQueryPostEditEmail(email),
+    () => myPageUseMutationPostEditEmail(email),
     {
       onSuccess: () => {
         // console.log("성공");
@@ -63,7 +63,7 @@ export default function MyPage() {
   const userInfo = { nickname, password, newPassword };
   const { mutate: putUserInfo, isLoading: UserInfoLoading } = useMutation(
     "putUserInfo",
-    () => MyPageUseQueryPutEditUserInfo(userInfo),
+    () => myPageUseMutationPutEditUserInfo(userInfo),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -76,7 +76,7 @@ export default function MyPage() {
 
   const { mutate: putUserProfile, isLoading: UserProfileLoading } = useMutation(
     "putUserProfile",
-    () => MyPageUseQueryPutUserProfile(imageSrc),
+    () => myPageUseMutationPutUserProfile(imageSrc),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -96,7 +96,7 @@ export default function MyPage() {
   );
 
   const { mutate: deleteUserInfo } = useMutation(
-    (deleteInfo) => MyPageUseQueryDeleteUserInfo(deleteInfo),
+    (deleteInfo) => myPageUseMutationDeleteUserInfo(deleteInfo),
     {
       onSuccess: () => {
         Swal.fire({
