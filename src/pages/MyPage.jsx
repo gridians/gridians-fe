@@ -19,7 +19,7 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { getCookieToken, removeCookieToken } from "../cookie/cookie";
+import { removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
@@ -33,7 +33,6 @@ import {
 import Swal from "sweetalert2";
 
 export default function MyPage() {
-  const token = getCookieToken("accessToken");
   const navigate = useNavigate();
   const [nickname, setNickname] = useRecoilState(myPageUserNickname);
   const [email, setEmail] = useRecoilState(myPageUserEmail);
@@ -45,11 +44,14 @@ export default function MyPage() {
   const [imageSrc, setImageSrc] = useState(null);
   const fileInputRef = useRef(null);
 
-  const [deletePassword, setDeletePassword] = useState("");
-
   const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
     ["userEmail", "userNickname"],
-    myPageUseQueryGetUserInfo
+    myPageUseQueryGetUserInfo,
+    {
+      onSuccess: (res) => {
+        console.log(res);
+      },
+    }
   );
   const { mutate: postEditEmail } = useMutation(
     "postEditUserEmail",
@@ -105,7 +107,7 @@ export default function MyPage() {
           button: "확인",
         }).then(() => {
           removeCookieToken();
-          window.location.replace("/home");
+          window.location.replace("/login");
         });
       },
       onError: (error) => {
@@ -323,11 +325,11 @@ export default function MyPage() {
       navigate("/home");
     }
   };
-  const deleteInfo = { token, deletePassword };
   const onClickDeleteUser = (e) => {
     e.preventDefault();
     Swal.fire({
       title: "탈퇴하시겠습니까?",
+      text: "비밀번호를 입력해주세요",
       input: "password",
       confirmButtonColor: "#DCC6C6",
       cancelButtonColor: "#738598",
@@ -336,8 +338,7 @@ export default function MyPage() {
       cancelButtonText: "취소하기",
       preConfirm: (password) => {
         console.log(password);
-        setDeletePassword(password);
-        deleteUserInfo(deleteInfo);
+        deleteUserInfo(password);
       },
     });
   };
