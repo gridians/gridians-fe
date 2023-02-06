@@ -20,6 +20,8 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
+import { useMutation } from "react-query";
+import { memberListuseMutationPostCardInfo } from "../apis/queries/memberListQuery";
 
 const StyledSlider = styled(Slider)`
   height: 75%;
@@ -66,6 +68,19 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
 
+  //상세정보 수정 정보 보내기
+  const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
+    (editCardListUserInfo) =>
+      memberListuseMutationPostCardInfo(editCardListUserInfo),
+    {
+      onSuccess: (res) => {
+        console.log("ok");
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
   const settings = {
     dots: true,
     infinite: true,
@@ -95,9 +110,22 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
   const reTouchOnClick = () => {
     setRetouch(!retouch);
   };
+  const editCardListUserInfo = {
+    statusMessage: statusMsg,
+    field: field,
+    skillSet: skill,
+    introduction: introduce,
+    snsSet: [
+      { id: githubId, name: "github" },
+      { id: instagramId, name: "instagram" },
+      { id: twitterId, name: "twitter" },
+    ],
+    tagSet: tagList,
+  };
   const submitBtnOnClick = (e) => {
+    cardInfo(editCardListUserInfo);
     e.preventDefault();
-    axios.post(`http://175.215.143.189:8080/cards/3`, {
+    /*axios.post(`http://175.215.143.189:8080/cards/3`, {
       statusMessage: statusMsg,
       field: field,
       skillSet: ["Git"],
@@ -108,8 +136,9 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
         { id: twitterId, name: "twitter" },
       ],
       tagSet: tagList,
-    });
+    });*/
   };
+
   const tagXBtnOnClick = (index) => {
     setTagList((tagList) => [...tagList].filter((value, i) => i !== index));
   };
@@ -129,7 +158,7 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
         <First>
           <ProfileImg>
             <AiFillSetting onClick={() => reTouchOnClick()} />
-            <img src={img} alt="d"/>
+            <img src={img} alt="d" />
           </ProfileImg>
           <Name value="jay" disabled />
           <SnsList>
@@ -181,10 +210,7 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
               retouch={retouch}
             />
           ) : (
-            <Introduce
-              value={introduce}
-              disabled
-            />
+            <Introduce value={introduce} disabled />
           )}
           <TagList>
             {tagList &&
@@ -368,7 +394,7 @@ const TagInput = styled.input`
   outline: 1px solid white;
 `;
 const SubmitBtn = styled.button`
-margin-bottom:20px;
+  margin-bottom: 20px;
   width: 100px;
   height: 30px;
   outline: none;

@@ -2,9 +2,20 @@ import React, { useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
-import axios from "axios";
 import { useRecoilState } from "recoil";
-import { imgSrc, introduceText, position, statusMessage, tag } from "../store/cardInfoAtom";
+import {
+  imgSrc,
+  introduceText,
+  language,
+  position,
+  statusMessage,
+  tag,
+} from "../store/cardInfoAtom";
+import { useMutation, useQuery } from "react-query";
+import {
+  memberListUseQueryGetCardInfo,
+  memberListUseQueryGetCardList,
+} from "../apis/queries/memberListQuery";
 
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
@@ -28,14 +39,42 @@ const MemberListPage = () => {
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
-  useEffect(() => {
-    axios
-      .get(`http://175.215.143.189:8080/cards?page=0&size=1`)
-      .then((data) => {
-        setList(data.data);
-        console.log(data.data);
-      });
-  }, []);
+  const [skill, setSkill] = useRecoilState(language);
+  // useEffect(() => {
+  //   axios
+  //     .get(`http://116.123.153.248:8000/cards?page=0&size=1`)
+  //     .then((data) => {
+  //       setList(data.data);
+  //       console.log(data.data);
+  //     });
+  // }, []);
+  //회원 카드 리스트 받아오기 react-query
+  const { data: cardListInfo, isLoading: cardListInfoLoading } = useQuery(
+    "cardList",
+    memberListUseQueryGetCardList,
+    {
+      onSuccess: (res) => {
+        console.log(res);
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
+  //회원 카드 상세정보 가져오기 react-query
+  const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
+    "cardInfo",
+    (index) => memberListUseQueryGetCardInfo(index)
+    // {
+    //   onSuccess: (res) => {
+    //     console.log(res);
+    //     setField(res.field);
+    //   },
+    //   onError: (err) => {
+    //     console.log(err);
+    //   },
+    // }
+  );
 
   //onClick
   const backgrounOnClick = () => {
@@ -51,31 +90,34 @@ const MemberListPage = () => {
     setLeft(document.querySelectorAll(".card")[num].offsetLeft);
   };
   const cardOnClick = (e, index) => {
+    // cardInfo(index);
     setNum(index);
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
     setLeft(document.querySelectorAll(".card")[index].offsetLeft);
     //카드 상세정보를 받아온다
-    axios.get(`http://175.215.143.189:8080/cards/1`).then((data) => {
-      console.log(data.data)
-      setImg(data.data.imageSrc);
-      setStatusMsg(data.data.statusMessage);
-      setField(data.data.field);
-      setTagList(data.data.tagSet);
-      setIntroduce(data.data.introduction);
-    });
+    // axios.get(`http://175.215.143.189:8080/cards/1`).then((data) => {
+    //   console.log(data.data);
+    //   setImg(data.data.imageSrc);
+    //   setStatusMsg(data.data.statusMessage);
+    //   setField(data.data.field);
+    //   setTagList(data.data.tagSet);
+    //   setIntroduce(data.data.introduction);
+    // });
   };
 
   //onChange
   const statusMsgOnChange = (text) => {
     setStatusMsg(text.target.value);
-    console.log(statusMsg);
   };
   const positionOnChange = (text) => {
     setField(text.target.value);
   };
+  const skillOnChange = (text) => {
+    setSkill(text.target.value);
+  };
 
-  const language = [
+  const positionList = [
     "Back-end Developer",
     "Front-end Developer",
     "Software Engineer",
@@ -96,7 +138,7 @@ const MemberListPage = () => {
     "VR Engineer",
     "Hardware Engineer",
   ];
-  const skill = [
+  const skillList = [
     "javaScript",
     "TypeScript",
     "React",
@@ -129,7 +171,7 @@ const MemberListPage = () => {
     "Zeplin",
     "Jest",
   ];
-  const member = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
   return (
     <Container>
       <Background
@@ -144,8 +186,8 @@ const MemberListPage = () => {
         X
       </XBtn>
       <Wrap>
-        {list &&
-          list.map((data, index) => (
+        {cardListInfo &&
+          cardListInfo.map((data, index) => (
             <MemberCard
               className="card"
               key={index}
@@ -199,12 +241,16 @@ const MemberListPage = () => {
                               onChange={(text) => positionOnChange(text)}
                               placeholder="포지션을 선택"
                             >
-                              {language.map((name) => (
+                              {positionList.map((name) => (
                                 <option key={name}>{name}</option>
                               ))}
+                              <option>react</option>
                             </select>
-                            <select>
-                              {skill.map((name) => (
+                            <select
+                              value={skill}
+                              onChange={(text) => skillOnChange(text)}
+                            >
+                              {skillList.map((name) => (
                                 <option key={name}>{name}</option>
                               ))}
                             </select>
