@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "react-router";
 import { useMutation } from "react-query";
 import { signUpuseQueryPostInfo } from "../apis/queries/signUpQuery";
+import { useEffect } from "react";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -33,6 +34,12 @@ export default function SignUp() {
   const [isNickname, setIsNickname] = useState(false);
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
+
+  useEffect(() => {
+    setNickname("");
+    setEmail("");
+    setPassword("");
+  }, []);
 
   const { mutate: loginFindUserPassword } = useMutation(
     (userInfo) => signUpuseQueryPostInfo(userInfo),
@@ -310,11 +317,20 @@ const SignUpContainer = styled.div`
   align-items: center;
   padding: 100px 350px;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  @media ${(props) => props.theme.mobile} {
+    padding: 0;
+  }
 `;
 const SignUpFormWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
+  @media ${(props) => props.theme.mobile} {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const SignUpTitleListWrapper = styled.div`
   width: 40%;
@@ -325,6 +341,14 @@ const SignUpTitleListWrapper = styled.div`
   align-items: center;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    height: 10%;
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: ${({ theme }) => theme.colors.subColor3};
+  }
 `;
 const TitleWrapper = styled.div`
   display: flex;
@@ -333,12 +357,22 @@ const TitleWrapper = styled.div`
   justify-content: center;
   margin-top: 100px;
   background-color: ${({ theme }) => theme.colors.subColor3};
+  @media ${(props) => props.theme.mobile} {
+    height: 100%;
+    margin: 0px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid white;
+  }
 `;
 const Title = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   font-weight: bold;
   color: ${({ theme }) => theme.colors.white};
   margin-bottom: 10px;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.xxxl};
+  }
 `;
 
 const SignUpForm = styled.form`
@@ -352,6 +386,13 @@ const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  @media ${(props) => props.theme.mobile} {
+    height: 60%;
+    padding: 0;
+    border-radius: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
 `;
 const SignUpInnerWrapper = styled.div`
   width: 100%;
@@ -372,6 +413,14 @@ const SignUpInputContainer = styled.div`
   .icon {
     width: 40px;
     height: 40px;
+  }
+  @media ${(props) => props.theme.mobile} {
+    margin-top: -20px;
+    margin-bottom: 30px;
+    .icon {
+      width: 30px;
+      height: 30px;
+    }
   }
 `;
 const SignUpInputItem = styled.div`
@@ -395,6 +444,14 @@ const SignUpInput = styled.input`
     font-size: ${({ theme }) => theme.fontSizes.small};
     color: ${({ theme }) => theme.colors.subColor4};
   }
+  @media ${(props) => props.theme.mobile} {
+    padding: 5px;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    &::placeholder {
+      font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+      color: ${({ theme }) => theme.colors.subColor4};
+    }
+  }
 `;
 const InputMessage = styled.div`
   display: block;
@@ -403,6 +460,10 @@ const InputMessage = styled.div`
   line-height: 16px;
   font-size: ${({ theme }) => theme.fontSizes.small};
   margin-top: 5px;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+    margin-left: 5px;
+  }
 `;
 const SignUpButton = styled.button`
   display: block;
@@ -416,4 +477,8 @@ const SignUpButton = styled.button`
   background-color: transparent;
   transition: all 0.5s;
   cursor: pointer;
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 20px;
+    width: 50%;
+  }
 `;

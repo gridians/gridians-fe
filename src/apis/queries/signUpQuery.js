@@ -1,4 +1,3 @@
-import { getCookieToken } from '../../cookie/cookie';
 import { api } from '../untils';
 
 export const signUpuseQueryPostInfo = async(userInfo) => {
