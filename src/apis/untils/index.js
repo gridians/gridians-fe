@@ -11,6 +11,15 @@ export const api = axios.create({
   },
   withCredentials: true,
 });
+export const api2 = axios.create({
+  // baseURL: `${process.env.REACT_APP_BASE_URL}`,
+  baseURL: "http://43.200.217.91:8080/",
+  headers: {
+    "Content-type": "application/json; charset=UTF-8",
+    accept: "application/json,",
+  },
+  withCredentials: true,
+});
 
 export const cookieApi = axios.create({
   baseURL: "http://58.231.19.218:8000",
