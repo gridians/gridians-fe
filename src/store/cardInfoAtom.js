@@ -15,7 +15,7 @@ export const position = atom({
 });
 export const language = atom({
   key: `language/${v1()}`,
-  default: [],
+  default: "",
 });
 export const introduceText = atom({
   key: `introduceText/${v1()}`,
