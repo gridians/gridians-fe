@@ -64,16 +64,16 @@ const MemberListPage = () => {
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
-    (index) => memberListUseQueryGetCardInfo(index)
-    // {
-    //   onSuccess: (res) => {
-    //     console.log(res);
-    //     setField(res.field);
-    //   },
-    //   onError: (err) => {
-    //     console.log(err);
-    //   },
-    // }
+    (index) => memberListUseQueryGetCardInfo(index),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        setField(res.field);
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    }
   );
 
   //onClick
@@ -90,7 +90,7 @@ const MemberListPage = () => {
     setLeft(document.querySelectorAll(".card")[num].offsetLeft);
   };
   const cardOnClick = (e, index) => {
-    // cardInfo(index);
+    cardInfo(index);
     setNum(index);
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
