@@ -4,12 +4,16 @@ import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import { useRecoilState } from "recoil";
 import {
+  github,
   imgSrc,
+  instagram,
   introduceText,
   language,
+  nickNameText,
   position,
   statusMessage,
   tag,
+  twitter,
 } from "../store/cardInfoAtom";
 import { useMutation, useQuery } from "react-query";
 import {
@@ -40,6 +44,10 @@ const MemberListPage = () => {
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
   const [skill, setSkill] = useRecoilState(language);
+  const [nickName, setNickName] = useRecoilState(nickNameText);
+  const [githubId, setGithubId] = useRecoilState(github);
+  const [instagramId, setInstagramId] = useRecoilState(instagram);
+  const [twitterId, setTwitterId] = useRecoilState(twitter);
   // useEffect(() => {
   //   axios
   //     .get(`http://116.123.153.248:8000/cards?page=0&size=1`)
@@ -69,6 +77,16 @@ const MemberListPage = () => {
       onSuccess: (res) => {
         console.log(res);
         setField(res.field);
+        setImg(res.imageSrc);
+        setIntroduce(res.introduction);
+        setSkill(res.skill);
+        setStatusMsg(res.statusMessage);
+        setTagList(res.tagSet);
+        res.snsSet.map((data) => {
+          if (data.name === "twitter") return setTwitterId(data.account);
+          if (data.name === "github") return setGithubId(data.account);
+          else return setInstagramId(data.account);
+        });
       },
       onError: (err) => {
         console.log(err);
@@ -89,7 +107,8 @@ const MemberListPage = () => {
     setTop(document.querySelectorAll(".card")[num].offsetTop);
     setLeft(document.querySelectorAll(".card")[num].offsetLeft);
   };
-  const cardOnClick = (e, index) => {
+  const cardOnClick = (e, index, data) => {
+    setNickName(data.nickname);
     cardInfo(index);
     setNum(index);
     setClick("click");
@@ -192,7 +211,7 @@ const MemberListPage = () => {
               className="card"
               key={index}
               click={click ? click : ""}
-              onClick={(e) => cardOnClick(e, index)}
+              onClick={(e) => cardOnClick(e, index, data)}
             >
               <Card
                 left={left}

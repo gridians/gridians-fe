@@ -15,6 +15,7 @@ import {
   instagram,
   introduceText,
   language,
+  nickNameText,
   position,
   statusMessage,
   tag,
@@ -67,6 +68,7 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
+  const [nickName, setNickName] = useRecoilState(nickNameText);
 
   //상세정보 수정 정보 보내기
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
@@ -160,7 +162,7 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
             <AiFillSetting onClick={() => reTouchOnClick()} />
             <img src={img} alt="d" />
           </ProfileImg>
-          <Name value="jay" disabled />
+          <Name value={nickName} disabled />
           <SnsList>
             {retouch ? (
               <>
@@ -191,14 +193,20 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
               </>
             ) : (
               <>
-                <SnsItem>
-                  <BsGithub />
+                <SnsItem github="github">
+                  <a href={`https://github.com/${githubId}`}>
+                    <BsGithub />
+                  </a>
                 </SnsItem>
-                <SnsItem>
-                  <BsInstagram />
+                <SnsItem instagram="instagram">
+                  <a href={`https://www.instagram.com/${instagramId}`}>
+                    <BsInstagram />
+                  </a>
                 </SnsItem>
-                <SnsItem>
-                  <BsTwitter />
+                <SnsItem twitter="twitter">
+                  <a href={`https://twitter.com/${twitterId}`}>
+                    <BsTwitter />
+                  </a>
                 </SnsItem>
               </>
             )}
@@ -298,15 +306,19 @@ const SnsItem = styled.li`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   margin: 0 10px;
   font-size: ${({ theme }) => theme.fontSizes.name};
   cursor: pointer;
   span {
     font-size: ${({ theme }) => theme.fontSizes.lg};
   }
-  svg {
-    &:hover {
-      color: ${({ theme }) => theme.colors.subColor1};
+  a {
+    color: ${({ theme }) => theme.colors.white};
+    svg {
+      &:hover {
+        color: ${({ theme }) => theme.colors.subColor1};
+      }
     }
   }
 `;
