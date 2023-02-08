@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   imgSrc,
   introduceText,
@@ -16,6 +16,8 @@ import {
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
+import CommentList from "../components/comment/CommentList";
+import { commentListAtom } from "../store/commentAtom";
 
 //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
 let scrollY = 0;
@@ -40,6 +42,7 @@ const MemberListPage = () => {
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
   const [skill, setSkill] = useRecoilState(language);
+  const setCommentList = useSetRecoilState(commentListAtom);
   // useEffect(() => {
   //   axios
   //     .get(`http://116.123.153.248:8000/cards?page=0&size=1`)
@@ -54,10 +57,10 @@ const MemberListPage = () => {
     memberListUseQueryGetCardList,
     {
       onSuccess: (res) => {
-        console.log(res);
+        // console.log(res);
       },
       onError: (err) => {
-        console.log(err);
+        // console.log(err);
       },
     }
   );
@@ -67,11 +70,12 @@ const MemberListPage = () => {
     (index) => memberListUseQueryGetCardInfo(index),
     {
       onSuccess: (res) => {
-        console.log(res);
+        // console.log(res);
         setField(res.field);
+        setCommentList(res.commentList);
       },
       onError: (err) => {
-        console.log(err);
+        // console.log(err);
       },
     }
   );
@@ -271,7 +275,9 @@ const MemberListPage = () => {
                   </DetailContainer>
                   <ReviewContainer
                     click={click && num === index ? click : undefined}
-                  ></ReviewContainer>
+                  >
+                    <CommentList />
+                  </ReviewContainer>
                 </Detail>
               </Card>
             </MemberCard>
@@ -580,7 +586,7 @@ const ReviewContainer = styled.div`
   opacity: 0;
   width: 30%;
   height: 100%;
-  background-color: #738598;
+  background-color: #211919;
   transition: all 2s;
   cursor: auto;
   ${(props) =>

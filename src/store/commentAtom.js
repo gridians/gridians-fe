@@ -17,13 +17,13 @@ export const commentListAtom = atom({
   default: [],
 });
 
-export const getUserComment = selector({
-  key: `getUseComment/${v1}`,
-  get: async () => {
-    const res = await axios.get(
-      "http://175.215.143.189:8080/cards/1/comments/3"
-    );
-    console.log(res);
-    return res.data;
-  },
-});
+// export const getUserComment = selector({
+//   key: `getUseComment/${v1}`,
+//   get: async () => {
+//     const res = await axios.get(
+//       "http://175.215.143.189:8080/cards/1/comments/3"
+//     );
+//     console.log(res);
+//     return res.data;
+//   },
+// });

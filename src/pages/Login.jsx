@@ -27,6 +27,7 @@ const Login = () => {
     () => postLoginUseQueryUserInfo(userLoginInfo),
     {
       onSuccess: (res) => {
+        console.log(res);
         setCookieToken("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
         setIsLoading(true);
@@ -34,7 +35,9 @@ const Login = () => {
           navigate("/home");
         }, 2000);
       },
-      onError: () => {},
+      onError: (err) => {
+        console.log(err);
+      },
     }
   );
 

@@ -1,37 +1,51 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import {
-  commentAtom,
-  commentListAtom,
-  getUserComment,
-  validAtom,
-} from "../../store/commentAtom";
+import { commentuseMutationPostCommentList } from "../../apis/queries/commentQuery";
+import { memberListUseQueryGetCardInfo } from "../../apis/queries/memberListQuery";
+import { commentAtom } from "../../store/commentAtom";
 
-export default function Comment() {
+export default function CommentList() {
   const [comment, setComment] = useRecoilState(commentAtom);
-  const [isValid, setIsValid] = useRecoilState(validAtom);
-  const [commentList, setCommentList] = useRecoilState(commentListAtom);
   const [replyComment, setReplyComment] = useState("");
   const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
   const replyCommentRef = useRef();
-  const commentArray = useRecoilValue(getUserComment);
+  const queryClient = useQueryClient();
 
-  // console.log(commentArray);
-
-  const postComment = () => {
-    const newCommentList = [...commentList];
-    newCommentList.push(comment);
-    setCommentList(newCommentList);
-    setComment("");
-    if (comment.length === 0) {
-      setIsValid(false);
-    } else if (comment.length >= 1) {
-      setIsValid(true);
+  const { data: cardInfo, isLoading: cardInfoLoading } = useQuery(
+    "carCommentInfo",
+    memberListUseQueryGetCardInfo,
+    {
+      onSuccess: (res) => {
+        // console.log(res);
+      },
+      onError: (err) => {
+        console.log(err);
+      },
     }
+  );
+  const { mutate: commentList } = useMutation(
+    (comment) => commentuseMutationPostCommentList(comment),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+      },
+      onSettled: (data, error, variables, context) => {
+        // mutation이 완료되면 성공 유무와 관계없이 쿼리를 무효화 시키고 새로 갱신
+        queryClient.invalidateQueries("carCommentInfo");
+      },
+    }
+  );
+  const postComment = () => {
+    // const newCommentList = [...commentList];
+    // newCommentList.push(comment);
+    // commentList("ss");
+    commentList(comment);
+    setComment("");
   };
 
   const postReplyComment = () => {
@@ -109,22 +123,18 @@ export default function Comment() {
       </CommentFormContainer>
 
       <CommentListContainer>
-        {commentList.map((commentArr, commentIndex) => {
+        {cardInfo?.commentList.map((commentArr, commentIndex) => {
           return (
             <CommentListWrapper key={commentIndex}>
               <CommentProfile>프로필</CommentProfile>
               <CommentListNicknameWrapper>
                 <CommentListNickname>ss</CommentListNickname>
-                <CommentListComment>
-                  {commentArray}
-                  {commentArr}
-                </CommentListComment>
+                <CommentListComment>{commentArr.contents}</CommentListComment>
                 <CommentListReplyComment onClick={onClick}>
                   답글
                 </CommentListReplyComment>
 
-                {/* 대댓글 */}
-                {replyValid ? (
+                {/* {replyValid ? (
                   <CommentFormContainer>
                     <CommentProfile>프로필</CommentProfile>
                     <CommentInput
@@ -202,7 +212,7 @@ export default function Comment() {
                       );
                     })}
                   </>
-                )}
+                )} */}
               </CommentListNicknameWrapper>
             </CommentListWrapper>
           );
@@ -218,19 +228,23 @@ const CommentContainer = styled.div`
   border: 2px solid black;
   display: flex;
   flex-direction: column;
+  padding: 10px;
 `;
 
 const CommentTitleContainer = styled.div`
   width: 100%;
-  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #191818;
+  border-radius: 9999px;
+  padding: 5px 0;
+  margin: 20px 0;
 `;
 
 const CommentTitle = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.xxl};
-  color: ${({ theme }) => theme.colors.black};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  color: ${({ theme }) => theme.colors.white};
   font-weight: bold;
 `;
 
@@ -272,8 +286,8 @@ const CommentButtonContainer = styled.div`
 `;
 const CommentButton = styled.button`
   background-color: transparent;
-  color: ${({ theme }) => theme.colors.subColor2};
-  border: 1px solid ${({ theme }) => theme.colors.subColor1};
+  color: ${({ theme }) => theme.colors.white};
+  border: none;
   font-size: ${({ theme }) => theme.fontSizes.base};
   font-weight: bold;
   width: 40px;
