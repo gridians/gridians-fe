@@ -1,4 +1,3 @@
-import { Component } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -7,7 +6,6 @@ import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { useState } from "react";
-import axios from "axios";
 import { useRecoilState } from "recoil";
 import {
   github,
@@ -15,6 +13,7 @@ import {
   instagram,
   introduceText,
   language,
+  nickNameText,
   position,
   statusMessage,
   tag,
@@ -23,41 +22,8 @@ import {
 import { useMutation } from "react-query";
 import { memberListuseMutationPostCardInfo } from "../apis/queries/memberListQuery";
 
-const StyledSlider = styled(Slider)`
-  height: 75%;
-  transition: all 1s;
-  h3 {
-    text-align: center;
-  }
-  .slick-prev {
-    z-index: 5;
-    left: 0;
-    &::before {
-      font-size: 40px;
-    }
-  }
-  .slick-next {
-    z-index: 5;
-    left: calc(100% - 40px);
-    &::before {
-      font-size: 40px;
-    }
-  }
-  .slick-dots {
-    li {
-      button {
-        &::before {
-          font-size: 15px;
-          color: white;
-        }
-      }
-    }
-  }
-`;
-
-const SimpleSlider = ({ setRetouch, retouch, index }) => {
+const SimpleSlider = ({ setRetouch, retouch }) => {
   const [tagText, setTagText] = useState("");
-
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
   const [field, setField] = useRecoilState(position);
   const [skill, setSkill] = useRecoilState(language);
@@ -67,6 +33,7 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
+  const [nickName, setNickName] = useRecoilState(nickNameText);
 
   //상세정보 수정 정보 보내기
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
@@ -122,6 +89,7 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
     ],
     tagSet: tagList,
   };
+  //수정완료 버튼 클릭
   const submitBtnOnClick = (e) => {
     cardInfo(editCardListUserInfo);
     e.preventDefault();
@@ -138,7 +106,7 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
       tagSet: tagList,
     });*/
   };
-
+  //태그 삭제 버튼 클릭
   const tagXBtnOnClick = (index) => {
     setTagList((tagList) => [...tagList].filter((value, i) => i !== index));
   };
@@ -153,14 +121,14 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
   };
 
   return (
-    <StyledSlider {...settings}>
+    <StyledSlider {...settings} retouch={retouch}>
       <div>
         <First>
           <ProfileImg>
             <AiFillSetting onClick={() => reTouchOnClick()} />
             <img src={img} alt="d" />
           </ProfileImg>
-          <Name value="jay" disabled />
+          <Name value={nickName} disabled />
           <SnsList>
             {retouch ? (
               <>
@@ -191,14 +159,20 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
               </>
             ) : (
               <>
-                <SnsItem>
-                  <BsGithub />
+                <SnsItem github="github">
+                  <a href={`https://github.com/${githubId}`}>
+                    <BsGithub />
+                  </a>
                 </SnsItem>
-                <SnsItem>
-                  <BsInstagram />
+                <SnsItem instagram="instagram">
+                  <a href={`https://www.instagram.com/${instagramId}`}>
+                    <BsInstagram />
+                  </a>
                 </SnsItem>
-                <SnsItem>
-                  <BsTwitter />
+                <SnsItem twitter="twitter">
+                  <a href={`https://twitter.com/${twitterId}`}>
+                    <BsTwitter />
+                  </a>
                 </SnsItem>
               </>
             )}
@@ -253,6 +227,37 @@ const SimpleSlider = ({ setRetouch, retouch, index }) => {
   );
 };
 
+const StyledSlider = styled(Slider)`
+  height: 90%;
+  transition: all 1s;
+  h3 {
+    text-align: center;
+  }
+  .slick-prev {
+    z-index: 5;
+    left: 0;
+    &::before {
+      font-size: 40px;
+    }
+  }
+  .slick-next {
+    z-index: 5;
+    left: calc(100% - 40px);
+    &::before {
+      font-size: 40px;
+    }
+  }
+  .slick-dots {
+    li {
+      button {
+        &::before {
+          font-size: 15px;
+          color: white;
+        }
+      }
+    }
+  }
+`;
 const First = styled.div`
   display: flex;
   flex-direction: column;
@@ -271,8 +276,8 @@ const ProfileImg = styled.div`
     }
   }
   img {
-    width: 200px;
-    height: 200px;
+    width: 170px;
+    height: 170px;
     border-radius: 50%;
   }
 `;
@@ -298,15 +303,20 @@ const SnsItem = styled.li`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   margin: 0 10px;
   font-size: ${({ theme }) => theme.fontSizes.name};
   cursor: pointer;
   span {
+    margin-bottom: 5px;
     font-size: ${({ theme }) => theme.fontSizes.lg};
   }
-  svg {
-    &:hover {
-      color: ${({ theme }) => theme.colors.subColor1};
+  a {
+    color: ${({ theme }) => theme.colors.white};
+    svg {
+      &:hover {
+        color: ${({ theme }) => theme.colors.subColor1};
+      }
     }
   }
 `;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -29,7 +29,6 @@ const HomeTitle = styled.span`
   font-weight: bolder;
   margin-top: 25px;
   cursor: pointer;
-
   a {
     color: ${({ theme }) => theme.colors.black};
     &:hover {

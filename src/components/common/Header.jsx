@@ -98,12 +98,14 @@ const Header = () => {
 const HeaderBox = styled.header`
   display: flex;
   justify-content: center;
-  width: 100%;
   height: 10vh;
-
   padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   color: ${({ theme }) => theme.colors.black};
+  @media ${(props) => props.theme.mobile} {
+    overflow: hidden;
+    padding: 0 20px;
+  }
 `;
 const HeaderWrap = styled.div`
   display: flex;
@@ -115,6 +117,9 @@ const Logo = styled.span`
   color: ${({ theme }) => theme.colors.black};
   font-size: 2.2rem;
   font-family: ${({ theme }) => theme.fontFace.font1};
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.base};
+  }
 `;
 const Menu = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.xl};
@@ -134,6 +139,20 @@ const Menu = styled.div`
   }
   span {
     color: ${({ theme }) => theme.colors.white};
+  }
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    a {
+      color: ${({ theme }) => theme.colors.black};
+      font-weight: bold;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: 10px;
+      &:hover {
+        font-size: ${({ theme }) => theme.fontSizes.base};
+        color: ${({ theme }) => theme.colors.subColor2};
+      }
+    }
   }
 `;
 

@@ -19,21 +19,20 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { getCookieToken, removeCookieToken } from "../cookie/cookie";
+import { removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import {
-  MyPageUseQueryGetUserInfo,
-  MyPageUseQueryPostEditEmail,
-  MyPageUseQueryPutUserProfile,
-  MyPageUseQueryPutEditUserInfo,
-  MyPageUseQueryDeleteUserInfo,
+  myPageUseQueryGetUserInfo,
+  myPageUseMutationPostEditEmail,
+  myPageUseMutationPutUserProfile,
+  myPageUseMutationPutEditUserInfo,
+  myPageUseMutationDeleteUserInfo,
 } from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
 
 export default function MyPage() {
-  const token = getCookieToken("accessToken");
   const navigate = useNavigate();
   const [nickname, setNickname] = useRecoilState(myPageUserNickname);
   const [email, setEmail] = useRecoilState(myPageUserEmail);
@@ -45,15 +44,18 @@ export default function MyPage() {
   const [imageSrc, setImageSrc] = useState(null);
   const fileInputRef = useRef(null);
 
-  const [deletePassword, setDeletePassword] = useState("");
-
   const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
     ["userEmail", "userNickname"],
-    MyPageUseQueryGetUserInfo
+    myPageUseQueryGetUserInfo,
+    {
+      onSuccess: (res) => {
+        console.log(res);
+      },
+    }
   );
   const { mutate: postEditEmail } = useMutation(
     "postEditUserEmail",
-    () => MyPageUseQueryPostEditEmail(email),
+    () => myPageUseMutationPostEditEmail(email),
     {
       onSuccess: () => {
         // console.log("성공");
@@ -63,7 +65,7 @@ export default function MyPage() {
   const userInfo = { nickname, password, newPassword };
   const { mutate: putUserInfo, isLoading: UserInfoLoading } = useMutation(
     "putUserInfo",
-    () => MyPageUseQueryPutEditUserInfo(userInfo),
+    () => myPageUseMutationPutEditUserInfo(userInfo),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -76,7 +78,7 @@ export default function MyPage() {
 
   const { mutate: putUserProfile, isLoading: UserProfileLoading } = useMutation(
     "putUserProfile",
-    () => MyPageUseQueryPutUserProfile(imageSrc),
+    () => myPageUseMutationPutUserProfile(imageSrc),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -96,7 +98,7 @@ export default function MyPage() {
   );
 
   const { mutate: deleteUserInfo } = useMutation(
-    (deleteInfo) => MyPageUseQueryDeleteUserInfo(deleteInfo),
+    (deleteInfo) => myPageUseMutationDeleteUserInfo(deleteInfo),
     {
       onSuccess: () => {
         Swal.fire({
@@ -105,7 +107,7 @@ export default function MyPage() {
           button: "확인",
         }).then(() => {
           removeCookieToken();
-          window.location.replace("/home");
+          window.location.replace("/login");
         });
       },
       onError: (error) => {
@@ -323,11 +325,11 @@ export default function MyPage() {
       navigate("/home");
     }
   };
-  const deleteInfo = { token, deletePassword };
   const onClickDeleteUser = (e) => {
     e.preventDefault();
     Swal.fire({
       title: "탈퇴하시겠습니까?",
+      text: "비밀번호를 입력해주세요",
       input: "password",
       confirmButtonColor: "#DCC6C6",
       cancelButtonColor: "#738598",
@@ -336,8 +338,7 @@ export default function MyPage() {
       cancelButtonText: "취소하기",
       preConfirm: (password) => {
         console.log(password);
-        setDeletePassword(password);
-        deleteUserInfo(deleteInfo);
+        deleteUserInfo(password);
       },
     });
   };
@@ -504,7 +505,9 @@ export default function MyPage() {
                       placeholder="현재 비밀번호"
                     />
                   )}
-                  <InputMessage>{passwordMessage}</InputMessage>
+                  <InputMessage className="passwordMessage">
+                    {passwordMessage}
+                  </InputMessage>
                 </MyPageInputWrapper>
               </MyPageInputContainer>
             ) : (
@@ -541,7 +544,9 @@ export default function MyPage() {
                       placeholder="새비밀번호"
                     />
                   )}
-                  <InputMessage>{newPasswordMessage}</InputMessage>
+                  <InputMessage className="passwordMessage">
+                    {newPasswordMessage}
+                  </InputMessage>
                 </MyPageInputWrapper>
               </MyPageInputContainer>
             ) : (
@@ -578,7 +583,9 @@ export default function MyPage() {
                       placeholder="새비밀번호 확인"
                     />
                   )}
-                  <InputMessage>{newPasswordConfirmMessage}</InputMessage>
+                  <InputMessage className="passwordMessage">
+                    {newPasswordConfirmMessage}
+                  </InputMessage>
                 </MyPageInputWrapper>
               </MyPageInputContainer>
             ) : (
@@ -617,11 +624,19 @@ const MyPageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  @media ${(props) => props.theme.mobile} {
+    padding: 0;
+    justify-content: center;
+  }
 `;
 const MyPageWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
+  @media ${(props) => props.theme.mobile} {
+    flex-direction: column;
+    height: auto;
+  }
 `;
 const MyPageFormInfoWrapper = styled.div`
   width: 40%;
@@ -644,6 +659,13 @@ const MyPageFormInfoWrapper = styled.div`
     width: 40px;
     height: 40px;
   }
+  @media ${(props) => props.theme.mobile} {
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+    height: 80px;
+  }
 `;
 const MyPageFormInfoTitleWrapper = styled.div`
   width: 100%;
@@ -654,6 +676,9 @@ const MyPageFormInfoTitleWrapper = styled.div`
   color: black;
   border: 1px solid white;
   background-color: white;
+  @media ${(props) => props.theme.mobile} {
+    display: none;
+  }
 `;
 const Title = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
@@ -679,6 +704,20 @@ const MyPageForm = styled.form`
     width: 30px;
     height: 30px;
   }
+  @media ${(props) => props.theme.mobile} {
+    border-radius: 0;
+    padding: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    .icon {
+      width: 25px;
+      height: 25px;
+    }
+    .show-icon {
+      width: 15px;
+      height: 15px;
+    }
+  }
 `;
 const MyPageFormEditInfoWrapper = styled.div`
   height: 100%;
@@ -686,9 +725,10 @@ const MyPageFormEditInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  .preview {
-    width: 100px;
-    height: 100px;
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
 `;
 const MyPageInputContainerInnerWrapper = styled.div`
@@ -697,11 +737,13 @@ const MyPageInputContainerInnerWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-const ShowFileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 9999px;
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 0;
+    flex-direction: row;
+    height: 80px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
 `;
 const MyPageInputContainer = styled.div`
   position: relative;
@@ -711,6 +753,9 @@ const MyPageInputContainer = styled.div`
   margin-top: 30px;
   padding: 10px;
   width: 100%;
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 10px;
+  }
 `;
 const MyPageInputWrapper = styled.div`
   width: 80%;
@@ -733,6 +778,23 @@ const MyPageInputWrapper = styled.div`
     right: -30px;
     width: 100px;
   }
+  @media ${(props) => props.theme.mobile} {
+    .fileInput {
+      font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+      color: ${({ theme }) => theme.colors.subColor4};
+      cursor: pointer;
+    }
+    .email-button-container {
+      padding: 10px;
+      margin: 0;
+      position: absolute;
+      right: -30px;
+      width: 100px;
+    }
+    .passwordMessage {
+      margin-top: 80px;
+    }
+  }
 `;
 const ProfileImage = styled.img`
   width: 120px;
@@ -741,6 +803,10 @@ const ProfileImage = styled.img`
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  @media ${(props) => props.theme.mobile} {
+    width: 60px;
+    height: 60px;
+  }
 `;
 
 const MyPageInput = styled.input`
@@ -759,6 +825,18 @@ const MyPageInput = styled.input`
     font-size: ${({ theme }) => theme.fontSizes.small};
     color: ${({ theme }) => theme.colors.subColor4};
   }
+  @media ${(props) => props.theme.mobile} {
+    width: 70%;
+    margin-left: 20px;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+      color: ${({ theme }) => theme.colors.subColor4};
+    }
+  }
 `;
 const MyPageSpanContainer = styled.div`
   width: 100%;
@@ -771,6 +849,9 @@ const MyPageSpan = styled.span`
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: bold;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
 `;
 const InputMessage = styled.div`
   display: block;
@@ -780,6 +861,11 @@ const InputMessage = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.small};
   margin-top: 80px;
   margin-left: 40px;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+    margin-top: 70px;
+    margin-left: 20px;
+  }
 `;
 
 const EditButtonContainer = styled.div`
@@ -789,6 +875,11 @@ const EditButtonContainer = styled.div`
   align-items: center;
   justify-content: space-around;
   color: ${({ theme }) => theme.colors.white};
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+  }
 `;
 const EditButton = styled.button`
   width: 90px;
@@ -804,5 +895,10 @@ const EditButton = styled.button`
     background-color: ${({ theme }) => theme.colors.subColor6};
     color: ${({ theme }) => theme.colors.white};
     transition: all 0.5s;
+  }
+  @media ${(props) => props.theme.mobile} {
+    width: 70px;
+    height: 30px;
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
   }
 `;

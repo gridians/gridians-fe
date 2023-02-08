@@ -67,7 +67,7 @@ export default function Intro() {
 
         <OverlayTitleContainer className="title-margin last-title">
           <span className="sub-title">
-            이곳에서 모든 궁금증이 다<OverlayTitle>해결</OverlayTitle>이 되실
+            이곳에서 모든 궁금증이 다<OverlayTitle>해결</OverlayTitle>되실
             겁니다!
           </span>
         </OverlayTitleContainer>
@@ -156,7 +156,7 @@ export default function Intro() {
           </IntroIconWrapper>
           <IntroProfileImage className="grid14" />
           <IntroProfileTitleContainer>
-            <IntroProfileName>Geum-chok</IntroProfileName>
+            <IntroProfileName>Geum</IntroProfileName>
             <IntroProfileJob>UX</IntroProfileJob>
           </IntroProfileTitleContainer>
         </IntroProfileWrapper>
@@ -297,6 +297,9 @@ const IntroContainer = styled.div`
   justify-content: center;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   position: relative;
+  @media ${(props) => props.theme.mobile} {
+    padding: 50px 0;
+  }
 `;
 const IntroOverlay = styled.div`
   position: absolute;
@@ -326,6 +329,13 @@ const IntroOverlay = styled.div`
     animation: ${overlayAnimation} 1s ease forwards;
     animation-delay: 7.3s;
   }
+
+  @media ${(props) => props.theme.mobile} {
+    .title-margin {
+      margin-top: 50px;
+      padding: 0;
+    }
+  }
 `;
 const OverlayTitleContainer = styled.div`
   width: 100%;
@@ -334,14 +344,22 @@ const OverlayTitleContainer = styled.div`
   justify-content: center;
   color: ${({ theme }) => theme.colors.white};
   opacity: 0;
-
   .sub-title {
     font-size: ${({ theme }) => theme.fontSizes.subTitleSize};
+  }
+  @media ${(props) => props.theme.mobile} {
+    .sub-title {
+      /* padding: 0 20px; */
+      font-size: ${({ theme }) => theme.fontSizes.base};
+    }
   }
 `;
 const OverlayTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   font-weight: bold;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.lg};
+  }
 `;
 const IntroWrapper = styled.div`
   width: 50%;
@@ -350,7 +368,7 @@ const IntroWrapper = styled.div`
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
   gap: 10px;
-  padding: 20px;
+  padding: 20px 0;
 
   .grid-wrapper1 {
     animation-delay: 0.3s;
@@ -448,6 +466,12 @@ const IntroWrapper = styled.div`
   .grid16 {
     background-image: url(${profile16});
   }
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    grid-template-columns: repeat(4px, 1fr);
+    column-gap: 5px;
+    row-gap: 5px;
+  }
 `;
 const IntroProfileWrapper = styled.div`
   width: 100%;
@@ -467,6 +491,12 @@ const IntroProfileWrapper = styled.div`
     width: 30px;
     height: 30px;
     color: white;
+  }
+  @media ${(props) => props.theme.mobile} {
+    .icon {
+      width: 15px;
+      height: 15px;
+    }
   }
 `;
 const IntroIconWrapper = styled.div`
@@ -496,10 +526,17 @@ const IntroProfileTitleContainer = styled.div`
 const IntroProfileName = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.name};
   color: ${({ theme }) => theme.colors.white};
+
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
 `;
 const IntroProfileJob = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.small};
   color: ${({ theme }) => theme.colors.subColor1};
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+  }
 `;
 const PageRouterButtonContainer = styled.div`
   position: absolute;
@@ -577,6 +614,32 @@ const PageRouterButtonContainer = styled.div`
     transition: 0s;
     transform: translate(0, 5%);
   }
+  @media ${(props) => props.theme.mobile} {
+    right: 10px;
+    bottom: 20px;
+    .button-86::after {
+      display: none;
+    }
+    .button-86 {
+      all: unset;
+      width: 50px;
+      height: 10px;
+      font-size: 12px;
+      background: transparent;
+      border: none;
+      position: relative;
+      z-index: 1;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      font-weight: bold;
+    }
+  }
 `;
 const PageRouterButton = styled.button``;
 const ArrowContainer = styled.div`
@@ -590,4 +653,12 @@ const ArrowContainer = styled.div`
     height: 40px;
     animation: ${arrowAnimation} 0.5s linear 0s infinite alternate;
   }
+  @media ${(props) => props.theme.mobile} {
+    width: 50px;
+    height: 50px;
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+  } ;
 `;

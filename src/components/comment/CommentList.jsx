@@ -35,6 +35,7 @@ export default function CommentList() {
         console.log(res);
       },
       onSettled: (data, error, variables, context) => {
+        // console.log(data);
         // mutation이 완료되면 성공 유무와 관계없이 쿼리를 무효화 시키고 새로 갱신
         queryClient.invalidateQueries("carCommentInfo");
       },
@@ -121,19 +122,26 @@ export default function CommentList() {
           )}
         </CommentButtonContainer>
       </CommentFormContainer>
-
       <CommentListContainer>
         {cardInfo?.commentList.map((commentArr, commentIndex) => {
           return (
             <CommentListWrapper key={commentIndex}>
               <CommentProfile>프로필</CommentProfile>
-              <CommentListNicknameWrapper>
-                <CommentListNickname>ss</CommentListNickname>
+              <CommentListCommentWrapper>
+                <CommentListNickname>{commentArr.nickname}</CommentListNickname>
                 <CommentListComment>{commentArr.contents}</CommentListComment>
                 <CommentListReplyComment onClick={onClick}>
-                  답글
+                  <span>댓글</span>
+                  {replyValid ? (
+                    <>
+                      {commentArr.commentId === commentIndex + 1 ? (
+                        <span>대댓글</span>
+                      ) : (
+                        <span>{commentIndex}</span>
+                      )}
+                    </>
+                  ) : null}
                 </CommentListReplyComment>
-
                 {/* {replyValid ? (
                   <CommentFormContainer>
                     <CommentProfile>프로필</CommentProfile>
@@ -213,7 +221,7 @@ export default function CommentList() {
                     })}
                   </>
                 )} */}
-              </CommentListNicknameWrapper>
+              </CommentListCommentWrapper>
             </CommentListWrapper>
           );
         })}
@@ -261,7 +269,7 @@ const CommentProfile = styled.div`
   width: 70px;
   height: 70px;
   color: white;
-  margin-right: 20px;
+  /* margin-right: 20px; */
 `;
 const CommentInput = styled.textarea`
   width: 70%;
@@ -276,9 +284,9 @@ const CommentInput = styled.textarea`
   &:focus {
     outline: none;
   }
-  &::-webkit-scrollbar {
+  /* &::-webkit-scrollbar {
     display: none;
-  }
+  } */
 `;
 const CommentButtonContainer = styled.div`
   display: flex;
@@ -298,9 +306,19 @@ const CommentButton = styled.button`
 const CommentListContainer = styled.div`
   width: 100%;
   height: 100%;
-  border: 1px solid black;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 1;
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #eee;
+    border-radius: 10px;
+  }
 `;
 const CommentListWrapper = styled.div`
   display: flex;
@@ -308,10 +326,11 @@ const CommentListWrapper = styled.div`
   justify-content: space-between;
   margin-bottom: 10px;
 `;
-const CommentListNicknameWrapper = styled.div`
+const CommentListCommentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 70%;
+  /* padding-left: 40px; */
 `;
 const CommentListNickname = styled.span`
   font-weight: bold;
@@ -319,10 +338,15 @@ const CommentListNickname = styled.span`
 `;
 const CommentListComment = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.base};
+  width: 80%;
+  margin-top: 10px;
+  border: 1px solid white;
+  overflow-wrap: break-word;
 `;
 const CommentListReplyComment = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.base};
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
   color: #d28e8e;
   cursor: pointer;
 `;

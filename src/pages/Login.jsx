@@ -186,12 +186,15 @@ const Login = () => {
                     비밀번호 찾기
                   </FindPwContainer>
                 </MenuItem>
+
+                <MenuItem>
+                  <RegisterMoveBtn>
+                    <Link className="signupButton" to="/signup">
+                      가입이 아직이신가요?
+                    </Link>
+                  </RegisterMoveBtn>
+                </MenuItem>
               </MenuList>
-              <RegisterMoveBtn>
-                <Link className="signupButton" to="/signup">
-                  가입이 아직이신가요?
-                </Link>
-              </RegisterMoveBtn>
             </LoginFormInnerWrapper>
           </LoginForm>
         </LoginFormWrapper>
@@ -211,12 +214,20 @@ const LoginContainer = styled.div`
   a {
     color: ${({ theme }) => theme.colors.white};
   }
+  @media ${(props) => props.theme.mobile} {
+    padding: 0;
+  }
 `;
 
 const LoginFormWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
+  @media ${(props) => props.theme.mobile} {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 const LoginTitleListWrapper = styled.div`
@@ -228,6 +239,14 @@ const LoginTitleListWrapper = styled.div`
   align-items: center;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    height: 10%;
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: ${({ theme }) => theme.colors.subColor3};
+  }
 `;
 const LoginTitleWrapper = styled.div`
   display: flex;
@@ -236,12 +255,23 @@ const LoginTitleWrapper = styled.div`
   margin-top: 100px;
   background-color: ${({ theme }) => theme.colors.subColor3};
   color: white;
+  @media ${(props) => props.theme.mobile} {
+    height: 100%;
+    align-items: center;
+    margin: 0px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid white;
+  }
 `;
 const MainTitle = styled.span`
   font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   color: ${({ theme }) => theme.colors.white};
   margin-bottom: 10px;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.xxxl};
+  }
 `;
 
 const LoginForm = styled.form`
@@ -255,6 +285,13 @@ const LoginForm = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media ${(props) => props.theme.mobile} {
+    height: 60%;
+    padding: 0;
+    border-radius: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
 `;
 
 const LoginFormInnerWrapper = styled.div`
@@ -263,6 +300,9 @@ const LoginFormInnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  @media ${(props) => props.theme.mobile} {
+    align-items: center;
+  }
 `;
 
 const LoginBtn = styled.button`
@@ -277,6 +317,10 @@ const LoginBtn = styled.button`
   background-color: transparent;
   transition: all 0.5s;
   cursor: pointer;
+  @media ${(props) => props.theme.mobile} {
+    width: 50%;
+    font-size: ${({ theme }) => theme.fontSizes.base};
+  }
 `;
 
 const IdContainer = styled.div`
@@ -287,11 +331,13 @@ const IdContainer = styled.div`
   position: relative;
   height: 100px;
   color: ${({ theme }) => theme.colors.white};
-
   p {
     margin-bottom: 10px;
     font-size: ${({ theme }) => theme.fontSizes.base};
-    span {
+  }
+  @media ${(props) => props.theme.mobile} {
+    width: 90%;
+    p {
       font-size: ${({ theme }) => theme.fontSizes.small};
     }
   }
@@ -304,10 +350,17 @@ const IdInput = styled.input`
   border: none;
   border-bottom: 1px solid ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
-
   font-size: ${({ theme }) => theme.fontSizes.base};
   &::placeholder {
     color: ${({ theme }) => theme.colors.subColor4};
+  }
+  @media ${(props) => props.theme.mobile} {
+    padding: 5px;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    &::placeholder {
+      font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+      color: ${({ theme }) => theme.colors.subColor4};
+    }
   }
 `;
 
@@ -320,25 +373,32 @@ const MenuList = styled.ul`
   margin: 0;
   padding: 20px 0;
   list-style: none;
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+  }
 `;
 const MenuItem = styled.li`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   a {
     &:hover {
       font-weight: bold;
-      text-decoration: underline;
     }
   }
 `;
 
 const RegisterMoveBtn = styled.div`
-  margin-top: 20px;
-  width: 490px;
   a {
     border-bottom: 1px solid white;
     padding-bottom: 2px;
     &:hover {
       font-weight: bold;
     }
+  }
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
   }
 `;
 
@@ -349,6 +409,9 @@ const InputMessage = styled.div`
   line-height: 16px;
   font-size: ${({ theme }) => theme.fontSizes.small};
   bottom: 0;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+  }
 `;
 
 const FindPwContainer = styled.button`
@@ -363,6 +426,9 @@ const FindPwContainer = styled.button`
   cursor: pointer;
   &:hover {
     font-weight: bold;
+  }
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
   }
 `;
 export default Login;

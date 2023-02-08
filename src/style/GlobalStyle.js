@@ -10,12 +10,17 @@ const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {
     box-sizing: border-box;
   }
+  /* #html{
+    border: 2px solid red;
+    width:200vw;
+    height:100%;
+  } */
   body {
     margin: 0;
     padding: 0;
     #root{
-        width: 100%;
-        height: 100%;
+        /* width: 100%;
+        height: 100%; */
     }
   }
   p {

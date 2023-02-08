@@ -1,23 +1,9 @@
-// 중앙정렬
-const common = {
-  flexCenter: `
-    display:flex;
-    justify-content:center;
-    align-items:center;
-  `,
-  flexCenterColumn: `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  `,
-};
-
 const fontFace = {
   font1: "ClimateCrisisKR-1979",
 };
 
 const fontSizes = {
+  mobileSmall:"10px",
   small: "14px",
   base: "16px",
   lg: "18px",
@@ -48,11 +34,10 @@ const margins = {
 };
 
 const deviceSizes = {
-  mobileS: "320px",
-  mobileM: "375px",
-  mobileL: "450px",
-  tablet: "768px",
-  tabletL: "1024px",
+  mobile: "600px",
+  tablet: "900px",
+  laptop: "1200px",
+  desktop: "1800px",
 };
 
 const colors = {
@@ -73,10 +58,12 @@ const colors = {
 const theme = {
   fontSizes,
   colors,
-  deviceSizes,
+  mobile: `(max-width: ${deviceSizes.mobile})`,
+  tablet: `(max-width: ${deviceSizes.tablet})`,
+  laptop: `(max-width: ${deviceSizes.laptop})`,
+  desktop: `(min-width: ${deviceSizes.desktop})`,
   paddings,
   margins,
-  common,
   fontFace,
 };
 
