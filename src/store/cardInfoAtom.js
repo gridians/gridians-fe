@@ -5,6 +5,10 @@ export const imgSrc = atom({
   key: `imgSrc/${v1()}`,
   default: "",
 });
+export const nickNameText = atom({
+  key: `nickNameText/${v1()}`,
+  default: "",
+});
 export const statusMessage = atom({
   key: `statusMessage/${v1()}`,
   default: "",
