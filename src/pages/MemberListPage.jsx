@@ -9,6 +9,7 @@ import {
   instagram,
   introduceText,
   language,
+  list,
   nickNameText,
   position,
   statusMessage,
@@ -22,6 +23,7 @@ import {
 } from "../apis/queries/memberListQuery";
 
 const MemberListPage = () => {
+  const [cardList, setCardList] = useRecoilState(list);
   //카드를 클릭한 상태인지 다시 닫은 상태인지 관리
   const [click, setClick] = useState();
   //클릭한 카드에 index번호 저장
@@ -33,7 +35,6 @@ const MemberListPage = () => {
   const [retouch, setRetouch] = useState(false);
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
   const [field, setField] = useRecoilState(position);
-  const [list, setList] = useState();
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
@@ -43,14 +44,20 @@ const MemberListPage = () => {
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
 
-  const [pageNum,setPageNum] = useState(0);
+  const [pageNum, setPageNum] = useState(0);
   //회원 카드 리스트 받아오기 react-query
   const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
     "cardList",
-    ()=>memberListUseQueryGetCardList,
+    (num) => memberListUseQueryGetCardList(num),
     {
       onSuccess: (res) => {
         console.log(res);
+        if (cardList.length > 1) {
+          setCardList((data) => [...data, res]);
+        } else {
+          setCardList(res);
+        }
+        console.log(cardList);
       },
       onError: (err) => {
         console.log(err);
@@ -63,12 +70,15 @@ const MemberListPage = () => {
     const scrollTop = document.documentElement.scrollTop;
     const clientHeight = document.documentElement.clientHeight;
     const scrollHeight = document.documentElement.scrollHeight;
-    if (scrollHeight - 30 <= scrollTop + clientHeight) {
-      cardListInfo(pageNum);
-      setPageNum(pageNum+1);
+    if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
+      cardListInfo(pageNum + 1);
+      setPageNum(pageNum + 1);
     }
     scrollY = window.pageYOffset;
   });
+  useEffect(() => {
+    cardListInfo(pageNum);
+  }, []);
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
@@ -204,7 +214,7 @@ const MemberListPage = () => {
       >
         X
       </XBtn>
-      <Detail click={click ? click : undefined}>
+      <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
             <BookMark>
@@ -254,8 +264,8 @@ const MemberListPage = () => {
         <ReviewContainer></ReviewContainer>
       </Detail>
       <Wrap>
-        {cardListInfo &&
-          cardListInfo.map((data, index) => (
+        {cardList &&
+          cardList.flat().map((data, index) => (
             <MemberCard
               className="card"
               key={index}
@@ -300,7 +310,7 @@ const spin = (top, left) => keyframes`
         transform: rotateY(-180deg);
     }
     100%{
-        top: ${scrollY + 490}px;
+        top: ${490}px;
         left: 50%;
         width: 70%;
         height:80%;
@@ -309,7 +319,7 @@ const spin = (top, left) => keyframes`
 `;
 const reset = (top, left) => keyframes`
     0%{
-      top: ${scrollY + 490}px;
+      top: ${490}px;
         left: 50%;
         width: 70%;
         height:980px;
@@ -480,13 +490,13 @@ const Back = styled.div`
 const Detail = styled(Front)`
   position: absolute;
   z-index: -9;
-  top: 50%;
+  top: ${(props) => props.scrollY && `calc(50% - ${props.scrollY})`};
   left: 50%;
   opacity: 0;
   transform: translate(-50%, -50%);
   flex-direction: row;
   width: 70%;
-  height: 80%;
+  height: 850px;
   color: ${({ theme }) => theme.colors.white};
   transition: all 0.5s;
   ${(props) =>
