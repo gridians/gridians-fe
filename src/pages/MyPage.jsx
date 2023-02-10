@@ -118,7 +118,20 @@ export default function MyPage() {
 
   const uploadProfile = (e) => {
     const fileList = e.target.files;
+    const maxSizw = 2 * 1024 * 1024;
+    const fileSize = fileList[0].size;
+
     if (fileList && fileList[0]) {
+      if (fileSize > maxSizw) {
+        Swal.fire({
+          text:
+            "2MB 이하 파일만 등록할 수 있습니다.\n\n" +
+            "현재파일 용량 : " +
+            Math.round((fileSize / 1024 / 1024) * 100) / 100 +
+            "MB",
+        });
+        return (e.target.value = null);
+      }
       const reader = new FileReader();
       reader.readAsDataURL(fileList[0]);
       reader.onload = () => {

@@ -9,6 +9,7 @@ import {
   instagram,
   introduceText,
   language,
+  list,
   nickNameText,
   position,
   statusMessage,
@@ -20,15 +21,9 @@ import {
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
-import CommentList from "../components/comment/CommentList";
-
-//스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
-let scrollY = 0;
-window.addEventListener("scroll", function () {
-  scrollY = window.pageYOffset;
-});
 
 const MemberListPage = () => {
+  const [cardList, setCardList] = useRecoilState(list);
   //카드를 클릭한 상태인지 다시 닫은 상태인지 관리
   const [click, setClick] = useState();
   //클릭한 카드에 index번호 저장
@@ -40,7 +35,6 @@ const MemberListPage = () => {
   const [retouch, setRetouch] = useState(false);
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
   const [field, setField] = useRecoilState(position);
-  const [list, setList] = useState();
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
@@ -49,34 +43,49 @@ const MemberListPage = () => {
   const [githubId, setGithubId] = useRecoilState(github);
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
-  // useEffect(() => {
-  //   axios
-  //     .get(`http://116.123.153.248:8000/cards?page=0&size=1`)
-  //     .then((data) => {
-  //       setList(data.data);
-  //       console.log(data.data);
-  //     });
-  // }, []);
+
+  const [pageNum, setPageNum] = useState(0);
   //회원 카드 리스트 받아오기 react-query
-  const { data: cardListInfo, isLoading: cardListInfoLoading } = useQuery(
+  const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
     "cardList",
-    memberListUseQueryGetCardList,
+    (num) => memberListUseQueryGetCardList(num),
     {
       onSuccess: (res) => {
-        // console.log(res);
+        console.log(res);
+        if (cardList.length > 1) {
+          setCardList((data) => [...data, res]);
+        } else {
+          setCardList(res);
+        }
+        console.log(cardList);
       },
       onError: (err) => {
-        // console.log(err);
+        console.log(err);
       },
     }
   );
+  //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
+  let scrollY = 0;
+  window.addEventListener("scroll", function () {
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+    const scrollHeight = document.documentElement.scrollHeight;
+    if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
+      cardListInfo(pageNum + 1);
+      setPageNum(pageNum + 1);
+    }
+    scrollY = window.pageYOffset;
+  });
+  useEffect(() => {
+    cardListInfo(pageNum);
+  }, []);
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
     (index) => memberListUseQueryGetCardInfo(index),
     {
       onSuccess: (res) => {
-        // console.log(res);
+        console.log(res);
         setField(res.field);
         setImg(res.imageSrc);
         setIntroduce(res.introduction);
@@ -137,6 +146,7 @@ const MemberListPage = () => {
     setSkill(text.target.value);
   };
 
+  //선택 가능한 포지션 list
   const positionList = [
     "Back-end Developer",
     "Front-end Developer",
@@ -158,6 +168,7 @@ const MemberListPage = () => {
     "VR Engineer",
     "Hardware Engineer",
   ];
+  //선택 가능한 사용언어 list
   const skillList = [
     "javaScript",
     "TypeScript",
@@ -205,7 +216,7 @@ const MemberListPage = () => {
       >
         X
       </XBtn>
-      <Detail click={click ? click : undefined}>
+      <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
             <BookMark>
@@ -252,13 +263,11 @@ const MemberListPage = () => {
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
-        <ReviewContainer>
-          <CommentList />
-        </ReviewContainer>
+        <ReviewContainer></ReviewContainer>
       </Detail>
       <Wrap>
-        {cardListInfo &&
-          cardListInfo.map((data, index) => (
+        {cardList &&
+          cardList.flat().map((data, index) => (
             <MemberCard
               className="card"
               key={index}
@@ -276,7 +285,7 @@ const MemberListPage = () => {
                     <img src={data.skillSrc} alt="34" />
                   </Skill>
                   <ProfileImg>
-                    <img src={data.imageSrc} alt="앗 안나와여" />
+                    {/*<img src={data.imageSrc} alt="앗 안나와여" />*/}
                   </ProfileImg>
                   <NickName>{data.nickname}</NickName>
                   <Role>{data.field}</Role>
@@ -303,7 +312,7 @@ const spin = (top, left) => keyframes`
         transform: rotateY(-180deg);
     }
     100%{
-        top: ${scrollY + 490}px;
+        top: ${490}px;
         left: 50%;
         width: 70%;
         height:80%;
@@ -312,7 +321,7 @@ const spin = (top, left) => keyframes`
 `;
 const reset = (top, left) => keyframes`
     0%{
-      top: ${scrollY + 490}px;
+      top: ${490}px;
         left: 50%;
         width: 70%;
         height:980px;
@@ -480,16 +489,22 @@ const Back = styled.div`
   transform: rotateY(180deg);
 `;
 
+let scrollY = 0;
+window.addEventListener("scroll", function () {
+  scrollY = window.pageYOffset;
+  console.log(scrollY);
+});
+const clientHeight = document.documentElement.clientHeight;
 const Detail = styled(Front)`
   position: absolute;
   z-index: -9;
-  top: 50%;
+  top: ${(props) => `calc(50vh + ${scrollY}px - 5vh)`};
   left: 50%;
   opacity: 0;
   transform: translate(-50%, -50%);
   flex-direction: row;
   width: 70%;
-  height: 80%;
+  height: 75vh;
   color: ${({ theme }) => theme.colors.white};
   transition: all 0.5s;
   ${(props) =>
@@ -591,7 +606,7 @@ const LanguageImg = styled.div`
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #0e0606;
+  background-color: #738598;
   cursor: auto;
 `;
 

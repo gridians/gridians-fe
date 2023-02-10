@@ -3,7 +3,7 @@ import { api2 } from '../untils';
 
 export const commentuseMutationPostCommentList = async (comment) => {
   const res = await api2.post(
-    "cards/8/comments",
+    "cards/45/comments",
     { contents: comment },
     {
       headers: {

@@ -10,9 +10,11 @@ import { commentAtom } from "../../store/commentAtom";
 export default function CommentList() {
   const [comment, setComment] = useRecoilState(commentAtom);
   const [replyComment, setReplyComment] = useState("");
+  const [targetId, setTargetId] = useState("");
   const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
+  const textReplyRef = useRef();
   const replyCommentRef = useRef();
   const queryClient = useQueryClient();
 
@@ -62,9 +64,10 @@ export default function CommentList() {
     console.log(replyValid);
   };
 
-  const onClick = () => {
+  const onClickReplyComment = (commentIndex) => {
     setReplyValid(!replyValid);
-    console.log(replyValid);
+    setTargetId(commentIndex);
+    console.log(commentIndex);
   };
 
   const handleResizeHeight = useCallback(() => {
@@ -76,11 +79,12 @@ export default function CommentList() {
   }, []);
 
   const handleReplyCommentResizeHeight = useCallback(() => {
-    if (textRef === null || textRef.current === null) {
+    if (textReplyRef === null || textReplyRef.current === null) {
       return;
     }
-    textRef.current.style.height = "23px";
-    textRef.current.style.height = textRef.current.scrollHeight + "px";
+    textReplyRef.current.style.height = "23px";
+    textReplyRef.current.style.height =
+      textReplyRef.current.scrollHeight + "px";
     replyCommentRef.current.disabled = false;
     replyCommentRef.current.focus();
   }, []);
@@ -130,54 +134,58 @@ export default function CommentList() {
               <CommentListCommentWrapper>
                 <CommentListNickname>{commentArr.nickname}</CommentListNickname>
                 <CommentListComment>{commentArr.contents}</CommentListComment>
-                <CommentListReplyComment onClick={onClick}>
-                  <span>댓글</span>
+                <CommentListReplyComment>
+                  <CommentListReplayTitle
+                    onClick={(event) => onClickReplyComment(commentIndex)}
+                  >
+                    답글
+                  </CommentListReplayTitle>
                   {replyValid ? (
                     <>
-                      {commentArr.commentId === commentIndex + 1 ? (
-                        <span>대댓글</span>
-                      ) : (
-                        <span>{commentIndex}</span>
+                      {commentArr.commentId === targetId + 1 && (
+                        <CommentListReplyCommentWrapper>
+                          <CommentListReplyCommentInnderWrapper>
+                            <CommentProfile>프로필</CommentProfile>
+                            <CommentInput
+                              type="text"
+                              placeholder="댓글 입력하기.."
+                              ref={textReplyRef}
+                              onInput={handleReplyCommentResizeHeight}
+                              onChange={(e) => {
+                                setReplyComment(e.target.value);
+                                console.log(e);
+                              }}
+                              value={replyComment}
+                            />
+                            <CommentButtonContainer>
+                              {replyComment.length > 0 ? (
+                                <CommentButton
+                                  style={{
+                                    backgroundColor: "#0025A7",
+                                    color: "white",
+                                  }}
+                                  onClick={postReplyComment}
+                                >
+                                  등록
+                                </CommentButton>
+                              ) : (
+                                <CommentButton
+                                  style={{ cursor: "default" }}
+                                  disabled
+                                  onClick={postReplyComment}
+                                >
+                                  등록
+                                </CommentButton>
+                              )}
+                            </CommentButtonContainer>
+                          </CommentListReplyCommentInnderWrapper>
+                        </CommentListReplyCommentWrapper>
                       )}
                     </>
                   ) : null}
                 </CommentListReplyComment>
                 {/* {replyValid ? (
-                  <CommentFormContainer>
-                    <CommentProfile>프로필</CommentProfile>
-                    <CommentInput
-                      type="text"
-                      placeholder="댓글 입력하기.."
-                      ref={replyCommentRef}
-                      onInput={handleReplyCommentResizeHeight}
-                      onChange={(e) => {
-                        setReplyComment(e.target.value);
-                        console.log(e);
-                      }}
-                      value={replyComment}
-                    />
-                    <CommentButtonContainer>
-                      {replyComment.length > 0 ? (
-                        <CommentButton
-                          style={{
-                            backgroundColor: "#0025A7",
-                            color: "white",
-                          }}
-                          onClick={postReplyComment}
-                        >
-                          등록
-                        </CommentButton>
-                      ) : (
-                        <CommentButton
-                          style={{ cursor: "default" }}
-                          disabled
-                          onClick={postReplyComment}
-                        >
-                          등록
-                        </CommentButton>
-                      )}
-                    </CommentButtonContainer>
-                  </CommentFormContainer>
+             null
                 ) : (
                   <>
                     {replyCommentList.map((replyCommentArr, i) => {
@@ -259,15 +267,15 @@ const CommentTitle = styled.span`
 const CommentFormContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 20px;
+  padding: 0 15px;
 `;
-
 const CommentProfile = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.subColor2};
   border-radius: 50%;
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   color: white;
   /* margin-right: 20px; */
 `;
@@ -322,8 +330,7 @@ const CommentListContainer = styled.div`
 `;
 const CommentListWrapper = styled.div`
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  justify-content: space-evenly;
   margin-bottom: 10px;
 `;
 const CommentListCommentWrapper = styled.div`
@@ -343,10 +350,25 @@ const CommentListComment = styled.span`
   border: 1px solid white;
   overflow-wrap: break-word;
 `;
-const CommentListReplyComment = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.base};
+const CommentListReplyComment = styled.div`
   margin-top: 5px;
   margin-bottom: 10px;
-  color: #d28e8e;
+  position: relative;
+`;
+const CommentListReplayTitle = styled.span`
   cursor: pointer;
+  color: #d28e8e;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+`;
+const CommentListReplyCommentWrapper = styled.div`
+  border: 2px solid white;
+
+  /* position: absolute; */
+`;
+const CommentListReplyCommentInnderWrapper = styled.div`
+  border: 2px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  /* position: absolute; */
 `;
