@@ -8,6 +8,7 @@ export const signUpuseQueryPostInfo = (userInfo) => {
       nickname: userInfo.nickname,
       email: userInfo.email,
       password: userInfo.password,
+      githubNumberId: userInfo.githubId
     },
     {
       headers: {
