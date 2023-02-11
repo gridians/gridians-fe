@@ -4,7 +4,7 @@ import { getCookieToken, setCookieToken } from '../../cookie/cookie';
 
 export const api = axios.create({
   // baseURL: `${process.env.REACT_APP_BASE_URL}`,
-  baseURL: "http://58.231.19.218:8000",
+  baseURL: "http://116.123.153.248:8000",
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
@@ -13,7 +13,7 @@ export const api = axios.create({
 });
 export const api2 = axios.create({
   // baseURL: `${process.env.REACT_APP_BASE_URL}`,
-  baseURL: "http://43.200.217.91:8080/",
+  baseURL: "http://152.70.251.225:8080/",
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",

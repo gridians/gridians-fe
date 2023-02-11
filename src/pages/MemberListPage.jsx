@@ -4,26 +4,27 @@ import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import { useRecoilState } from "recoil";
 import {
+  github,
   imgSrc,
+  instagram,
   introduceText,
   language,
+  list,
+  nickNameText,
   position,
   statusMessage,
   tag,
+  twitter,
 } from "../store/cardInfoAtom";
 import { useMutation, useQuery } from "react-query";
 import {
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
-
-//스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
-let scrollY = 0;
-window.addEventListener("scroll", function () {
-  scrollY = window.pageYOffset;
-});
+import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
 
 const MemberListPage = () => {
+  const [cardList, setCardList] = useRecoilState(list);
   //카드를 클릭한 상태인지 다시 닫은 상태인지 관리
   const [click, setClick] = useState();
   //클릭한 카드에 index번호 저장
@@ -35,32 +36,63 @@ const MemberListPage = () => {
   const [retouch, setRetouch] = useState(false);
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
   const [field, setField] = useRecoilState(position);
-  const [list, setList] = useState();
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
   const [skill, setSkill] = useRecoilState(language);
-  // useEffect(() => {
-  //   axios
-  //     .get(`http://116.123.153.248:8000/cards?page=0&size=1`)
-  //     .then((data) => {
-  //       setList(data.data);
-  //       console.log(data.data);
-  //     });
-  // }, []);
+  const [nickName, setNickName] = useRecoilState(nickNameText);
+  const [githubId, setGithubId] = useRecoilState(github);
+  const [instagramId, setInstagramId] = useRecoilState(instagram);
+  const [twitterId, setTwitterId] = useRecoilState(twitter);
+
+  const [pageNum, setPageNum] = useState(0);
   //회원 카드 리스트 받아오기 react-query
-  const { data: cardListInfo, isLoading: cardListInfoLoading } = useQuery(
+  const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
     "cardList",
-    memberListUseQueryGetCardList,
+    (num) => memberListUseQueryGetCardList(num),
     {
+      retry: false,
       onSuccess: (res) => {
         console.log(res);
+        if (cardList.length > 1) {
+          setCardList((data) => [...data, res]);
+        } else {
+          setCardList(res);
+        }
       },
       onError: (err) => {
         console.log(err);
       },
     }
   );
+  const [checkMark, setCheckMark] = useState(false);
+
+  const [page, setPage] = useState(0);
+
+  const { isEnd } = InfiniteScroll({
+    onScrollEnd: cardListInfo,
+    pageNum: pageNum,
+    setPageNum: setPageNum,
+  });
+  useEffect(() => {
+    cardListInfo(pageNum);
+    setPageNum(pageNum + 1);
+  }, []);
+
+  // //무한 스크롤 구현
+  // window.addEventListener("scroll", function () {
+  //   const scrollTop = document.documentElement.scrollTop;
+  //   const clientHeight = document.documentElement.clientHeight;
+  //   const scrollHeight = document.documentElement.scrollHeight;
+  //   if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
+  //     cardListInfo(pageNum + 1);
+  //     setPageNum(pageNum + 1);
+  //   }
+  // });
+  // useEffect(() => {
+  //   cardListInfo(pageNum);
+  // }, []);
+
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
@@ -69,6 +101,16 @@ const MemberListPage = () => {
       onSuccess: (res) => {
         console.log(res);
         setField(res.field);
+        setImg(res.imageSrc);
+        setIntroduce(res.introduction);
+        setSkill(res.skill);
+        setStatusMsg(res.statusMessage);
+        setTagList(res.tagSet);
+        res.snsSet.map((data) => {
+          if (data.name === "twitter") return setTwitterId(data.account);
+          if (data.name === "github") return setGithubId(data.account);
+          else return setInstagramId(data.account);
+        });
       },
       onError: (err) => {
         console.log(err);
@@ -89,8 +131,9 @@ const MemberListPage = () => {
     setTop(document.querySelectorAll(".card")[num].offsetTop);
     setLeft(document.querySelectorAll(".card")[num].offsetLeft);
   };
-  const cardOnClick = (e, index) => {
-    cardInfo(index);
+  const cardOnClick = (e, index, data) => {
+    setNickName(data.nickname);
+    cardInfo(data.profileCardId);
     setNum(index);
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
@@ -117,6 +160,7 @@ const MemberListPage = () => {
     setSkill(text.target.value);
   };
 
+  //선택 가능한 포지션 list
   const positionList = [
     "Back-end Developer",
     "Front-end Developer",
@@ -138,6 +182,7 @@ const MemberListPage = () => {
     "VR Engineer",
     "Hardware Engineer",
   ];
+  //선택 가능한 사용언어 list
   const skillList = [
     "javaScript",
     "TypeScript",
@@ -185,14 +230,63 @@ const MemberListPage = () => {
       >
         X
       </XBtn>
+      <Detail click={click ? click : undefined} scrollY={scrollY}>
+        <DetailContainer>
+          <DefaultInfo>
+            <BookMark>
+              <BsFillBookmarkFill />
+            </BookMark>
+            {retouch ? (
+              <StatusMessage
+                value={statusMsg}
+                onChange={(text) => statusMsgOnChange(text)}
+                retouch={retouch}
+              />
+            ) : (
+              <StatusMessage value={statusMsg} disabled />
+            )}
+            <LanguageImg retouch={retouch}>
+              {retouch ? (
+                <>
+                  <select
+                    value={field}
+                    onChange={(text) => positionOnChange(text)}
+                    placeholder="포지션을 선택"
+                  >
+                    {positionList.map((name) => (
+                      <option key={name}>{name}</option>
+                    ))}
+                    <option>react</option>
+                  </select>
+                  <select
+                    value={skill}
+                    onChange={(text) => skillOnChange(text)}
+                  >
+                    {skillList.map((name) => (
+                      <option key={name}>{name}</option>
+                    ))}
+                  </select>
+                </>
+              ) : (
+                <>
+                  <h4>{field}</h4>
+                  <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" />
+                </>
+              )}
+            </LanguageImg>
+          </DefaultInfo>
+          <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
+        </DetailContainer>
+        <ReviewContainer></ReviewContainer>
+      </Detail>
       <Wrap>
-        {cardListInfo &&
-          cardListInfo.map((data, index) => (
+        {cardList &&
+          cardList.flat().map((data, index) => (
             <MemberCard
               className="card"
               key={index}
               click={click ? click : ""}
-              onClick={(e) => cardOnClick(e, index)}
+              onClick={(e) => cardOnClick(e, index, data)}
             >
               <Card
                 left={left}
@@ -202,77 +296,19 @@ const MemberListPage = () => {
               >
                 <Front>
                   <Skill>
-                    <img
-                      src="http://175.215.143.189:8080/cards/images/skills/"
-                      alt="34"
-                    />
+                    <img src={data.skillImage} alt="34" />
                   </Skill>
                   <ProfileImg>
-                    <img src={data.imageSrc} alt="앗 안나와여" />
+                    <img src={data.profileImage} alt="앗 안나와여" />
                   </ProfileImg>
                   <NickName>{data.nickname}</NickName>
                   <Role>{data.field}</Role>
                 </Front>
-                <Detail click={click && num === index ? click : undefined}>
+                <Back className="back">
                   <DetailBtn click={click ? click : undefined}>
                     <BsFillChatDotsFill />
                   </DetailBtn>
-                  <DetailContainer
-                    click={click && num === index ? click : undefined}
-                  >
-                    <DefaultInfo>
-                      <BookMark>
-                        <BsFillBookmarkFill />
-                      </BookMark>
-                      {retouch ? (
-                        <StatusMessage
-                          value={statusMsg}
-                          onChange={(text) => statusMsgOnChange(text)}
-                          retouch={retouch}
-                        />
-                      ) : (
-                        <StatusMessage value={statusMsg} disabled />
-                      )}
-                      <LanguageImg retouch={retouch}>
-                        {retouch ? (
-                          <>
-                            <select
-                              value={field}
-                              onChange={(text) => positionOnChange(text)}
-                              placeholder="포지션을 선택"
-                            >
-                              {positionList.map((name) => (
-                                <option key={name}>{name}</option>
-                              ))}
-                              <option>react</option>
-                            </select>
-                            <select
-                              value={skill}
-                              onChange={(text) => skillOnChange(text)}
-                            >
-                              {skillList.map((name) => (
-                                <option key={name}>{name}</option>
-                              ))}
-                            </select>
-                          </>
-                        ) : (
-                          <>
-                            <h4>{data.field}</h4>
-                            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" />
-                          </>
-                        )}
-                      </LanguageImg>
-                    </DefaultInfo>
-                    <SimpleSlider
-                      setRetouch={setRetouch}
-                      retouch={retouch}
-                      index={index}
-                    />
-                  </DetailContainer>
-                  <ReviewContainer
-                    click={click && num === index ? click : undefined}
-                  ></ReviewContainer>
-                </Detail>
+                </Back>
               </Card>
             </MemberCard>
           ))}
@@ -285,19 +321,21 @@ const spin = (top, left) => keyframes`
     0%{
         top:${top}px;
         left:${left}px;
-        transform: rotateY(180deg);
+        width: 70%;
+        height:80%;
+        transform: rotateY(-180deg);
     }
     100%{
-        top: ${scrollY + 490}px;
+        top: ${490}px;
         left: 50%;
         width: 70%;
-        height:980px;
+        height:80%;
         transform: rotateY(-180deg) translate(50%,-50%);
     }
 `;
 const reset = (top, left) => keyframes`
     0%{
-      top: ${scrollY + 490}px;
+      top: ${490}px;
         left: 50%;
         width: 70%;
         height:980px;
@@ -376,15 +414,14 @@ const MemberCard = styled.div`
   width: 250px;
   height: 250px;
   background-color: transparent;
-  border-radius: 10px;
   transition: all 0.5s;
   cursor: pointer;
   &:hover {
     .front {
-      transform: rotateY(180deg);
+      transform: rotateY(-180deg);
     }
   }
-  ${(props) =>
+  /* ${(props) =>
     props.click === "reset"
       ? css`
           &:hover {
@@ -395,7 +432,7 @@ const MemberCard = styled.div`
         `
       : css`
           ${null}
-        `}
+        `} */
 `;
 const Card = styled.div`
   position: absolute;
@@ -405,7 +442,10 @@ const Card = styled.div`
   color: black;
   transform-style: preserve-3d;
   transition: all 0.5s;
-  ${(props) =>
+  &:hover {
+    transform: rotateY(180deg);
+  }
+  /* ${(props) =>
     props.click === "click"
       ? css`
           z-index: 3;
@@ -417,21 +457,18 @@ const Card = styled.div`
       ? css`
           animation: ${(props) => reset(props.top, props.left)} 0.5s ease-in-out;
         `
-      : css``}
+      : css``} */
 `;
 const Front = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
+  z-index: 999;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100%;
   background: #f6b8b8;
-  border-radius: 10px;
-  transform-style: preserve-3d;
-  transition: all 2s ease-in-out;
+  transition: all 0.5s ease-in-out;
   backface-visibility: hidden;
 `;
 const Skill = styled.div`
@@ -460,22 +497,41 @@ const Role = styled.h5`
   margin: 0;
   color: #505050;
 `;
+const Back = styled.div`
+  height: 100%;
+  background: #f6b8b8;
+  transform: rotateY(180deg);
+`;
 
+let scrollY = 0;
+window.addEventListener("scroll", function () {
+  scrollY = window.pageYOffset;
+});
+const clientHeight = document.documentElement.clientHeight;
 const Detail = styled(Front)`
-  display: flex;
+  position: absolute;
+  z-index: -9;
+  top: ${(props) => `calc(50vh + ${scrollY}px - 5vh)`};
+  left: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
   flex-direction: row;
+  width: 70%;
+  height: 75vh;
   color: ${({ theme }) => theme.colors.white};
-  transform: perspective(500px) rotateY(180deg);
+  transition: all 0.5s;
   ${(props) =>
     props.click === "click"
       ? css`
-          background-color: transparent;
+          z-index: 9;
+          display: flex;
+          opacity: 1;
         `
       : css``}
 `;
 const DetailBtn = styled.div`
   position: absolute;
-  z-index: 3;
+  z-index: 2;
   top: 50%;
   left: 50%;
   display: flex;
@@ -499,32 +555,16 @@ const DetailBtn = styled.div`
 `;
 
 const DetailContainer = styled.div`
-  position: relative;
-  z-index: 1;
-  opacity: 0;
   padding: 30px;
   width: 70%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  transition: all 0.5s;
   cursor: auto;
-  ${(props) =>
-    props.click === "click"
-      ? css`
-          opacity: 1;
-        `
-      : css``}
-  ${(props) =>
-    props.click === "reset"
-      ? css`
-          transition: all 1s;
-        `
-      : css``}
 `;
 const DefaultInfo = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 20%;
+  height: 10%;
 `;
 const BookMark = styled.div`
   width: 197px;
@@ -577,19 +617,10 @@ const LanguageImg = styled.div`
 `;
 
 const ReviewContainer = styled.div`
-  opacity: 0;
   width: 30%;
   height: 100%;
   background-color: #738598;
-  transition: all 2s;
   cursor: auto;
-  ${(props) =>
-    props.click === "click"
-      ? css`
-          opacity: 1;
-          transition: all 1s;
-        `
-      : css``}
 `;
 
 export default MemberListPage;

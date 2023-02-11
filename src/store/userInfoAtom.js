@@ -23,6 +23,10 @@ export const loginUserPasswordLength = atom({
   default: "",
 });
 
+export const loginGithubId = atom({
+  key:`loginGithubId/${v1()}`,
+  default: "",
+})
 
 
 // export const userNicknameSelector = selector({

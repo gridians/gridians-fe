@@ -1,8 +1,20 @@
 import { atom } from "recoil";
 import { v1 } from "uuid";
 
+export const list = atom({
+  key: `list/${v1()}`,
+  default: [],
+});
 export const imgSrc = atom({
   key: `imgSrc/${v1()}`,
+  default: "",
+});
+export const skillSrc = atom({
+  key: `skillSrc/${v1()}`,
+  default: "",
+});
+export const nickNameText = atom({
+  key: `nickNameText/${v1()}`,
   default: "",
 });
 export const statusMessage = atom({
