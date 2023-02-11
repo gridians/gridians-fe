@@ -21,6 +21,8 @@ import {
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
+import CommentList from "../components/comment/CommentList";
+import useInfiniteScroll from "../components/infiniteScroll/useInfiniteScroll";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -50,6 +52,7 @@ const MemberListPage = () => {
     "cardList",
     (num) => memberListUseQueryGetCardList(num),
     {
+      retry: false,
       onSuccess: (res) => {
         console.log(res);
         if (cardList.length > 1) {
@@ -57,28 +60,40 @@ const MemberListPage = () => {
         } else {
           setCardList(res);
         }
-        console.log(cardList);
       },
       onError: (err) => {
         console.log(err);
       },
     }
   );
-  //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
-  let scrollY = 0;
-  window.addEventListener("scroll", function () {
-    const scrollTop = document.documentElement.scrollTop;
-    const clientHeight = document.documentElement.clientHeight;
-    const scrollHeight = document.documentElement.scrollHeight;
-    if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
-      cardListInfo(pageNum + 1);
-      setPageNum(pageNum + 1);
-    }
-    scrollY = window.pageYOffset;
+  const [checkMark, setCheckMark] = useState(false);
+
+  const [page, setPage] = useState(0);
+
+  const { isEnd } = useInfiniteScroll({
+    onScrollEnd: cardListInfo,
+    pageNum: pageNum,
+    setPageNum: setPageNum,
   });
   useEffect(() => {
     cardListInfo(pageNum);
+    setPageNum(pageNum + 1);
   }, []);
+
+  // //무한 스크롤 구현
+  // window.addEventListener("scroll", function () {
+  //   const scrollTop = document.documentElement.scrollTop;
+  //   const clientHeight = document.documentElement.clientHeight;
+  //   const scrollHeight = document.documentElement.scrollHeight;
+  //   if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
+  //     cardListInfo(pageNum + 1);
+  //     setPageNum(pageNum + 1);
+  //   }
+  // });
+  // useEffect(() => {
+  //   cardListInfo(pageNum);
+  // }, []);
+
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
@@ -119,7 +134,8 @@ const MemberListPage = () => {
   };
   const cardOnClick = (e, index, data) => {
     setNickName(data.nickname);
-    cardInfo(index);
+    cardInfo(data.profileCardId);
+    console.log(data.profileCardId);
     setNum(index);
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
@@ -263,7 +279,9 @@ const MemberListPage = () => {
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
-        <ReviewContainer></ReviewContainer>
+        <ReviewContainer>
+          <CommentList />
+        </ReviewContainer>
       </Detail>
       <Wrap>
         {cardList &&
@@ -282,10 +300,10 @@ const MemberListPage = () => {
               >
                 <Front>
                   <Skill>
-                    <img src={data.skillSrc} alt="34" />
+                    <img src={data.skillImage} alt="34" />
                   </Skill>
                   <ProfileImg>
-                    {/*<img src={data.imageSrc} alt="앗 안나와여" />*/}
+                    <img src={data.profileImage} alt="앗 안나와여" />
                   </ProfileImg>
                   <NickName>{data.nickname}</NickName>
                   <Role>{data.field}</Role>
@@ -492,7 +510,6 @@ const Back = styled.div`
 let scrollY = 0;
 window.addEventListener("scroll", function () {
   scrollY = window.pageYOffset;
-  console.log(scrollY);
 });
 const clientHeight = document.documentElement.clientHeight;
 const Detail = styled(Front)`

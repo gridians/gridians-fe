@@ -9,6 +9,7 @@ import { commentAtom } from "../../store/commentAtom";
 
 export default function CommentList() {
   const [comment, setComment] = useRecoilState(commentAtom);
+  const [commentId, setCommentId] = useState([]);
   const [replyComment, setReplyComment] = useState("");
   const [targetId, setTargetId] = useState("");
   const [replyCommentList, setReplyCommentList] = useState([]);
@@ -23,7 +24,18 @@ export default function CommentList() {
     memberListUseQueryGetCardInfo,
     {
       onSuccess: (res) => {
-        // console.log(res);
+        console.log(res);
+        // setCommentId(res.commentList.commentId);
+        for (let i = 0; i < res.commentList.length; i++) {
+          setCommentId((todoId) => {
+            console.log(todoId);
+            return [...todoId, res.commentList[i].commentId];
+          });
+        }
+        const newCommentId = commentId.filter(
+          (v, i) => commentId.indexOf(v) === i
+        );
+        console.log(newCommentId);
       },
       onError: (err) => {
         console.log(err);
@@ -67,7 +79,6 @@ export default function CommentList() {
   const onClickReplyComment = (commentIndex) => {
     setReplyValid(!replyValid);
     setTargetId(commentIndex);
-    console.log(commentIndex);
   };
 
   const handleResizeHeight = useCallback(() => {
@@ -88,6 +99,8 @@ export default function CommentList() {
     replyCommentRef.current.disabled = false;
     replyCommentRef.current.focus();
   }, []);
+
+  console.log(commentId);
 
   return (
     <CommentContainer>
@@ -142,7 +155,7 @@ export default function CommentList() {
                   </CommentListReplayTitle>
                   {replyValid ? (
                     <>
-                      {commentArr.commentId === targetId + 1 && (
+                      {commentArr.commentId === commentId && (
                         <CommentListReplyCommentWrapper>
                           <CommentListReplyCommentInnderWrapper>
                             <CommentProfile>프로필</CommentProfile>
