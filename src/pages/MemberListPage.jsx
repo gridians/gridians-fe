@@ -21,6 +21,7 @@ import {
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
+import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -50,6 +51,7 @@ const MemberListPage = () => {
     "cardList",
     (num) => memberListUseQueryGetCardList(num),
     {
+      retry: false,
       onSuccess: (res) => {
         console.log(res);
         if (cardList.length > 1) {
@@ -57,28 +59,40 @@ const MemberListPage = () => {
         } else {
           setCardList(res);
         }
-        console.log(cardList);
       },
       onError: (err) => {
         console.log(err);
       },
     }
   );
-  //스크롤을 내려도 항상 중앙에 요소를 배치하기 위해 스크롤한 값을 구한다
-  let scrollY = 0;
-  window.addEventListener("scroll", function () {
-    const scrollTop = document.documentElement.scrollTop;
-    const clientHeight = document.documentElement.clientHeight;
-    const scrollHeight = document.documentElement.scrollHeight;
-    if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
-      cardListInfo(pageNum + 1);
-      setPageNum(pageNum + 1);
-    }
-    scrollY = window.pageYOffset;
+  const [checkMark, setCheckMark] = useState(false);
+
+  const [page, setPage] = useState(0);
+
+  const { isEnd } = InfiniteScroll({
+    onScrollEnd: cardListInfo,
+    pageNum: pageNum,
+    setPageNum: setPageNum,
   });
   useEffect(() => {
     cardListInfo(pageNum);
+    setPageNum(pageNum + 1);
   }, []);
+
+  // //무한 스크롤 구현
+  // window.addEventListener("scroll", function () {
+  //   const scrollTop = document.documentElement.scrollTop;
+  //   const clientHeight = document.documentElement.clientHeight;
+  //   const scrollHeight = document.documentElement.scrollHeight;
+  //   if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
+  //     cardListInfo(pageNum + 1);
+  //     setPageNum(pageNum + 1);
+  //   }
+  // });
+  // useEffect(() => {
+  //   cardListInfo(pageNum);
+  // }, []);
+
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
@@ -119,7 +133,7 @@ const MemberListPage = () => {
   };
   const cardOnClick = (e, index, data) => {
     setNickName(data.nickname);
-    cardInfo(index);
+    cardInfo(data.profileCardId);
     setNum(index);
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
@@ -146,6 +160,7 @@ const MemberListPage = () => {
     setSkill(text.target.value);
   };
 
+  //선택 가능한 포지션 list
   const positionList = [
     "Back-end Developer",
     "Front-end Developer",
@@ -167,6 +182,7 @@ const MemberListPage = () => {
     "VR Engineer",
     "Hardware Engineer",
   ];
+  //선택 가능한 사용언어 list
   const skillList = [
     "javaScript",
     "TypeScript",
@@ -280,10 +296,10 @@ const MemberListPage = () => {
               >
                 <Front>
                   <Skill>
-                    <img src={data.skillSrc} alt="34" />
+                    <img src={data.skillImage} alt="34" />
                   </Skill>
                   <ProfileImg>
-                    {/*<img src={data.imageSrc} alt="앗 안나와여" />*/}
+                    <img src={data.profileImage} alt="앗 안나와여" />
                   </ProfileImg>
                   <NickName>{data.nickname}</NickName>
                   <Role>{data.field}</Role>
@@ -487,16 +503,21 @@ const Back = styled.div`
   transform: rotateY(180deg);
 `;
 
+let scrollY = 0;
+window.addEventListener("scroll", function () {
+  scrollY = window.pageYOffset;
+});
+const clientHeight = document.documentElement.clientHeight;
 const Detail = styled(Front)`
   position: absolute;
   z-index: -9;
-  top: ${(props) => props.scrollY && `calc(50% - ${props.scrollY})`};
+  top: ${(props) => `calc(50vh + ${scrollY}px - 5vh)`};
   left: 50%;
   opacity: 0;
   transform: translate(-50%, -50%);
   flex-direction: row;
   width: 70%;
-  height: 850px;
+  height: 75vh;
   color: ${({ theme }) => theme.colors.white};
   transition: all 0.5s;
   ${(props) =>
