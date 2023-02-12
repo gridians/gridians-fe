@@ -128,6 +128,56 @@ const MemberListPage = () => {
     setSkill(text.target.value);
   };
 
+  //상세정보가 떠 있을시 스크롤 막기
+  var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
+  function preventDefault(e) {
+    e.preventDefault();
+  }
+  function preventDefaultForScrollKeys(e) {
+    if (keys[e.keyCode]) {
+      preventDefault(e);
+      return false;
+    }
+  }
+  // modern Chrome requires { passive: false } when adding event
+  var supportsPassive = false;
+  try {
+    window.addEventListener(
+      "test",
+      null,
+      Object.defineProperty({}, "passive", {
+        get: function () {
+          supportsPassive = true;
+        },
+      })
+    );
+  } catch (e) {}
+
+  var wheelOpt = supportsPassive ? { passive: false } : false;
+  var wheelEvent =
+    "onwheel" in document.createElement("div") ? "wheel" : "mousewheel";
+
+  // call this to Disable
+  function disableScroll() {
+    window.addEventListener("DOMMouseScroll", preventDefault, false); // older FF
+    window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+    window.addEventListener("touchmove", preventDefault, wheelOpt); // mobile
+    window.addEventListener("keydown", preventDefaultForScrollKeys, false);
+  }
+  // call this to Enable
+  function enableScroll() {
+    window.removeEventListener("DOMMouseScroll", preventDefault, false);
+    window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
+    window.removeEventListener("touchmove", preventDefault, wheelOpt);
+    window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
+  }
+  useEffect(() => {
+    if (click === "click") {
+      disableScroll();
+    }
+     return()=> enableScroll();
+  }, [click]);
+
   //선택 가능한 포지션 list
   const positionList = [
     "Back-end Developer",
@@ -283,39 +333,6 @@ const MemberListPage = () => {
   );
 };
 
-const spin = (top, left) => keyframes`
-    0%{
-        top:${top}px;
-        left:${left}px;
-        width: 70%;
-        height:80%;
-        transform: rotateY(-180deg);
-    }
-    100%{
-        top: ${490}px;
-        left: 50%;
-        width: 70%;
-        height:80%;
-        transform: rotateY(-180deg) translate(50%,-50%);
-    }
-`;
-const reset = (top, left) => keyframes`
-    0%{
-      top: ${490}px;
-        left: 50%;
-        width: 70%;
-        height:980px;
-        transform: rotateY(-180deg) translate(50%,-50%);
-    }
-    100%{
-        top: ${top}px;
-        left: ${left}px;
-        width: 250px;
-        height: 250px;
-        transform: rotateY(0deg);
-    }
-`;
-
 const Container = styled.div`
   position: relative;
   width: 100%;
@@ -409,6 +426,7 @@ const Front = styled.div`
   width: 100%;
   height: 100%;
   background: #f6b8b8;
+  border-radius: 10px;
   transition: all 0.5s ease-in-out;
   backface-visibility: hidden;
 `;
@@ -441,6 +459,7 @@ const Role = styled.h5`
 const Back = styled.div`
   height: 100%;
   background: #f6b8b8;
+  border-radius: 10px;
   transform: rotateY(180deg);
 `;
 
