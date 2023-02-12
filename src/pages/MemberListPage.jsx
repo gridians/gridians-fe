@@ -12,6 +12,7 @@ import {
   list,
   nickNameText,
   position,
+  skillSrc,
   statusMessage,
   tag,
   twitter,
@@ -39,6 +40,7 @@ const MemberListPage = () => {
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
+  const [skillUrl, setSkillUrl] = useRecoilState(skillSrc);
   const [skill, setSkill] = useRecoilState(language);
   const [nickName, setNickName] = useRecoilState(nickNameText);
   const [githubId, setGithubId] = useRecoilState(github);
@@ -101,7 +103,6 @@ const MemberListPage = () => {
       onSuccess: (res) => {
         console.log(res);
         setField(res.field);
-        setImg(res.imageSrc);
         setIntroduce(res.introduction);
         setSkill(res.skill);
         setStatusMsg(res.statusMessage);
@@ -134,6 +135,8 @@ const MemberListPage = () => {
   const cardOnClick = (e, index, data) => {
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
+    setImg(data.profileImage);
+    setSkillUrl(data.skillImage);
     setNum(index);
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);
@@ -270,7 +273,7 @@ const MemberListPage = () => {
               ) : (
                 <>
                   <h4>{field}</h4>
-                  <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" />
+                  <img src={skillUrl} alt="사용언어"/>
                 </>
               )}
             </LanguageImg>
