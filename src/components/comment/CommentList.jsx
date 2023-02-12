@@ -8,14 +8,13 @@ import { memberListUseQueryGetCardInfo } from "../../apis/queries/memberListQuer
 import { commentAtom } from "../../store/commentAtom";
 
 export default function CommentList() {
-  const [comment, setComment] = useRecoilState(commentAtom);
+  const [comment, setComment] = useState("");
   const [commentId, setCommentId] = useState([]);
   const [replyComment, setReplyComment] = useState("");
   const [targetId, setTargetId] = useState("");
   const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
-  const textReplyRef = useRef();
   const replyCommentRef = useRef();
   const queryClient = useQueryClient();
 
@@ -23,19 +22,20 @@ export default function CommentList() {
     "carCommentInfo",
     memberListUseQueryGetCardInfo,
     {
+      refetchOnWindowFocus: false,
       onSuccess: (res) => {
         console.log(res);
         // setCommentId(res.commentList.commentId);
         for (let i = 0; i < res.commentList.length; i++) {
           setCommentId((todoId) => {
-            console.log(todoId);
             return [...todoId, res.commentList[i].commentId];
           });
         }
-        const newCommentId = commentId.filter(
-          (v, i) => commentId.indexOf(v) === i
-        );
-        console.log(newCommentId);
+
+        commentId.map((el) => {
+          console.log(el);
+          return null;
+        });
       },
       onError: (err) => {
         console.log(err);
@@ -45,13 +45,14 @@ export default function CommentList() {
   const { mutate: commentList } = useMutation(
     (comment) => commentuseMutationPostCommentList(comment),
     {
+      refetchOnWindowFocus: false,
       onSuccess: (res) => {
         console.log(res);
+        queryClient.invalidateQueries("carCommentInfo");
       },
       onSettled: (data, error, variables, context) => {
         // console.log(data);
         // mutation이 완료되면 성공 유무와 관계없이 쿼리를 무효화 시키고 새로 갱신
-        queryClient.invalidateQueries("carCommentInfo");
       },
     }
   );
@@ -78,7 +79,6 @@ export default function CommentList() {
 
   const onClickReplyComment = (commentIndex) => {
     setReplyValid(!replyValid);
-    setTargetId(commentIndex);
   };
 
   const handleResizeHeight = useCallback(() => {
@@ -90,15 +90,23 @@ export default function CommentList() {
   }, []);
 
   const handleReplyCommentResizeHeight = useCallback(() => {
-    if (textReplyRef === null || textReplyRef.current === null) {
+    if (replyCommentRef === null || replyCommentRef.current === null) {
       return;
     }
-    textReplyRef.current.style.height = "23px";
-    textReplyRef.current.style.height =
-      textReplyRef.current.scrollHeight + "px";
+    console.log(replyCommentRef.current.value);
+    replyCommentRef.current.style.height = "23px";
+    replyCommentRef.current.style.height =
+      replyCommentRef.current.scrollHeight + "px";
     replyCommentRef.current.disabled = false;
     replyCommentRef.current.focus();
   }, []);
+
+  const onChangeRelyValue = (e) => {
+    const { name, value } = e.target;
+    setReplyComment((input) => {
+      return { ...input, [name]: value };
+    });
+  };
 
   console.log(commentId);
 
@@ -141,6 +149,10 @@ export default function CommentList() {
       </CommentFormContainer>
       <CommentListContainer>
         {cardInfo?.commentList.map((commentArr, commentIndex) => {
+          // {
+          //   console.log(commentArr);
+          // }
+
           return (
             <CommentListWrapper key={commentIndex}>
               <CommentProfile>프로필</CommentProfile>
@@ -155,14 +167,14 @@ export default function CommentList() {
                   </CommentListReplayTitle>
                   {replyValid ? (
                     <>
-                      {commentArr.commentId === commentId && (
+                      {commentArr.commentId && (
                         <CommentListReplyCommentWrapper>
                           <CommentListReplyCommentInnderWrapper>
                             <CommentProfile>프로필</CommentProfile>
                             <CommentInput
                               type="text"
                               placeholder="댓글 입력하기.."
-                              ref={textReplyRef}
+                              ref={replyCommentRef}
                               onInput={handleReplyCommentResizeHeight}
                               onChange={(e) => {
                                 setReplyComment(e.target.value);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { AiOutlineIdcard } from "react-icons/ai";
@@ -17,10 +17,13 @@ import {
 import { useNavigate } from "react-router";
 import { useMutation } from "react-query";
 import { signUpuseQueryPostInfo } from "../apis/queries/signUpQuery";
-import { useEffect } from "react";
+import { loginGithubId } from "../store/userInfoAtom";
 
 export default function SignUp() {
   const navigate = useNavigate();
+
+  const [githubId, setGithubId] = useRecoilState(loginGithubId);
+
   const [nickname, setNickname] = useRecoilState(userNickname);
   const [email, setEmail] = useRecoilState(userEmail);
   const [password, setPassword] = useRecoilState(userPassword);
@@ -142,28 +145,12 @@ export default function SignUp() {
       setIsPassword(true);
     }
   };
-  const userInfo = { nickname, email, password };
+  const userInfo = { nickname, email, password, githubId };
 
   const onClickSubmit = (e) => {
     e.preventDefault();
     loginFindUserPassword(userInfo);
   };
-
-  // const postRegister = async () => {
-  //   try {
-  //     const res = await api.post("/user/auth/signup", {
-  //       nickname,
-  //       email,
-  //       password,
-  //     });
-  //     if (res.status === 200) {
-
-  //     }
-  //     return res.data;
-  //   } catch (err) {
-
-  //   }
-  // };
 
   return (
     <SignUpContainer>

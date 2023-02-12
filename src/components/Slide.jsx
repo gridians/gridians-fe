@@ -80,7 +80,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const editCardListUserInfo = {
     statusMessage: statusMsg,
     field: field,
-    skillSet: skill,
+    skill: skill,
     introduction: introduce,
     snsSet: [
       { id: githubId, name: "github" },
@@ -249,6 +249,15 @@ const StyledSlider = styled(Slider)`
   }
   .slick-dots {
     li {
+<<<<<<< HEAD
+=======
+      ${(props) =>
+        props.retouch
+          ? css`
+              display: none;
+            `
+          : css``}
+>>>>>>> 5d520a678d071308b910c80dd6278271f9f94e39
       button {
         &::before {
           font-size: 15px;

@@ -135,7 +135,6 @@ const MemberListPage = () => {
   const cardOnClick = (e, index, data) => {
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
-    console.log(data.profileCardId);
     setNum(index);
     setClick("click");
     setTop(document.querySelectorAll(".card")[index].offsetTop);

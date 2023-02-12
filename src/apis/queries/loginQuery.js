@@ -31,3 +31,11 @@ export const postLoginQueryFindUserPassword = async (email) => {
   );
   return res.data;
 };
+
+//github 로그인 토큰 보내기
+export const loginUseMutationPostToken = (token) =>{
+  const res = api.post("/user/auth/social-login",{
+    token:token
+  })
+  return res.data;
+}

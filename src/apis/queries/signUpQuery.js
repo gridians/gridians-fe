@@ -7,6 +7,7 @@ export const signUpuseQueryPostInfo = async(userInfo) => {
       nickname: userInfo.nickname,
       email: userInfo.email,
       password: userInfo.password,
+      githubNumberId: userInfo.githubId
     },
   );
   return res.data;

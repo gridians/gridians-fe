@@ -7,15 +7,15 @@ export const commentAtom = atom({
   default:"",
 });
 
-export const validAtom = atom({
-  key: `validAtom/${v1}`,
-  default: false,
-});
+// export const validAtom = atom({
+//   key: `validAtom/${v1}`,
+//   default: false,
+// });
 
-export const commentListAtom = atom({
-  key: `commentListAtom/${v1}`,
-  default: [],
-});
+// export const commentListAtom = atom({
+//   key: `commentListAtom/${v1}`,
+//   default: [],
+// });
 
 // export const getUserComment = selector({
 //   key: `getUseComment/${v1}`,
