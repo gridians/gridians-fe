@@ -17,10 +17,14 @@ export const commentuseMutationPostCommentList = async (comment) => {
 
 };
 
-export const replyCommentuseMutationPostCommentList = async (commentId, comment) => {
+export const replyCommentuseMutationPostCommentList = async (
+  commentId,
+  replyComment
+) => {
+  console.log(commentId, replyComment);
   const res = await api2.post(
-    `cards/2/comments${commentId}`,
-    { contents: "comment" },
+    `cards/2/comments/${commentId}`,
+    { contents: replyComment },
     {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -29,5 +33,5 @@ export const replyCommentuseMutationPostCommentList = async (commentId, comment)
       },
     }
   );
-    return res.data;
-}
+  return res.data;
+};

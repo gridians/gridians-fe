@@ -10,11 +10,14 @@ import {
   postLoginUseQueryUserInfo,
 } from "../apis/queries/loginQuery";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
+import { useSetRecoilState } from "recoil";
+import { myPageUserNicknameValue } from "../store/myPageAtom";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setNickname = useSetRecoilState(myPageUserNicknameValue);
 
   const [emailMessage, setEmailMessage] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
@@ -30,6 +33,7 @@ const Login = () => {
         console.log(res);
         setCookieToken("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
+        setNickname(res.nickname);
         setIsLoading(true);
         setTimeout(() => {
           navigate("/home");

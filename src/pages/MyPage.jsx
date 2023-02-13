@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { AiOutlineFileImage } from "react-icons/ai";
 import { AiOutlineIdcard } from "react-icons/ai";
@@ -16,6 +16,7 @@ import {
   myPageUserNewPasswordMessage,
   myPageUserNickname,
   myPageUserNicknameMessage,
+  myPageUserNicknameValue,
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
@@ -120,25 +121,25 @@ export default function MyPage() {
     const fileList = e.target.files;
     const maxSizw = 2 * 1024 * 1024;
     const fileSize = fileList[0].size;
-
-    if (fileList && fileList[0]) {
-      if (fileSize > maxSizw) {
-        Swal.fire({
-          text:
-            "2MB 이하 파일만 등록할 수 있습니다.\n\n" +
-            "현재파일 용량 : " +
-            Math.round((fileSize / 1024 / 1024) * 100) / 100 +
-            "MB",
-        });
-        return (e.target.value = null);
-      }
-      const reader = new FileReader();
-      reader.readAsDataURL(fileList[0]);
-      reader.onload = () => {
-        const base64data = reader.result;
-        setImageSrc(base64data);
-      };
+    const formData = new FormData();
+    formData.append("fileList", fileList);
+    if (fileSize > maxSizw) {
+      Swal.fire({
+        text:
+          "2MB 이하 파일만 등록할 수 있습니다.\n\n" +
+          "현재파일 용량 : " +
+          Math.round((fileSize / 1024 / 1024) * 100) / 100 +
+          "MB",
+      });
+      return (e.target.value = null);
     }
+    setImageSrc(formData.get("fileList"));
+
+    // const reader = new FileReader();
+    // reader.readAsDataURL(fileList[0]);
+    // reader.onload = () => {
+    //   const base64data = reader.result;
+    // };
   };
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
@@ -369,9 +370,7 @@ export default function MyPage() {
           <MyPageInputContainerInnerWrapper>
             <MyPageInputWrapper className="profileImageContainer">
               {userInfoValue?.email !== undefined && (
-                <ProfileImage
-                  src={`http://58.231.19.218:8000/image/${userInfoValue?.email}`}
-                />
+                <ProfileImage src={`${userInfoValue?.profileImage}`} />
               )}
             </MyPageInputWrapper>
             <MyPageInputContainer className="editInputContainer">
