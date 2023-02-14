@@ -4,11 +4,13 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
 import {
-  commentuseMutationPostCommentList,
-  replyCommentuseMutationPostCommentList,
+  commentUseMutationDeleteCommentList,
+  commentUseMutationPostCommentList,
+  commentUseQueryGetCommentList,
+  replyCommentUseMutationPostCommentList,
 } from "../../apis/queries/commentQuery";
 import { memberListUseQueryGetCardInfo } from "../../apis/queries/memberListQuery";
-import { myPageUserNicknameValue } from "../../store/myPageAtom";
+import { loginUserNickname } from "../../store/userInfoAtom";
 
 export default function CommentList() {
   const [comment, setComment] = useState("");
@@ -18,13 +20,13 @@ export default function CommentList() {
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
   const replyCommentRef = useRef(null);
-  const userNickname = useRecoilValue(myPageUserNicknameValue);
+  const userNickname = useRecoilValue(loginUserNickname);
   const queryClient = useQueryClient();
 
   console.log(userNickname);
   const { data: cardInfo, isLoading: cardInfoLoading } = useQuery(
     "carCommentInfo",
-    memberListUseQueryGetCardInfo,
+    commentUseQueryGetCommentList,
     {
       refetchOnWindowFocus: false,
       onSuccess: (res) => {
@@ -35,8 +37,25 @@ export default function CommentList() {
       },
     }
   );
-  const { mutate: commentList } = useMutation(
-    (comment) => commentuseMutationPostCommentList(comment),
+  console.log(cardInfo);
+  const { mutate: postCommentList } = useMutation(
+    (comment) => commentUseMutationPostCommentList(comment),
+    {
+      refetchOnWindowFocus: false,
+      enabled: false,
+      onSuccess: (res) => {
+        console.log(res);
+        // queryClient.invalidateQueries("carCommentInfo");
+      },
+      onSettled: (data, error, variables, context) => {
+        // console.log(data);
+        // mutation이 완료되면 성공 유무와 관계없이 쿼리를 무효화 시키고 새로 갱신
+      },
+    }
+  );
+
+  const { mutate: commentDelete } = useMutation(
+    (commentId) => commentUseMutationDeleteCommentList(commentId),
     {
       refetchOnWindowFocus: false,
       onSuccess: (res) => {
@@ -52,7 +71,7 @@ export default function CommentList() {
 
   const { mutate: replyCommentList } = useMutation(
     (commentId) =>
-      replyCommentuseMutationPostCommentList(commentId, replyComment),
+      replyCommentUseMutationPostCommentList(commentId, replyComment),
     {
       refetchOnWindowFocus: false,
       onSuccess: (res) => {
@@ -62,8 +81,12 @@ export default function CommentList() {
     }
   );
   const postComment = () => {
-    commentList(comment);
+    postCommentList(comment);
     setComment("");
+  };
+
+  const onClickdeleteComment = (commentId) => {
+    commentDelete(commentId);
   };
 
   const postReplyComment = (commentId) => {
@@ -138,11 +161,10 @@ export default function CommentList() {
         </CommentButtonContainer>
       </CommentFormContainer>
       <CommentListContainer>
-        {cardInfo?.commentList.map((commentArr, commentIndex) => {
+        {cardInfo?.map((commentArr, commentIndex) => {
           return (
             <CommentListWrapper key={commentIndex}>
-              {console.log(commentArr)}
-              <CommentProfile alt="image" src={`${commentArr.imageSrc}`} />
+              <CommentProfile alt="image" src={`${commentArr.profileImage}`} />
               <CommentListCommentWrapper>
                 <CommentListNickname>
                   {commentArr.nickname}
@@ -153,9 +175,14 @@ export default function CommentList() {
                 </CommentListComment>
                 <CommentListReplyComment>
                   <CommentListReplayTitle
-                    onClick={(event) => onClickReplyComment(commentIndex)}
+                    onClick={() => onClickReplyComment(commentIndex)}
                   >
                     답글
+                  </CommentListReplayTitle>
+                  <CommentListReplayTitle
+                    onClick={() => onClickdeleteComment(commentArr.commentId)}
+                  >
+                    삭제
                   </CommentListReplayTitle>
                   {replyValid && (
                     <>

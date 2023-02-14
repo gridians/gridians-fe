@@ -20,6 +20,7 @@ const Header = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         removeCookieToken();
+        localStorage.clear();
         window.location.replace("/login");
       } else {
         return;

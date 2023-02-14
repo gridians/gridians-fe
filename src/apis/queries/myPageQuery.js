@@ -3,14 +3,16 @@ import { api, cookieApi } from "../untils";
 
 // mypage query
 // 유저프로필 이미지
-export const myPageUseMutationPutUserProfile =  async (formData) => {
-  console.log(formData)
+export const myPageUseMutationPutUserProfile = async (uploadProfile) => {
+  console.log(uploadProfile);
   const res = await api.put(
     `/user/profile`,
-    {multipartFile:formData},
+    {
+      base64Image: uploadProfile,
+    },
     {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
         accept: "application/json,",
         Authorization: `Bearer ${getCookieToken("accessToken")}`,
       },

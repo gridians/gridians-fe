@@ -20,7 +20,7 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { removeCookieToken } from "../cookie/cookie";
+import { getCookieToken, removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
@@ -32,6 +32,8 @@ import {
   myPageUseMutationDeleteUserInfo,
 } from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { api } from "../apis/untils";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ export default function MyPage() {
   const [newPasswordConfirm, setNewPasswordConfirm] = useRecoilState(
     myPageUserNewPasswordConfirm
   );
-  const [imageSrc, setImageSrc] = useState(null);
+  const [imageSrc, setImageSrc] = useState();
   const fileInputRef = useRef(null);
 
   const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
@@ -121,8 +123,6 @@ export default function MyPage() {
     const fileList = e.target.files;
     const maxSizw = 2 * 1024 * 1024;
     const fileSize = fileList[0].size;
-    const formData = new FormData();
-    formData.append("fileList", fileList);
     if (fileSize > maxSizw) {
       Swal.fire({
         text:
@@ -133,13 +133,12 @@ export default function MyPage() {
       });
       return (e.target.value = null);
     }
-    setImageSrc(formData.get("fileList"));
-
-    // const reader = new FileReader();
-    // reader.readAsDataURL(fileList[0]);
-    // reader.onload = () => {
-    //   const base64data = reader.result;
-    // };
+    const reader = new FileReader();
+    reader.readAsDataURL(fileList[0]);
+    reader.onload = () => {
+      const base64data = reader.result;
+      setImageSrc(base64data);
+    };
   };
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
@@ -270,8 +269,29 @@ export default function MyPage() {
     }
   };
 
-  const onClickInputFile = (e) => {
+  const onClickInputFile = async (e) => {
     e.preventDefault();
+    // const formData = new FormData();
+    // Array.from(imageSrc).forEach((el) => {
+    //   formData.append("userFile", el);
+    // });
+    // // formData.append("imageSrc",)
+    // for (const value of formData.values()) {
+    //   console.log(value);
+    // }
+    // try {
+    //   const res = await api.put(`/user/profile`, formData, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //       // accept: "application/json,",
+    //       Authorization: `Bearer ${getCookieToken("accessToken")}`,
+    //     },
+    //   });
+    //   console.log(res);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
     putUserProfile();
   };
 

@@ -1,10 +1,6 @@
 import { atom } from "recoil";
 import { v1 } from "uuid";
 
-export const myPageUserNicknameValue = atom({
-  key: `myPageUserNicknameValue/${v1()}`,
-  default: "",
-});
 export const myPageUserNickname = atom({
   key: `myPageUserNickname/${v1()}`,
   default: "",

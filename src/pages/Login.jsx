@@ -1,23 +1,24 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GithubBtn from "../components/GithubBtn";
 import { setCookieToken } from "../cookie/cookie";
 import Swal from "sweetalert2";
 import { useMutation } from "react-query";
-import {
-  postLoginQueryFindUserPassword,
-  postLoginUseQueryUserInfo,
-} from "../apis/queries/loginQuery";
+import { postLoginQueryFindUserPassword } from "../apis/queries/loginQuery";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
 import { useSetRecoilState } from "recoil";
-import { myPageUserNicknameValue } from "../store/myPageAtom";
+import { loginUserNickname } from "../store/userInfoAtom";
+import {
+  usePostFindUserPassword,
+  usePostLoginUserInfo,
+} from "../apis/hooks/hooksQuery";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const setNickname = useSetRecoilState(myPageUserNicknameValue);
+  const setNickname = useSetRecoilState(loginUserNickname);
 
   const [emailMessage, setEmailMessage] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
@@ -26,9 +27,10 @@ const Login = () => {
   const [isPassword, setIsPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { mutate: postLoginInfo } = useMutation(
-    () => postLoginUseQueryUserInfo(userLoginInfo),
-    {
+  const userLoginInfo = { email, password };
+  const { mutate: postLoginUserInfo } = usePostLoginUserInfo();
+  const handlePostUserInfo = () => {
+    postLoginUserInfo(userLoginInfo, {
       onSuccess: (res) => {
         console.log(res);
         setCookieToken("accessToken", res.accessToken);
@@ -42,20 +44,18 @@ const Login = () => {
       onError: (err) => {
         console.log(err);
       },
-    }
-  );
+    });
+  };
 
-  const { mutate: loginFindUserPassword } = useMutation(
-    (email) => postLoginQueryFindUserPassword(email),
-    {
+  const { mutate: loginFundUserPassword } = usePostFindUserPassword();
+  const handleFindUserPassword = (email) => {
+    loginFundUserPassword(email, {
       onSuccess: (res) => {
         console.log(res);
       },
-      onError: () => {},
-    }
-  );
-
-  const userLoginInfo = { email, password };
+      onError: (err) => {},
+    });
+  };
 
   const idOnChange = (e) => {
     setEmail(e.target.value);
@@ -88,7 +88,7 @@ const Login = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    postLoginInfo();
+    handlePostUserInfo();
   };
 
   const onClickFindPw = (e) => {
@@ -100,7 +100,7 @@ const Login = () => {
       confirmButtonText: "확인",
       cancelButtonText: "돌아가기",
       preConfirm: (email) => {
-        loginFindUserPassword(email);
+        handleFindUserPassword(email);
       },
     });
   };
