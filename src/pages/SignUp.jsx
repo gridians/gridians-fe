@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import { useMutation } from "react-query";
 import { signUpuseQueryPostInfo } from "../apis/queries/signUpQuery";
 import { loginGithubId } from "../store/userInfoAtom";
+import { useMutationPostSignUp } from "../apis/customQuery/signUpCustomQuery";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -44,9 +45,9 @@ export default function SignUp() {
     setPassword("");
   }, []);
 
-  const { mutate: loginFindUserPassword } = useMutation(
-    (userInfo) => signUpuseQueryPostInfo(userInfo),
-    {
+  const { mutate: postLoginUserInfo } = useMutationPostSignUp();
+  const handlePostSignUp = (userInfo) => {
+    postLoginUserInfo(userInfo, {
       onSuccess: (res) => {
         Swal.fire({
           padding: "3em",
@@ -93,8 +94,60 @@ export default function SignUp() {
           });
         }
       },
-    }
-  );
+    });
+  };
+
+  // const { mutate: loginFindUserPassword } = useMutation(
+  //   (userInfo) => signUpuseQueryPostInfo(userInfo),
+  //   {
+  //     onSuccess: (res) => {
+  //       Swal.fire({
+  //         padding: "3em",
+  //         title: "회원가입 성공",
+  //         text: "이메일을 확인해주세요",
+  //         buttons: "확인",
+  //         showClass: {
+  //           popup: "animate__animated animate__fadeInDown",
+  //         },
+  //         hideClass: {
+  //           popup: "animate__animated animate__fadeOutUp",
+  //         },
+  //         closeOnClickOutside: false,
+  //       }).then(function () {
+  //         navigate("/login");
+  //       });
+  //     },
+  //     onError: (err) => {
+  //       if (err.response.status === 409) {
+  //         Swal.fire({
+  //           padding: "3em",
+  //           title: "이미 가입한 이메일입니다",
+  //           buttons: "확인",
+  //           showClass: {
+  //             popup: "animate__animated animate__fadeInDown",
+  //           },
+  //           hideClass: {
+  //             popup: "animate__animated animate__fadeOutUp",
+  //           },
+  //           closeOnClickOutside: false,
+  //         });
+  //       } else {
+  //         Swal.fire({
+  //           padding: "3em",
+  //           title: "회원가입에 실패했습니다",
+  //           buttons: "확인",
+  //           showClass: {
+  //             popup: "animate__animated animate__fadeInDown",
+  //           },
+  //           hideClass: {
+  //             popup: "animate__animated animate__fadeOutUp",
+  //           },
+  //           closeOnClickOutside: false,
+  //         });
+  //       }
+  //     },
+  //   }
+  // );
 
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
@@ -149,7 +202,7 @@ export default function SignUp() {
 
   const onClickSubmit = (e) => {
     e.preventDefault();
-    loginFindUserPassword(userInfo);
+    handlePostSignUp(userInfo);
   };
 
   return (

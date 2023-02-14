@@ -1,7 +1,19 @@
 import { getCookieToken } from "../../cookie/cookie";
-import { api, cookieApi } from "../untils";
+import { api } from "../untils";
 
 // mypage query
+// 유저정보 받아오기
+export const myPageUseQueryGetUserInfo =  async() => {
+  const res = await api.get("/user/valid", {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      accept: "application/json,",
+      Authorization: `Bearer ${getCookieToken("accessToken")}`,
+    },
+  });
+  return res.data;
+};
+
 // 유저프로필 이미지
 export const myPageUseMutationPutUserProfile = async (uploadProfile) => {
   console.log(uploadProfile);
@@ -18,18 +30,6 @@ export const myPageUseMutationPutUserProfile = async (uploadProfile) => {
       },
     }
   );
-  return res.data;
-};
-
-// 유저정보 받아오기
-export const myPageUseQueryGetUserInfo =  async() => {
-  const res = await api.get("/user/valid", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      accept: "application/json,",
-      Authorization: `Bearer ${getCookieToken("accessToken")}`,
-    },
-  });
   return res.data;
 };
 
@@ -51,7 +51,29 @@ export const myPageUseMutationPostEditEmail =async (email) => {
 
 // 유저이메일 수정
 export const myPageUseMutationPutEditEmail =async (id) => {
-  const res = cookieApi.put("/user/update-email", { email: id });
+  const res = api.put(
+    "/user/update-email",
+    { email: id },
+    {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        accept: "application/json,",
+        Authorization: `Bearer ${getCookieToken("accessToken")}`,
+      },
+    }
+  );
+  return res.data;
+};
+
+// 유저이메일 수정 인증
+export const certificationUseQueryPutEditEmail =async (id) => {
+  const res = api.get(
+    "/user/auth/email-auth", {
+      params: {
+        id,
+      }
+    },
+  );
   return res.data;
 };
 

@@ -1,6 +1,6 @@
 import { api } from '../untils';
 
-export const signUpuseQueryPostInfo = async(userInfo) => {
+export const signUpUseMutaionPostInfo = async(userInfo) => {
   const res = await api.post(
     "/user/auth/signup",
     {

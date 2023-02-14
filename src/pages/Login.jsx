@@ -1,18 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GithubBtn from "../components/GithubBtn";
 import { setCookieToken } from "../cookie/cookie";
 import Swal from "sweetalert2";
-import { useMutation } from "react-query";
-import { postLoginQueryFindUserPassword } from "../apis/queries/loginQuery";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
 import { useSetRecoilState } from "recoil";
 import { loginUserNickname } from "../store/userInfoAtom";
 import {
-  usePostFindUserPassword,
-  usePostLoginUserInfo,
-} from "../apis/hooks/hooksQuery";
+  useMutaionPostLoginUserInfo,
+  useMutationPostFindUserPassword,
+} from "../apis/customQuery/loginCustomQuery";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -28,7 +26,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const userLoginInfo = { email, password };
-  const { mutate: postLoginUserInfo } = usePostLoginUserInfo();
+  const { mutate: postLoginUserInfo } = useMutaionPostLoginUserInfo();
   const handlePostUserInfo = () => {
     postLoginUserInfo(userLoginInfo, {
       onSuccess: (res) => {
@@ -47,9 +45,9 @@ const Login = () => {
     });
   };
 
-  const { mutate: loginFundUserPassword } = usePostFindUserPassword();
+  const { mutate: loginFindUserPassword } = useMutationPostFindUserPassword();
   const handleFindUserPassword = (email) => {
-    loginFundUserPassword(email, {
+    loginFindUserPassword(email, {
       onSuccess: (res) => {
         console.log(res);
       },

@@ -32,8 +32,14 @@ import {
   myPageUseMutationDeleteUserInfo,
 } from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
-import axios from "axios";
-import { api } from "../apis/untils";
+import {
+  useMutationMyPageDeleteUserInfo,
+  useMutationMyPagePostEditEmail,
+  useMutationMyPagePutEditEmail,
+  useMutationMyPagePutEditUserInfo,
+  useMutationMyPagePutUserProfile,
+  useQueryMyPageGetUserValid,
+} from "../apis/customQuery/myPageCustomQuery";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -47,37 +53,51 @@ export default function MyPage() {
   const [imageSrc, setImageSrc] = useState();
   const fileInputRef = useRef(null);
 
-  const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
-    ["userEmail", "userNickname"],
-    myPageUseQueryGetUserInfo,
-    {
+  // 유저 정보
+  const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
+
+  // 이메일 변경
+  const { mutate: postEditEmail } = useMutationMyPagePostEditEmail();
+  const handleEditEmail = () => {
+    postEditEmail(email, {
       onSuccess: (res) => {
         console.log(res);
       },
-    }
-  );
-  const { mutate: postEditEmail } = useMutation(
-    "postEditUserEmail",
-    () => myPageUseMutationPostEditEmail(email),
-    {
-      onSuccess: () => {
-        // console.log("성공");
-      },
-    }
-  );
+      onError: (err) => {},
+    });
+  };
+
+  // 닉네임, 비밀번호 변경
   const userInfo = { nickname, password, newPassword };
-  const { mutate: putUserInfo, isLoading: UserInfoLoading } = useMutation(
-    "putUserInfo",
-    () => myPageUseMutationPutEditUserInfo(userInfo),
-    {
-      onSuccess: (data) => {
-        console.log(data);
+  const { mutate: putEditNickname } = useMutationMyPagePutEditUserInfo();
+  const handleEditNickname = () => {
+    putEditNickname(userInfo, {
+      onSuccess: (res) => {
+        console.log(res);
+      },
+      onError: (err) => {},
+    });
+  };
+
+  // 유저 회원탈퇴
+  const { mutate: deleteUserInfo } = useMutationMyPageDeleteUserInfo();
+  const handleDeleteUserInfo = (deleteInfo) => {
+    deleteUserInfo(deleteInfo, {
+      onSuccess: () => {
+        Swal.fire({
+          title: "탈퇴되었습니다",
+          cancelButtonColor: "#738598",
+          button: "확인",
+        }).then(() => {
+          removeCookieToken();
+          window.location.replace("/login");
+        });
       },
       onError: (error) => {
         console.log(error);
       },
-    }
-  );
+    });
+  };
 
   const { mutate: putUserProfile, isLoading: UserProfileLoading } = useMutation(
     "putUserProfile",
@@ -96,25 +116,6 @@ export default function MyPage() {
           });
           return;
         }
-      },
-    }
-  );
-
-  const { mutate: deleteUserInfo } = useMutation(
-    (deleteInfo) => myPageUseMutationDeleteUserInfo(deleteInfo),
-    {
-      onSuccess: () => {
-        Swal.fire({
-          title: "탈퇴되었습니다",
-          cancelButtonColor: "#738598",
-          button: "확인",
-        }).then(() => {
-          removeCookieToken();
-          window.location.replace("/login");
-        });
-      },
-      onError: (error) => {
-        console.log(error);
       },
     }
   );
@@ -297,7 +298,7 @@ export default function MyPage() {
 
   const onClickEmailSubmit = (e) => {
     e.preventDefault();
-    postEditEmail(email);
+    handleEditEmail(email);
     setEmail("");
     if (emailMessage.length > 0) {
       Swal.fire({
@@ -351,7 +352,7 @@ export default function MyPage() {
       });
       return;
     } else {
-      putUserInfo(userInfo);
+      handleEditNickname(userInfo);
       setNickname("");
       setPassword("");
       setNewPassword("");
@@ -372,12 +373,11 @@ export default function MyPage() {
       cancelButtonText: "취소하기",
       preConfirm: (password) => {
         console.log(password);
-        deleteUserInfo(password);
+        handleDeleteUserInfo(password);
       },
     });
   };
-  const isLoading =
-    userInfoValueLoading || UserInfoLoading || UserProfileLoading;
+  // const isLoading = getUserInfoValue || UserInfoLoading || UserProfileLoading;
 
   return (
     <MyPageContainer>
@@ -389,14 +389,14 @@ export default function MyPage() {
 
           <MyPageInputContainerInnerWrapper>
             <MyPageInputWrapper className="profileImageContainer">
-              {userInfoValue?.email !== undefined && (
-                <ProfileImage src={`${userInfoValue?.profileImage}`} />
+              {getUserInfoValue?.email !== undefined && (
+                <ProfileImage src={`${getUserInfoValue?.profileImage}`} />
               )}
             </MyPageInputWrapper>
             <MyPageInputContainer className="editInputContainer">
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>{userInfoValue?.email}</MyPageSpan>
+                  <MyPageSpan>{getUserInfoValue?.email}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
@@ -404,7 +404,7 @@ export default function MyPage() {
             <MyPageInputContainer className="editInputContainer">
               <MyPageInputWrapper>
                 <MyPageSpanContainer>
-                  <MyPageSpan>{userInfoValue?.nickname}</MyPageSpan>
+                  <MyPageSpan>{getUserInfoValue?.nickname}</MyPageSpan>
                 </MyPageSpanContainer>
               </MyPageInputWrapper>
             </MyPageInputContainer>
