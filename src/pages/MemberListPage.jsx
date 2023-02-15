@@ -17,12 +17,15 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import {
+  memberListuseMutationPostBookMark,
+  memberListuseQuerygetBookMarkList,
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
+import { loginUserEmail } from "../store/userInfoAtom";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -52,7 +55,7 @@ const MemberListPage = () => {
     {
       retry: false,
       onSuccess: (res) => {
-        console.log(res);
+        // console.log(res);
         if (cardList.length > 1) {
           setCardList((data) => [...data, res]);
         } else {
@@ -60,7 +63,7 @@ const MemberListPage = () => {
         }
       },
       onError: (err) => {
-        console.log(err);
+        // console.log(err);
       },
     }
   );
@@ -81,7 +84,7 @@ const MemberListPage = () => {
     (index) => memberListUseQueryGetCardInfo(index),
     {
       onSuccess: (res) => {
-        console.log(res);
+        // console.log(res);
         setField(res.field);
         setIntroduce(res.introduction);
         setSkill(res.skill);
@@ -94,7 +97,31 @@ const MemberListPage = () => {
         });
       },
       onError: (err) => {
-        console.log(err);
+        // console.log(err);
+      },
+    }
+  );
+
+  //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
+  const { data: bookMarkList, isLoading: bookMarkListLoading } = useQuery(
+    "bookMarkList",
+    memberListuseQuerygetBookMarkList,
+    {
+      retry: false,
+    }
+  );
+
+  const [cardId, setCardId] = useState();
+  //북마크 클릭시 즐겨찾기에 추가 react-query
+  const { mutate: addBookMark, isLoading: addBookMarkLoading } = useMutation(
+    "bookMark",
+    () => memberListuseMutationPostBookMark(cardId),
+    {
+      onSuccess: (res) => {
+        // console.log(res);
+      },
+      onError: (err) => {
+        // console.log(err);
       },
     }
   );
@@ -109,12 +136,16 @@ const MemberListPage = () => {
     setClick("reset");
   };
   const cardOnClick = (e, index, data) => {
+    setCardId(data.profileCardId);
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);
     setClick("click");
+  };
+  const bookMarkOnClick = () => {
+    addBookMark();
   };
 
   //onChange
@@ -127,6 +158,10 @@ const MemberListPage = () => {
   const skillOnChange = (text) => {
     setSkill(text.target.value);
   };
+
+  useEffect(() => {
+    console.log("즐겨찾기 리스트", bookMarkList);
+  }, [bookMarkList]);
 
   //상세정보가 떠 있을시 스크롤 막기
   var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
@@ -175,7 +210,7 @@ const MemberListPage = () => {
     if (click === "click") {
       disableScroll();
     }
-     return()=> enableScroll();
+    return () => enableScroll();
   }, [click]);
 
   //선택 가능한 포지션 list
@@ -251,7 +286,7 @@ const MemberListPage = () => {
       <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
-            <BookMark>
+            <BookMark onClick={() => bookMarkOnClick()}>
               <BsFillBookmarkFill />
             </BookMark>
             {retouch ? (
@@ -526,6 +561,7 @@ const DefaultInfo = styled.div`
   height: 10%;
 `;
 const BookMark = styled.div`
+  flex: 1;
   width: 197px;
   font-size: 40px;
   color: white;
@@ -534,6 +570,7 @@ const BookMark = styled.div`
   }
 `;
 const StatusMessage = styled.input`
+  flex: 2;
   width: 50%;
   height: 30px;
   background-color: #262626;
@@ -548,6 +585,7 @@ const StatusMessage = styled.input`
       : css``}
 `;
 const LanguageImg = styled.div`
+  flex: 1;
   ${(props) =>
     props.retouch
       ? css`
@@ -556,6 +594,7 @@ const LanguageImg = styled.div`
         `
       : css`
           display: flex;
+          justify-content: flex-end;
         `}
   select {
     height: 30px;
