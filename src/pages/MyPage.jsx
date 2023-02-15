@@ -6,7 +6,7 @@ import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { MdPassword } from "react-icons/md";
-
+import _debounce from "lodash/debounce";
 import {
   myPageUserEmail,
   myPageUserEmailMessage,
@@ -20,26 +20,21 @@ import {
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { getCookieToken, removeCookieToken } from "../cookie/cookie";
+import { removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
-import {
-  myPageUseQueryGetUserInfo,
-  myPageUseMutationPostEditEmail,
-  myPageUseMutationPutUserProfile,
-  myPageUseMutationPutEditUserInfo,
-  myPageUseMutationDeleteUserInfo,
-} from "../apis/queries/myPageQuery";
+import { useMutation } from "react-query";
+import { myPageUseMutationPutUserProfile } from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
 import {
   useMutationMyPageDeleteUserInfo,
   useMutationMyPagePostEditEmail,
-  useMutationMyPagePutEditEmail,
   useMutationMyPagePutEditUserInfo,
   useMutationMyPagePutUserProfile,
   useQueryMyPageGetUserValid,
 } from "../apis/customQuery/myPageCustomQuery";
+import { useCallback } from "react";
+import debounce from "lodash/debounce";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -55,6 +50,7 @@ export default function MyPage() {
 
   // 유저 정보
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
+  console.log(getUserInfoValue);
 
   // 이메일 변경
   const { mutate: postEditEmail } = useMutationMyPagePostEditEmail();
@@ -172,7 +168,7 @@ export default function MyPage() {
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
   // 닉네임 유효성 검사
-  const onChangeNickname = (e) => {
+  const onChangeNickname = _debounce((e) => {
     // 한글 영어 숫자
     const regNickname = /^[가-힣a-zA-Z0-9]+$/;
     const userNicknameCurrent = e.target.value;
@@ -187,7 +183,7 @@ export default function MyPage() {
       setNicknameMessage("");
       setIsNickname(true);
     }
-  };
+  }, 3000);
 
   // 이메일 유효성 검사
   const onChangeEmail = (e) => {
@@ -195,7 +191,7 @@ export default function MyPage() {
       /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const userEmailCurrent = e.target.value;
     setEmail(e.target.value);
-
+    console.log(email);
     if (!regEmail.test(userEmailCurrent)) {
       setEmailMessage("이메일 형식이 올바르지 않습니다.");
       setIsEmail(false);
@@ -655,7 +651,7 @@ const MyPageContainer = styled.div`
   padding: 70px 350px;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   @media ${(props) => props.theme.mobile} {
     padding: 0;
     justify-content: center;

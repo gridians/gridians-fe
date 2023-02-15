@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "react-query";
-import { certificationUseQueryPutEditEmail, myPageUseMutationPostEditEmail, myPageUseMutationPutEditUserInfo, myPageUseMutationPutUserProfile, myPageUseQueryGetUserInfo } from '../queries/myPageQuery';
+import { certificationUseQueryGetEmail, myPageUseMutationPostEditEmail, myPageUseMutationPutEditEmail, myPageUseMutationPutEditUserInfo, myPageUseMutationPutUserProfile, myPageUseQueryGetUserInfo } from '../queries/myPageQuery';
 
 // 유저정보
 export const useQueryMyPageGetUserValid = () => {
@@ -27,14 +27,15 @@ export const useMutationMyPagePutEditUserInfo = () => {
 
 // 유저이메일 수정
 export const useMutationMyPagePutEditEmail = () => {
-  return useMutation((id) =>
-    myPageUseMutationPostEditEmail(id)
-  );
+  return useMutation((id) => myPageUseMutationPutEditEmail(id));
 };
 
-// 유저이메일 수정 인증
+// 회원가입 유저이메일 인증
 export const useQuerycertificationPutEditEmail = (id) => {
-  return useQuery(["certificationEmail", id], certificationUseQueryPutEditEmail(id));
+  return useQuery(
+    ["certificationEmail", id],
+    certificationUseQueryGetEmail(id)
+  );
 };
 
 // 유저 회원탈퇴

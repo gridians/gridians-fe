@@ -22,7 +22,7 @@ const HomeContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
 `;
 const HomeTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
@@ -30,7 +30,7 @@ const HomeTitle = styled.span`
   margin-top: 25px;
   cursor: pointer;
   a {
-    color: ${({ theme }) => theme.colors.black};
+    color: ${({ theme }) => theme.colors.white};
     &:hover {
       color: ${({ theme }) => theme.colors.subColor2};
     }

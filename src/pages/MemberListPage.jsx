@@ -357,7 +357,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   min-height: 90vh;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   border: 2px solid black;
 `;
 

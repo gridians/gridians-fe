@@ -101,7 +101,7 @@ const HeaderBox = styled.header`
   justify-content: center;
   height: 10vh;
   padding: 20px 300px;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   color: ${({ theme }) => theme.colors.black};
   @media ${(props) => props.theme.mobile} {
     overflow: hidden;
@@ -115,7 +115,7 @@ const HeaderWrap = styled.div`
   width: 1440px;
 `;
 const Logo = styled.span`
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
   font-size: 2.2rem;
   font-family: ${({ theme }) => theme.fontFace.font1};
   @media ${(props) => props.theme.mobile} {
@@ -128,7 +128,7 @@ const Menu = styled.div`
   align-items: center;
   justify-content: space-between;
   a {
-    color: ${({ theme }) => theme.colors.black};
+    color: ${({ theme }) => theme.colors.white};
     font-weight: bold;
     cursor: pointer;
     padding: 6px;

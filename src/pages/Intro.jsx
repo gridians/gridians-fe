@@ -481,7 +481,7 @@ const IntroProfileWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: 10px;
+  border-radius: 30px;
   padding-top: 30px;
   background-color: black;
   animation: ${gridAnimation} 1s forwards;
@@ -505,8 +505,8 @@ const IntroIconWrapper = styled.div`
   align-items: flex-end;
   justify-content: flex-end;
   position: absolute;
-  right: 20px;
-  top: 15px;
+  right: 30px;
+  top: 25px;
 `;
 const IntroProfileImage = styled.div`
   width: 100%;
@@ -514,6 +514,7 @@ const IntroProfileImage = styled.div`
   background-position: center;
   background-size: 50%;
   background-repeat: no-repeat;
+  margin-top: 20px;
 `;
 const IntroProfileTitleContainer = styled.div`
   display: flex;
@@ -534,6 +535,7 @@ const IntroProfileName = styled.span`
 const IntroProfileJob = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.small};
   color: ${({ theme }) => theme.colors.subColor1};
+  margin-bottom: 10px;
   @media ${(props) => props.theme.mobile} {
     font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
   }

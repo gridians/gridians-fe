@@ -11,6 +11,7 @@ import {
   useMutaionPostLoginUserInfo,
   useMutationPostFindUserPassword,
 } from "../apis/customQuery/loginCustomQuery";
+import _debounce from "lodash/debounce";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -70,6 +71,8 @@ const Login = () => {
       setIsEmail(true);
     }
   };
+  const debouncedOnChange = _debounce(idOnChange, 500);
+
   const pwOnChange = (e) => {
     setPassword(e.target.value);
     const regPassword = /(?=.*\d)(?=.*[a-zA-ZS]).{8,16}/;
@@ -102,6 +105,7 @@ const Login = () => {
       },
     });
   };
+  console.log(email);
 
   return (
     <LoginContainer>
@@ -122,7 +126,7 @@ const Login = () => {
                   <>
                     <IdInput
                       value={email}
-                      onChange={idOnChange}
+                      onChange={debouncedOnChange}
                       placeholder="이메일을 입력해주세요"
                     />
                     <InputMessage>{emailMessage}</InputMessage>
@@ -131,7 +135,7 @@ const Login = () => {
                   <>
                     <IdInput
                       value={email}
-                      onChange={idOnChange}
+                      onChange={debouncedOnChange}
                       placeholder="이메일을 입력해주세요"
                     />
                   </>
@@ -212,7 +216,7 @@ const LoginContainer = styled.div`
   padding: 100px 350px;
   height: 90vh;
   color: ${({ theme }) => theme.colors.white};
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   a {
     color: ${({ theme }) => theme.colors.white};
   }

@@ -65,8 +65,8 @@ export const myPageUseMutationPutEditEmail =async (id) => {
   return res.data;
 };
 
-// 유저이메일 수정 인증
-export const certificationUseQueryPutEditEmail =async (id) => {
+// 회원가입 유저이메일 인증
+export const certificationUseQueryGetEmail =async (id) => {
   const res = api.get(
     "/user/auth/email-auth", {
       params: {

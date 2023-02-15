@@ -1,4 +1,5 @@
 import React from "react";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -7,6 +8,7 @@ import {
   useMutationMyPagePutEditEmail,
   useQuerycertificationPutEditEmail,
 } from "../../apis/customQuery/myPageCustomQuery";
+import { myPageUseMutationPutEditEmail } from "../../apis/queries/myPageQuery";
 import { api } from "../../apis/untils";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 
@@ -25,11 +27,11 @@ export default function Certification() {
   //     },
   //   }
   // );
-  // const {mutate:putEditEmail}
   const { mutate: putEditEmail } = useMutationMyPagePutEditEmail();
   const handleEditEmail = (id) => {
     putEditEmail(id, {
       onSuccess: (res) => {
+        console.log(res);
         removeCookieToken();
         window.location.replace("/login");
       },
@@ -37,33 +39,10 @@ export default function Certification() {
     });
   };
 
-  const { data: getUserInfoValue } = useQuerycertificationPutEditEmail(id, {
-    onSuccess: (res) => {
-      Swal.fire({
-        title: "이메일 인증 완료 😀",
-        padding: "3em",
-        buttons: "확인",
-        closeOnClickOutside: false,
-      }).then(function () {
-        // navigate("/login");
-      });
-    },
-    onError: (err) => {
-      Swal.fire({
-        title: "이메일 인증 실패 😢",
-        buttons: "확인",
-        padding: "3em",
-        closeOnClickOutside: false,
-      });
-    },
-  });
-
-  console.log(id);
-
   const onClickLogin = () => {
     if (token === undefined) {
-      // postCertification(id);
-      getUserInfoValue(id);
+      postCertification(id);
+      // getUserInfoValue(id);
     } else if (token) {
       handleEditEmail(id);
     } else {

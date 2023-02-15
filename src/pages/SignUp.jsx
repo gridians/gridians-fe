@@ -356,7 +356,7 @@ const SignUpContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 100px 350px;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   @media ${(props) => props.theme.mobile} {
     padding: 0;
   }

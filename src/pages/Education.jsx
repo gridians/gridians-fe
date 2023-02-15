@@ -93,7 +93,7 @@ export default function Education() {
 const EducationContainer = styled.div`
   width: 100%;
   height: 90vh;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   padding: 60px 120px;
   .slick-prev::before,
   .slick-next::before {
@@ -125,6 +125,7 @@ const EducationTitleContainer = styled.div`
 `;
 const EducationTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.subTitleSize};
+  color: ${({ theme }) => theme.colors.white};
   font-weight: bold;
   @media ${(props) => props.theme.mobile} {
     font-size: ${({ theme }) => theme.fontSizes.lg};
