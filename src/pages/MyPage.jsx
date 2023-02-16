@@ -30,11 +30,8 @@ import {
   useMutationMyPageDeleteUserInfo,
   useMutationMyPagePostEditEmail,
   useMutationMyPagePutEditUserInfo,
-  useMutationMyPagePutUserProfile,
   useQueryMyPageGetUserValid,
 } from "../apis/customQuery/myPageCustomQuery";
-import { useCallback } from "react";
-import debounce from "lodash/debounce";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -49,8 +46,17 @@ export default function MyPage() {
   const fileInputRef = useRef(null);
 
   // 유저 정보
-  const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
-  console.log(getUserInfoValue);
+  const {
+    data: getUserInfoValue,
+    isLoading,
+    isFetched,
+    isFetchedAfterMount,
+    isFetching,
+  } = useQueryMyPageGetUserValid();
+  // console.log(!getUserInfoValue);
+  console.log(isLoading);
+  console.log(isFetched);
+  console.log(isFetchedAfterMount, isFetching);
 
   // 이메일 변경
   const { mutate: postEditEmail } = useMutationMyPagePostEditEmail();
@@ -65,7 +71,8 @@ export default function MyPage() {
 
   // 닉네임, 비밀번호 변경
   const userInfo = { nickname, password, newPassword };
-  const { mutate: putEditNickname } = useMutationMyPagePutEditUserInfo();
+  const { mutate: putEditNickname, isLoading: UserProfileInfoLoading } =
+    useMutationMyPagePutEditUserInfo();
   const handleEditNickname = () => {
     putEditNickname(userInfo, {
       onSuccess: (res) => {
@@ -95,7 +102,7 @@ export default function MyPage() {
     });
   };
 
-  const { mutate: putUserProfile, isLoading: UserProfileLoading } = useMutation(
+  const { mutate: putUserProfile } = useMutation(
     "putUserProfile",
     () => myPageUseMutationPutUserProfile(imageSrc),
     {
@@ -373,274 +380,279 @@ export default function MyPage() {
       },
     });
   };
-  // const isLoading = getUserInfoValue || UserInfoLoading || UserProfileLoading;
 
   return (
-    <MyPageContainer>
-      <MyPageWrapper>
-        <MyPageFormInfoWrapper>
-          <MyPageFormInfoTitleWrapper>
-            <Title>MyPage</Title>
-          </MyPageFormInfoTitleWrapper>
+    <>
+      {!getUserInfoValue ? (
+        <div>asd</div>
+      ) : (
+        <MyPageContainer>
+          <MyPageWrapper>
+            <MyPageFormInfoWrapper>
+              <MyPageFormInfoTitleWrapper>
+                <Title>MyPage</Title>
+              </MyPageFormInfoTitleWrapper>
 
-          <MyPageInputContainerInnerWrapper>
-            <MyPageInputWrapper className="profileImageContainer">
-              {getUserInfoValue?.email !== undefined && (
-                <ProfileImage src={`${getUserInfoValue?.profileImage}`} />
-              )}
-            </MyPageInputWrapper>
-            <MyPageInputContainer className="editInputContainer">
-              <MyPageInputWrapper>
-                <MyPageSpanContainer>
-                  <MyPageSpan>{getUserInfoValue?.email}</MyPageSpan>
-                </MyPageSpanContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
+              <MyPageInputContainerInnerWrapper>
+                <MyPageInputWrapper className="profileImageContainer">
+                  {getUserInfoValue?.email !== undefined && (
+                    <ProfileImage src={`${getUserInfoValue?.profileImage}`} />
+                  )}
+                </MyPageInputWrapper>
+                <MyPageInputContainer className="editInputContainer">
+                  <MyPageInputWrapper>
+                    <MyPageSpanContainer>
+                      <MyPageSpan>{getUserInfoValue?.email}</MyPageSpan>
+                    </MyPageSpanContainer>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
 
-            <MyPageInputContainer className="editInputContainer">
-              <MyPageInputWrapper>
-                <MyPageSpanContainer>
-                  <MyPageSpan>{getUserInfoValue?.nickname}</MyPageSpan>
-                </MyPageSpanContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
-          </MyPageInputContainerInnerWrapper>
-        </MyPageFormInfoWrapper>
+                <MyPageInputContainer className="editInputContainer">
+                  <MyPageInputWrapper>
+                    <MyPageSpanContainer>
+                      <MyPageSpan>{getUserInfoValue?.nickname}</MyPageSpan>
+                    </MyPageSpanContainer>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
+              </MyPageInputContainerInnerWrapper>
+            </MyPageFormInfoWrapper>
 
-        <MyPageForm>
-          {/* EditContainer */}
-          <MyPageFormEditInfoWrapper>
-            {/* 이미지 업로드 */}
-            <MyPageInputContainer>
-              <AiOutlineFileImage className="icon" />
-              <MyPageInputWrapper>
-                <MyPageInput
-                  type="file"
-                  className="fileInput"
-                  accept="image/jpg, image/jpeg, image/png"
-                  ref={fileInputRef}
-                  onChange={uploadProfile}
-                />
-                <EditButtonContainer className="email-button-container">
-                  <EditButton onClick={onClickInputFile} type="submit">
+            <MyPageForm>
+              {/* EditContainer */}
+              <MyPageFormEditInfoWrapper>
+                {/* 이미지 업로드 */}
+                <MyPageInputContainer>
+                  <AiOutlineFileImage className="icon" />
+                  <MyPageInputWrapper>
+                    <MyPageInput
+                      type="file"
+                      className="fileInput"
+                      accept="image/jpg, image/jpeg, image/png"
+                      ref={fileInputRef}
+                      onChange={uploadProfile}
+                    />
+                    <EditButtonContainer className="email-button-container">
+                      <EditButton onClick={onClickInputFile} type="submit">
+                        변경하기
+                      </EditButton>
+                    </EditButtonContainer>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
+
+                {/* 이메일 */}
+                {email.length > 0 ? (
+                  <MyPageInputContainer>
+                    <AiOutlineMail className="icon" />
+                    <MyPageInputWrapper>
+                      {isEmail ? (
+                        <MyPageInput
+                          onChange={onChangeEmail}
+                          value={email}
+                          type="email"
+                          placeholder="이메일"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeEmail}
+                          value={email}
+                          type="email"
+                          placeholder="이메일"
+                        />
+                      )}
+                      <InputMessage>{emailMessage}</InputMessage>
+                      <EditButtonContainer className="email-button-container">
+                        <EditButton onClick={onClickEmailSubmit} type="submit">
+                          인증하기
+                        </EditButton>
+                      </EditButtonContainer>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <AiOutlineMail className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeEmail}
+                        value={email}
+                        type="email"
+                        placeholder="이메일"
+                      />
+                      <EditButtonContainer className="email-button-container">
+                        <EditButton style={{ pointerEvents: "none" }}>
+                          인증하기
+                        </EditButton>
+                      </EditButtonContainer>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 닉네임 */}
+                {nickname.length > 0 ? (
+                  <MyPageInputContainer>
+                    <AiOutlineIdcard className="icon" />
+                    <MyPageInputWrapper>
+                      {isNickname ? (
+                        <MyPageInput
+                          onChange={onChangeNickname}
+                          value={nickname}
+                          type="text"
+                          placeholder="닉네임"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeNickname}
+                          value={nickname}
+                          type="text"
+                          placeholder="닉네임"
+                        />
+                      )}
+                      <InputMessage>{nicknameMessage}</InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <AiOutlineIdcard className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeNickname}
+                        value={nickname}
+                        type="text"
+                        placeholder="닉네임"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 비밀번호 */}
+                {password.length > 0 ? (
+                  <MyPageInputContainer>
+                    <RiLockPasswordLine className="icon" />
+                    <MyPageInputWrapper>
+                      {isPassword ? (
+                        <MyPageInput
+                          onChange={onChangePassword}
+                          value={password}
+                          type="password"
+                          placeholder="현재 비밀번호"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangePassword}
+                          value={password}
+                          type="password"
+                          placeholder="현재 비밀번호"
+                        />
+                      )}
+                      <InputMessage className="passwordMessage">
+                        {passwordMessage}
+                      </InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <RiLockPasswordLine className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangePassword}
+                        value={password}
+                        type="password"
+                        placeholder="현재 비밀번호"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 비밀번호 변경 */}
+                {newPassword.length > 0 ? (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      {isNewPassword ? (
+                        <MyPageInput
+                          onChange={onChangeNewPassword}
+                          value={newPassword}
+                          type="password"
+                          placeholder="새비밀번호"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeNewPassword}
+                          value={newPassword}
+                          type="password"
+                          placeholder="새비밀번호"
+                        />
+                      )}
+                      <InputMessage className="passwordMessage">
+                        {newPasswordMessage}
+                      </InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeNewPassword}
+                        value={newPassword}
+                        type="password"
+                        placeholder="새비밀번호"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 비밀번호 확인 */}
+                {newPasswordConfirm.length > 0 ? (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      {isNewPasswordConfirm ? (
+                        <MyPageInput
+                          onChange={onChangeNewPasswordConfirm}
+                          value={newPasswordConfirm}
+                          type="password"
+                          placeholder="새비밀번호 확인"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeNewPasswordConfirm}
+                          value={newPasswordConfirm}
+                          type="password"
+                          placeholder="새비밀번호 확인"
+                        />
+                      )}
+                      <InputMessage className="passwordMessage">
+                        {newPasswordConfirmMessage}
+                      </InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeNewPasswordConfirm}
+                        value={newPasswordConfirm}
+                        type="password"
+                        placeholder="새비밀번호 확인"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                <EditButtonContainer>
+                  <EditButton onClick={onClickSubmit} type="submit">
                     변경하기
                   </EditButton>
+                  <EditButton>연동해제</EditButton>
+                  <EditButton onClick={onClickDeleteUser}>회원탈퇴</EditButton>
                 </EditButtonContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
-
-            {/* 이메일 */}
-            {email.length > 0 ? (
-              <MyPageInputContainer>
-                <AiOutlineMail className="icon" />
-                <MyPageInputWrapper>
-                  {isEmail ? (
-                    <MyPageInput
-                      onChange={onChangeEmail}
-                      value={email}
-                      type="email"
-                      placeholder="이메일"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeEmail}
-                      value={email}
-                      type="email"
-                      placeholder="이메일"
-                    />
-                  )}
-                  <InputMessage>{emailMessage}</InputMessage>
-                  <EditButtonContainer className="email-button-container">
-                    <EditButton onClick={onClickEmailSubmit} type="submit">
-                      인증하기
-                    </EditButton>
-                  </EditButtonContainer>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <AiOutlineMail className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeEmail}
-                    value={email}
-                    type="email"
-                    placeholder="이메일"
-                  />
-                  <EditButtonContainer className="email-button-container">
-                    <EditButton style={{ pointerEvents: "none" }}>
-                      인증하기
-                    </EditButton>
-                  </EditButtonContainer>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 닉네임 */}
-            {nickname.length > 0 ? (
-              <MyPageInputContainer>
-                <AiOutlineIdcard className="icon" />
-                <MyPageInputWrapper>
-                  {isNickname ? (
-                    <MyPageInput
-                      onChange={onChangeNickname}
-                      value={nickname}
-                      type="text"
-                      placeholder="닉네임"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeNickname}
-                      value={nickname}
-                      type="text"
-                      placeholder="닉네임"
-                    />
-                  )}
-                  <InputMessage>{nicknameMessage}</InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <AiOutlineIdcard className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeNickname}
-                    value={nickname}
-                    type="text"
-                    placeholder="닉네임"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 비밀번호 */}
-            {password.length > 0 ? (
-              <MyPageInputContainer>
-                <RiLockPasswordLine className="icon" />
-                <MyPageInputWrapper>
-                  {isPassword ? (
-                    <MyPageInput
-                      onChange={onChangePassword}
-                      value={password}
-                      type="password"
-                      placeholder="현재 비밀번호"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangePassword}
-                      value={password}
-                      type="password"
-                      placeholder="현재 비밀번호"
-                    />
-                  )}
-                  <InputMessage className="passwordMessage">
-                    {passwordMessage}
-                  </InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <RiLockPasswordLine className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangePassword}
-                    value={password}
-                    type="password"
-                    placeholder="현재 비밀번호"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 비밀번호 변경 */}
-            {newPassword.length > 0 ? (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  {isNewPassword ? (
-                    <MyPageInput
-                      onChange={onChangeNewPassword}
-                      value={newPassword}
-                      type="password"
-                      placeholder="새비밀번호"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeNewPassword}
-                      value={newPassword}
-                      type="password"
-                      placeholder="새비밀번호"
-                    />
-                  )}
-                  <InputMessage className="passwordMessage">
-                    {newPasswordMessage}
-                  </InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeNewPassword}
-                    value={newPassword}
-                    type="password"
-                    placeholder="새비밀번호"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 비밀번호 확인 */}
-            {newPasswordConfirm.length > 0 ? (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  {isNewPasswordConfirm ? (
-                    <MyPageInput
-                      onChange={onChangeNewPasswordConfirm}
-                      value={newPasswordConfirm}
-                      type="password"
-                      placeholder="새비밀번호 확인"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeNewPasswordConfirm}
-                      value={newPasswordConfirm}
-                      type="password"
-                      placeholder="새비밀번호 확인"
-                    />
-                  )}
-                  <InputMessage className="passwordMessage">
-                    {newPasswordConfirmMessage}
-                  </InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeNewPasswordConfirm}
-                    value={newPasswordConfirm}
-                    type="password"
-                    placeholder="새비밀번호 확인"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            <EditButtonContainer>
-              <EditButton onClick={onClickSubmit} type="submit">
-                변경하기
-              </EditButton>
-              <EditButton>연동해제</EditButton>
-              <EditButton onClick={onClickDeleteUser}>회원탈퇴</EditButton>
-            </EditButtonContainer>
-          </MyPageFormEditInfoWrapper>
-        </MyPageForm>
-      </MyPageWrapper>
-    </MyPageContainer>
+              </MyPageFormEditInfoWrapper>
+            </MyPageForm>
+          </MyPageWrapper>
+        </MyPageContainer>
+      )}
+    </>
   );
 }
 

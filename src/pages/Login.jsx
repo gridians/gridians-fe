@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GithubBtn from "../components/GithubBtn";
@@ -11,7 +11,8 @@ import {
   useMutaionPostLoginUserInfo,
   useMutationPostFindUserPassword,
 } from "../apis/customQuery/loginCustomQuery";
-import _debounce from "lodash/debounce";
+import _ from "lodash";
+import debounce from "lodash/debounce";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -61,8 +62,6 @@ const Login = () => {
     const regEmail =
       /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const userEmailCurrent = e.target.value;
-    setEmail(e.target.value);
-
     if (!regEmail.test(userEmailCurrent)) {
       setEmailMessage("이메일 형식이 올바르지 않습니다.");
       setIsEmail(false);
@@ -71,7 +70,6 @@ const Login = () => {
       setIsEmail(true);
     }
   };
-  const debouncedOnChange = _debounce(idOnChange, 500);
 
   const pwOnChange = (e) => {
     setPassword(e.target.value);
@@ -105,7 +103,6 @@ const Login = () => {
       },
     });
   };
-  console.log(email);
 
   return (
     <LoginContainer>
@@ -126,7 +123,7 @@ const Login = () => {
                   <>
                     <IdInput
                       value={email}
-                      onChange={debouncedOnChange}
+                      onChange={idOnChange}
                       placeholder="이메일을 입력해주세요"
                     />
                     <InputMessage>{emailMessage}</InputMessage>
@@ -135,7 +132,7 @@ const Login = () => {
                   <>
                     <IdInput
                       value={email}
-                      onChange={debouncedOnChange}
+                      onChange={idOnChange}
                       placeholder="이메일을 입력해주세요"
                     />
                   </>

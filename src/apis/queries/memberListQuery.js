@@ -1,3 +1,4 @@
+import { getCookieToken } from '../../cookie/cookie';
 import { api, api2 } from "../untils";
 
 // 카드 리스트 받아오기
@@ -24,4 +25,35 @@ export const memberListuseMutationPostCardInfo =  (editCardListUserInfo) => {
         tagSet: editCardListUserInfo.tagSet
     });
     return res.data;
+};
+
+//즐겨찾기 추가
+export const memberListuseMutationPostBookMark = (cardId) => {
+  console.log("즐겨찾기 추가", cardId);
+  const res = api.post(
+    `/fav`,
+    {
+      profileCardId: 2,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json,",
+        Authorization: `Bearer ${getCookieToken("accessToken")}`,
+      },
+    }
+  );
+  return res.data;
+};
+//로그인한 유저에 즐겨찾기 리스트
+export const memberListuseQuerygetBookMarkList = async () => {
+  console.log("즐겨찾기 리스트");
+  const res = await api.get(`/fav`,{
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json,",
+      Authorization: `Bearer ${getCookieToken("accessToken")}`,
+    },
+  });
+  return res.data;
 };

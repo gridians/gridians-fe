@@ -12,17 +12,24 @@ import {
   list,
   nickNameText,
   position,
+  skillSrc,
   statusMessage,
   tag,
   twitter,
 } from "../store/cardInfoAtom";
 import { useMutation, useQuery } from "react-query";
 import {
+  memberListuseMutationPostBookMark,
+  memberListuseQuerygetBookMarkList,
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
-import CommentList from "../components/comment/CommentList";
-import useInfiniteScroll from "../components/infiniteScroll/useInfiniteScroll";
+import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
+import { loginUserEmail } from "../store/userInfoAtom";
+import {
+  useMutationGetCardInfo,
+  useMutationGetCardList,
+} from "../apis/customQuery/memberListCustomQuery";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -30,9 +37,6 @@ const MemberListPage = () => {
   const [click, setClick] = useState();
   //클릭한 카드에 index번호 저장
   const [num, setNum] = useState();
-  //클릭한 카드에 top값 left값 애니메이션후 돌아갈 값이기도 하다.
-  const [top, setTop] = useState();
-  const [left, setLeft] = useState();
   //카드 정보를 수정중인지 아닌지 판별
   const [retouch, setRetouch] = useState(false);
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
@@ -40,21 +44,19 @@ const MemberListPage = () => {
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
+  const [skillUrl, setSkillUrl] = useRecoilState(skillSrc);
   const [skill, setSkill] = useRecoilState(language);
   const [nickName, setNickName] = useRecoilState(nickNameText);
   const [githubId, setGithubId] = useRecoilState(github);
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
-
   const [pageNum, setPageNum] = useState(0);
-  //회원 카드 리스트 받아오기 react-query
-  const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
-    "cardList",
-    (num) => memberListUseQueryGetCardList(num),
-    {
-      retry: false,
+
+  // 회원 카드 리스트 받아오기 react-query
+  const { mutate: mutateCardList } = useMutationGetCardList();
+  const handleGetCardList = (num) => {
+    mutateCardList(num, {
       onSuccess: (res) => {
-        console.log(res);
         if (cardList.length > 1) {
           setCardList((data) => [...data, res]);
         } else {
@@ -64,45 +66,24 @@ const MemberListPage = () => {
       onError: (err) => {
         console.log(err);
       },
-    }
-  );
-  const [checkMark, setCheckMark] = useState(false);
+    });
+  };
 
-  const [page, setPage] = useState(0);
-
-  const { isEnd } = useInfiniteScroll({
-    onScrollEnd: cardListInfo,
+  const { isEnd } = InfiniteScroll({
+    onScrollEnd: handleGetCardList,
     pageNum: pageNum,
     setPageNum: setPageNum,
   });
   useEffect(() => {
-    cardListInfo(pageNum);
+    handleGetCardList(pageNum);
     setPageNum(pageNum + 1);
   }, []);
 
-  // //무한 스크롤 구현
-  // window.addEventListener("scroll", function () {
-  //   const scrollTop = document.documentElement.scrollTop;
-  //   const clientHeight = document.documentElement.clientHeight;
-  //   const scrollHeight = document.documentElement.scrollHeight;
-  //   if (scrollHeight - 1 <= scrollTop + clientHeight && !cardListInfoLoading) {
-  //     cardListInfo(pageNum + 1);
-  //     setPageNum(pageNum + 1);
-  //   }
-  // });
-  // useEffect(() => {
-  //   cardListInfo(pageNum);
-  // }, []);
-
-  //회원 카드 상세정보 가져오기 react-query
-  const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
-    "cardInfo",
-    (index) => memberListUseQueryGetCardInfo(index),
-    {
+  const { mutate: mutateCardInfo } = useMutationGetCardInfo();
+  const handleDetailCardInfo = (index) => {
+    mutateCardInfo(index, {
       onSuccess: (res) => {
-        console.log(res);
         setField(res.field);
-        setImg(res.imageSrc);
         setIntroduce(res.introduction);
         setSkill(res.skill);
         setStatusMsg(res.statusMessage);
@@ -116,6 +97,30 @@ const MemberListPage = () => {
       onError: (err) => {
         console.log(err);
       },
+    });
+  };
+
+  //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
+  const { data: bookMarkList, isLoading: bookMarkListLoading } = useQuery(
+    "bookMarkList",
+    memberListuseQuerygetBookMarkList,
+    {
+      retry: false,
+    }
+  );
+
+  const [cardId, setCardId] = useState();
+  //북마크 클릭시 즐겨찾기에 추가 react-query
+  const { mutate: addBookMark, isLoading: addBookMarkLoading } = useMutation(
+    "bookMark",
+    () => memberListuseMutationPostBookMark(cardId),
+    {
+      onSuccess: (res) => {
+        // console.log(res);
+      },
+      onError: (err) => {
+        // console.log(err);
+      },
     }
   );
 
@@ -123,31 +128,22 @@ const MemberListPage = () => {
   const backgrounOnClick = () => {
     setRetouch(false);
     setClick("reset");
-    setTop(document.querySelectorAll(".card")[num].offsetTop);
-    setLeft(document.querySelectorAll(".card")[num].offsetLeft);
   };
   const XBtnOnClick = () => {
     setRetouch(false);
     setClick("reset");
-    setTop(document.querySelectorAll(".card")[num].offsetTop);
-    setLeft(document.querySelectorAll(".card")[num].offsetLeft);
   };
   const cardOnClick = (e, index, data) => {
+    setCardId(data.profileCardId);
     setNickName(data.nickname);
-    cardInfo(data.profileCardId);
+    handleDetailCardInfo(data.profileCardId);
+    setImg(data.profileImage);
+    setSkillUrl(data.skillImage);
     setNum(index);
     setClick("click");
-    setTop(document.querySelectorAll(".card")[index].offsetTop);
-    setLeft(document.querySelectorAll(".card")[index].offsetLeft);
-    //카드 상세정보를 받아온다
-    // axios.get(`http://175.215.143.189:8080/cards/1`).then((data) => {
-    //   console.log(data.data);
-    //   setImg(data.data.imageSrc);
-    //   setStatusMsg(data.data.statusMessage);
-    //   setField(data.data.field);
-    //   setTagList(data.data.tagSet);
-    //   setIntroduce(data.data.introduction);
-    // });
+  };
+  const bookMarkOnClick = () => {
+    addBookMark();
   };
 
   //onChange
@@ -160,6 +156,60 @@ const MemberListPage = () => {
   const skillOnChange = (text) => {
     setSkill(text.target.value);
   };
+
+  useEffect(() => {
+    console.log("즐겨찾기 리스트", bookMarkList);
+  }, [bookMarkList]);
+
+  //상세정보가 떠 있을시 스크롤 막기
+  var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
+  function preventDefault(e) {
+    e.preventDefault();
+  }
+  function preventDefaultForScrollKeys(e) {
+    if (keys[e.keyCode]) {
+      preventDefault(e);
+      return false;
+    }
+  }
+  // modern Chrome requires { passive: false } when adding event
+  var supportsPassive = false;
+  try {
+    window.addEventListener(
+      "test",
+      null,
+      Object.defineProperty({}, "passive", {
+        get: function () {
+          supportsPassive = true;
+        },
+      })
+    );
+  } catch (e) {}
+
+  var wheelOpt = supportsPassive ? { passive: false } : false;
+  var wheelEvent =
+    "onwheel" in document.createElement("div") ? "wheel" : "mousewheel";
+
+  // call this to Disable
+  function disableScroll() {
+    window.addEventListener("DOMMouseScroll", preventDefault, false); // older FF
+    window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+    window.addEventListener("touchmove", preventDefault, wheelOpt); // mobile
+    window.addEventListener("keydown", preventDefaultForScrollKeys, false);
+  }
+  // call this to Enable
+  function enableScroll() {
+    window.removeEventListener("DOMMouseScroll", preventDefault, false);
+    window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
+    window.removeEventListener("touchmove", preventDefault, wheelOpt);
+    window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
+  }
+  useEffect(() => {
+    if (click === "click") {
+      disableScroll();
+    }
+    return () => enableScroll();
+  }, [click]);
 
   //선택 가능한 포지션 list
   const positionList = [
@@ -234,7 +284,7 @@ const MemberListPage = () => {
       <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
-            <BookMark>
+            <BookMark onClick={() => bookMarkOnClick()}>
               <BsFillBookmarkFill />
             </BookMark>
             {retouch ? (
@@ -271,16 +321,14 @@ const MemberListPage = () => {
               ) : (
                 <>
                   <h4>{field}</h4>
-                  <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" />
+                  <img src={skillUrl} alt="사용언어" />
                 </>
               )}
             </LanguageImg>
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
-        <ReviewContainer>
-          <CommentList />
-        </ReviewContainer>
+        <ReviewContainer></ReviewContainer>
       </Detail>
       <Wrap>
         {cardList &&
@@ -292,8 +340,6 @@ const MemberListPage = () => {
               onClick={(e) => cardOnClick(e, index, data)}
             >
               <Card
-                left={left}
-                top={top}
                 click={click && num === index ? click : undefined}
                 className="front"
               >
@@ -320,44 +366,11 @@ const MemberListPage = () => {
   );
 };
 
-const spin = (top, left) => keyframes`
-    0%{
-        top:${top}px;
-        left:${left}px;
-        width: 70%;
-        height:80%;
-        transform: rotateY(-180deg);
-    }
-    100%{
-        top: ${490}px;
-        left: 50%;
-        width: 70%;
-        height:80%;
-        transform: rotateY(-180deg) translate(50%,-50%);
-    }
-`;
-const reset = (top, left) => keyframes`
-    0%{
-      top: ${490}px;
-        left: 50%;
-        width: 70%;
-        height:980px;
-        transform: rotateY(-180deg) translate(50%,-50%);
-    }
-    100%{
-        top: ${top}px;
-        left: ${left}px;
-        width: 250px;
-        height: 250px;
-        transform: rotateY(0deg);
-    }
-`;
-
 const Container = styled.div`
   position: relative;
   width: 100%;
   min-height: 90vh;
-  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
   border: 2px solid black;
 `;
 
@@ -424,18 +437,6 @@ const MemberCard = styled.div`
       transform: rotateY(-180deg);
     }
   }
-  /* ${(props) =>
-    props.click === "reset"
-      ? css`
-          &:hover {
-            .front {
-              transform: rotateY(180deg);
-            }
-          }
-        `
-      : css`
-          ${null}
-        `} */
 `;
 const Card = styled.div`
   position: absolute;
@@ -448,19 +449,6 @@ const Card = styled.div`
   &:hover {
     transform: rotateY(180deg);
   }
-  /* ${(props) =>
-    props.click === "click"
-      ? css`
-          z-index: 3;
-          animation: ${(props) => spin(props.top, props.left)} 0.5s forwards;
-        `
-      : css``}
-  ${(props) =>
-    props.click === "reset"
-      ? css`
-          animation: ${(props) => reset(props.top, props.left)} 0.5s ease-in-out;
-        `
-      : css``} */
 `;
 const Front = styled.div`
   position: absolute;
@@ -471,6 +459,7 @@ const Front = styled.div`
   width: 100%;
   height: 100%;
   background: #f6b8b8;
+  border-radius: 10px;
   transition: all 0.5s ease-in-out;
   backface-visibility: hidden;
 `;
@@ -503,6 +492,7 @@ const Role = styled.h5`
 const Back = styled.div`
   height: 100%;
   background: #f6b8b8;
+  border-radius: 10px;
   transform: rotateY(180deg);
 `;
 
@@ -510,7 +500,6 @@ let scrollY = 0;
 window.addEventListener("scroll", function () {
   scrollY = window.pageYOffset;
 });
-const clientHeight = document.documentElement.clientHeight;
 const Detail = styled(Front)`
   position: absolute;
   z-index: -9;
@@ -570,6 +559,7 @@ const DefaultInfo = styled.div`
   height: 10%;
 `;
 const BookMark = styled.div`
+  flex: 1;
   width: 197px;
   font-size: 40px;
   color: white;
@@ -578,6 +568,7 @@ const BookMark = styled.div`
   }
 `;
 const StatusMessage = styled.input`
+  flex: 2;
   width: 50%;
   height: 30px;
   background-color: #262626;
@@ -592,6 +583,7 @@ const StatusMessage = styled.input`
       : css``}
 `;
 const LanguageImg = styled.div`
+  flex: 1;
   ${(props) =>
     props.retouch
       ? css`
@@ -600,6 +592,7 @@ const LanguageImg = styled.div`
         `
       : css`
           display: flex;
+          justify-content: flex-end;
         `}
   select {
     height: 30px;
