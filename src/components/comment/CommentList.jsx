@@ -1,15 +1,15 @@
-import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
+import { useQueryMyPageGetUserValid } from "../../apis/customQuery/myPageCustomQuery";
 import {
   commentUseMutationDeleteCommentList,
   commentUseMutationPostCommentList,
   commentUseQueryGetCommentList,
   replyCommentUseMutationPostCommentList,
 } from "../../apis/queries/commentQuery";
-import { memberListUseQueryGetCardInfo } from "../../apis/queries/memberListQuery";
+import { getCookieToken } from "../../cookie/cookie";
 import { loginUserNickname } from "../../store/userInfoAtom";
 
 export default function CommentList() {
@@ -20,15 +20,30 @@ export default function CommentList() {
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
   const replyCommentRef = useRef(null);
-  const userNickname = useRecoilValue(loginUserNickname);
   const queryClient = useQueryClient();
+  const [commentNickname, setCommentNickname] = useState("");
 
-  console.log(userNickname);
-  const { data: cardInfo, isLoading: cardInfoLoading } = useQuery(
+  // const commentNickname = useRecoilValue(loginUserNickname);
+  // console.log(commentNickname);
+
+  const { mutate: getUserInfoValue } = useQueryMyPageGetUserValid();
+
+  useEffect(() => {
+    if (getCookieToken("accessToken") === undefined) {
+      console.log("token 없어");
+      return;
+    } else {
+      getUserInfoValue();
+      postCommentList();
+    }
+  }, []);
+
+  const { data: CommentCardInfo, isLoading: CommentCardInfoLoading } = useQuery(
     "carCommentInfo",
     commentUseQueryGetCommentList,
     {
       refetchOnWindowFocus: false,
+      retry: 0,
       onSuccess: (res) => {
         console.log(res);
       },
@@ -37,7 +52,7 @@ export default function CommentList() {
       },
     }
   );
-  console.log(cardInfo);
+
   const { mutate: postCommentList } = useMutation(
     (comment) => commentUseMutationPostCommentList(comment),
     {
@@ -45,11 +60,9 @@ export default function CommentList() {
       enabled: false,
       onSuccess: (res) => {
         console.log(res);
-        // queryClient.invalidateQueries("carCommentInfo");
       },
       onSettled: (data, error, variables, context) => {
-        // console.log(data);
-        // mutation이 완료되면 성공 유무와 관계없이 쿼리를 무효화 시키고 새로 갱신
+        queryClient.invalidateQueries();
       },
     }
   );
@@ -64,7 +77,7 @@ export default function CommentList() {
       },
       onSettled: (data, error, variables, context) => {
         // console.log(data);
-        // mutation이 완료되면 성공 유무와 관계없이 쿼리를 무효화 시키고 새로 갱신
+        queryClient.invalidateQueries();
       },
     }
   );
@@ -77,6 +90,9 @@ export default function CommentList() {
       onSuccess: (res) => {
         console.log(res);
         setReplyComment("");
+      },
+      onSettled: (data, error, variables, context) => {
+        queryClient.invalidateQueries();
       },
     }
   );
@@ -161,7 +177,7 @@ export default function CommentList() {
         </CommentButtonContainer>
       </CommentFormContainer>
       <CommentListContainer>
-        {cardInfo?.map((commentArr, commentIndex) => {
+        {CommentCardInfo?.map((commentArr, commentIndex) => {
           return (
             <CommentListWrapper key={commentIndex}>
               <CommentProfile alt="image" src={`${commentArr.profileImage}`} />
@@ -184,6 +200,9 @@ export default function CommentList() {
                   >
                     삭제
                   </CommentListReplayTitle>
+                  {/* {getUserInfoValue?.nickname === commentArr.nickname && ( */}
+                  {/* )} */}
+
                   {replyValid && (
                     <>
                       <CommentListReplyCommentWrapper
@@ -191,13 +210,17 @@ export default function CommentList() {
                           replyCommentId === commentIndex ? "true" : "false"
                         }
                       >
-                        {commentArr.replyList.map((replyCommentList) => {
+                        {commentArr.replyList.map((replyCommentList, index) => {
                           return (
                             <CommentListWrapper
-                              key={replyCommentList.id}
+                              key={index}
                               className="replyCommentListWrapper"
                             >
-                              <CommentProfile />
+                              {console.log(replyCommentList)}
+                              <CommentProfile
+                                alt="image"
+                                src={`${replyCommentList.imageSrc}`}
+                              />
                               <CommentListReplyCommentInnderWrapper className="replyCommentList">
                                 <CommentListNickname>
                                   {replyCommentList.nickname}
@@ -387,6 +410,7 @@ const CommentListContainer = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   z-index: 1;
+  border: 2px solid white;
   &::-webkit-scrollbar {
     width: 5px;
     background-color: transparent;

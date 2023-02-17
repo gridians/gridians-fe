@@ -25,9 +25,11 @@ import {
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
+import CommentList from "../components/comment/CommentList";
 import { loginUserEmail } from "../store/userInfoAtom";
 import {
   useMutationGetCardInfo,
+  useMutationGetCardInfoComment,
   useMutationGetCardList,
 } from "../apis/customQuery/memberListCustomQuery";
 
@@ -53,10 +55,13 @@ const MemberListPage = () => {
   const [pageNum, setPageNum] = useState(0);
 
   // 회원 카드 리스트 받아오기 react-query
-  const { mutate: mutateCardList } = useMutationGetCardList();
-  const handleGetCardList = (num) => {
-    mutateCardList(num, {
+  const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
+    "cardList",
+    (num) => memberListUseQueryGetCardList(num),
+    {
+      retry: false,
       onSuccess: (res) => {
+        // console.log(res);
         if (cardList.length > 1) {
           setCardList((data) => [...data, res]);
         } else {
@@ -64,25 +69,28 @@ const MemberListPage = () => {
         }
       },
       onError: (err) => {
-        console.log(err);
+        // console.log(err);
       },
-    });
-  };
+    }
+  );
 
   const { isEnd } = InfiniteScroll({
-    onScrollEnd: handleGetCardList,
+    onScrollEnd: cardListInfo,
     pageNum: pageNum,
     setPageNum: setPageNum,
   });
   useEffect(() => {
-    handleGetCardList(pageNum);
+    cardListInfo(pageNum);
     setPageNum(pageNum + 1);
   }, []);
 
-  const { mutate: mutateCardInfo } = useMutationGetCardInfo();
-  const handleDetailCardInfo = (index) => {
-    mutateCardInfo(index, {
+  //회원 카드 상세정보 가져오기 react-query
+  const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
+    "cardInfo",
+    (index) => memberListUseQueryGetCardInfo(index),
+    {
       onSuccess: (res) => {
+        // console.log(res);
         setField(res.field);
         setIntroduce(res.introduction);
         setSkill(res.skill);
@@ -95,19 +103,26 @@ const MemberListPage = () => {
         });
       },
       onError: (err) => {
-        console.log(err);
+        // console.log(err);
       },
+    }
+  );
+
+  const { mutate: mutateCardInfoComment } = useMutationGetCardInfoComment();
+  const handleDetailCardComment = (index) => {
+    mutateCardInfoComment(index, {
+      onSuccess: (res) => {},
     });
   };
 
   //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
-  const { data: bookMarkList, isLoading: bookMarkListLoading } = useQuery(
-    "bookMarkList",
-    memberListuseQuerygetBookMarkList,
-    {
-      retry: false,
-    }
-  );
+  // const { data: bookMarkList, isLoading: bookMarkListLoading } = useQuery(
+  //   "bookMarkList",
+  //   memberListuseQuerygetBookMarkList,
+  //   {
+  //     retry: false,
+  //   }
+  // );
 
   const [cardId, setCardId] = useState();
   //북마크 클릭시 즐겨찾기에 추가 react-query
@@ -136,7 +151,8 @@ const MemberListPage = () => {
   const cardOnClick = (e, index, data) => {
     setCardId(data.profileCardId);
     setNickName(data.nickname);
-    handleDetailCardInfo(data.profileCardId);
+    cardInfo(data.profileCardId);
+    handleDetailCardComment(data.profileCardId);
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);
@@ -157,9 +173,9 @@ const MemberListPage = () => {
     setSkill(text.target.value);
   };
 
-  useEffect(() => {
-    console.log("즐겨찾기 리스트", bookMarkList);
-  }, [bookMarkList]);
+  // useEffect(() => {
+  //   console.log("즐겨찾기 리스트", bookMarkList);
+  // }, [bookMarkList]);
 
   //상세정보가 떠 있을시 스크롤 막기
   var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
@@ -289,12 +305,12 @@ const MemberListPage = () => {
             </BookMark>
             {retouch ? (
               <StatusMessage
-                value={statusMsg}
+                value={statusMsg || ""}
                 onChange={(text) => statusMsgOnChange(text)}
                 retouch={retouch}
               />
             ) : (
-              <StatusMessage value={statusMsg} disabled />
+              <StatusMessage value={statusMsg || ""} disabled />
             )}
             <LanguageImg retouch={retouch}>
               {retouch ? (
@@ -328,7 +344,9 @@ const MemberListPage = () => {
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
-        <ReviewContainer></ReviewContainer>
+        <ReviewContainer>
+          <CommentList />
+        </ReviewContainer>
       </Detail>
       <Wrap>
         {cardList &&
@@ -370,7 +388,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   min-height: 90vh;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   border: 2px solid black;
 `;
 
@@ -392,8 +410,8 @@ const Background = styled.div`
   ${(props) =>
     props.click &&
     css`
-      z-index: 2;
-      background-color: rgba(215, 215, 215, 0.8);
+      z-index: 3;
+      background-color: rgba(0, 0, 0, 0.4);
     `}
   ${(props) =>
     props.click === "reset"

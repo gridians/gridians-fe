@@ -16,7 +16,8 @@ import {
 } from "../store/registerAtom";
 import { useNavigate } from "react-router";
 import { loginGithubId } from "../store/userInfoAtom";
-import { useMutationPostSignUp } from "../apis/customQuery/signUpCustomQuery";
+import { signUpUseMutaionPostInfo } from "../apis/queries/signUpQuery";
+import { useMutation } from "react-query";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -43,9 +44,9 @@ export default function SignUp() {
     setPassword("");
   }, []);
 
-  const { mutate: postLoginUserInfo } = useMutationPostSignUp();
-  const handlePostSignUp = (userInfo) => {
-    postLoginUserInfo(userInfo, {
+  const { mutate: loginFindUserPassword } = useMutation(
+    (userInfo) => signUpUseMutaionPostInfo(userInfo),
+    {
       onSuccess: (res) => {
         Swal.fire({
           padding: "3em",
@@ -92,8 +93,8 @@ export default function SignUp() {
           });
         }
       },
-    });
-  };
+    }
+  );
 
   // 닉네임 유효성 검사
   const onChangeNickname = (e) => {
@@ -148,7 +149,7 @@ export default function SignUp() {
 
   const onClickSubmit = (e) => {
     e.preventDefault();
-    handlePostSignUp(userInfo);
+    loginFindUserPassword(userInfo);
   };
 
   return (

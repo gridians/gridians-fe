@@ -4,10 +4,6 @@ import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import {
-  useMutationMyPagePutEditEmail,
-  useQuerycertificationPutEditEmail,
-} from "../../apis/customQuery/myPageCustomQuery";
 import { myPageUseMutationPutEditEmail } from "../../apis/queries/myPageQuery";
 import { api } from "../../apis/untils";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
@@ -18,33 +14,22 @@ export default function Certification() {
   const id = location.search.split("=")[1];
   const token = getCookieToken("accessToken");
 
-  // const { mutate: putEditEmail } = useMutation(
-  //   (id) => myPageUseMutationPutEditEmail(id),
-  //   {
-  //     onSuccess: () => {
-  //       removeCookieToken();
-  //       window.location.replace("/login");
-  //     },
-  //   }
-  // );
-  const { mutate: putEditEmail } = useMutationMyPagePutEditEmail();
-  const handleEditEmail = (id) => {
-    putEditEmail(id, {
-      onSuccess: (res) => {
-        console.log(res);
+  const { mutate: putEditEmail } = useMutation(
+    (id) => myPageUseMutationPutEditEmail(id),
+    {
+      onSuccess: () => {
         removeCookieToken();
         window.location.replace("/login");
       },
-      onError: (err) => {},
-    });
-  };
+    }
+  );
 
   const onClickLogin = () => {
     if (token === undefined) {
       postCertification(id);
       // getUserInfoValue(id);
     } else if (token) {
-      handleEditEmail(id);
+      putEditEmail(id);
     } else {
       return;
     }

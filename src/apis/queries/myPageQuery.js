@@ -3,15 +3,20 @@ import { api } from "../untils";
 
 // mypage query
 // 유저정보 받아오기
-export const myPageUseQueryGetUserInfo =  async() => {
-  const res = await api.get("/user/valid", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      accept: "application/json,",
-      Authorization: `Bearer ${getCookieToken("accessToken")}`,
-    },
-  });
-  return res.data;
+export const myPageUseQueryGetUserInfo = async () => {
+  try {
+    const res = await api.get("/user/valid", {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        accept: "application/json,",
+        Authorization: `Bearer ${getCookieToken("accessToken")}`,
+      },
+    });
+    
+    return res.data;
+  } catch (err) {
+    return;
+  }
 };
 
 // 유저프로필 이미지

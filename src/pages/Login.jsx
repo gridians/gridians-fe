@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GithubBtn from "../components/GithubBtn";
@@ -8,11 +8,10 @@ import LoadingSpinner from "../components/loading/LoadingSpinner";
 import { useSetRecoilState } from "recoil";
 import { loginUserNickname } from "../store/userInfoAtom";
 import {
-  useMutaionPostLoginUserInfo,
-  useMutationPostFindUserPassword,
-} from "../apis/customQuery/loginCustomQuery";
-import _ from "lodash";
-import debounce from "lodash/debounce";
+  postLoginUseQueryUserInfo,
+  postLoginQueryFindUserPassword,
+} from "../apis/queries/loginQuery";
+import { useMutation } from "react-query";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -28,11 +27,10 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const userLoginInfo = { email, password };
-  const { mutate: postLoginUserInfo } = useMutaionPostLoginUserInfo();
-  const handlePostUserInfo = () => {
-    postLoginUserInfo(userLoginInfo, {
+  const { mutate: postLoginInfo } = useMutation(
+    () => postLoginUseQueryUserInfo(userLoginInfo),
+    {
       onSuccess: (res) => {
-        console.log(res);
         setCookieToken("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
         setNickname(res.nickname);
@@ -41,21 +39,19 @@ const Login = () => {
           navigate("/home");
         }, 2000);
       },
-      onError: (err) => {
-        console.log(err);
-      },
-    });
-  };
+      onError: () => {},
+    }
+  );
 
-  const { mutate: loginFindUserPassword } = useMutationPostFindUserPassword();
-  const handleFindUserPassword = (email) => {
-    loginFindUserPassword(email, {
+  const { mutate: loginFindUserPassword } = useMutation(
+    (email) => postLoginQueryFindUserPassword(email),
+    {
       onSuccess: (res) => {
         console.log(res);
       },
-      onError: (err) => {},
-    });
-  };
+      onError: () => {},
+    }
+  );
 
   const idOnChange = (e) => {
     setEmail(e.target.value);
@@ -87,7 +83,7 @@ const Login = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    handlePostUserInfo();
+    postLoginInfo();
   };
 
   const onClickFindPw = (e) => {
@@ -99,7 +95,7 @@ const Login = () => {
       confirmButtonText: "확인",
       cancelButtonText: "돌아가기",
       preConfirm: (email) => {
-        handleFindUserPassword(email);
+        loginFindUserPassword(email);
       },
     });
   };

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { AiOutlineFileImage } from "react-icons/ai";
@@ -6,7 +6,6 @@ import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { MdPassword } from "react-icons/md";
-import _debounce from "lodash/debounce";
 import {
   myPageUserEmail,
   myPageUserEmailMessage,
@@ -16,26 +15,26 @@ import {
   myPageUserNewPasswordMessage,
   myPageUserNickname,
   myPageUserNicknameMessage,
-  myPageUserNicknameValue,
   myPageUserPassword,
   myPageUserPasswordMessage,
 } from "../store/myPageAtom";
-import { removeCookieToken } from "../cookie/cookie";
+import { getCookieToken, removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import { myPageUseMutationPutUserProfile } from "../apis/queries/myPageQuery";
-import Swal from "sweetalert2";
 import {
-  useMutationMyPageDeleteUserInfo,
-  useMutationMyPagePostEditEmail,
-  useMutationMyPagePutEditUserInfo,
-  useQueryMyPageGetUserValid,
-} from "../apis/customQuery/myPageCustomQuery";
+  myPageUseMutationDeleteUserInfo,
+  myPageUseMutationPutEditEmail,
+  myPageUseMutationPutEditUserInfo,
+  myPageUseMutationPutUserProfile,
+} from "../apis/queries/myPageQuery";
+import Swal from "sweetalert2";
+import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
+import { loginUserNickname } from "../store/userInfoAtom";
 
 export default function MyPage() {
   const navigate = useNavigate();
-  const [nickname, setNickname] = useRecoilState(myPageUserNickname);
+  const [nickname, setNickname] = useState("");
   const [email, setEmail] = useRecoilState(myPageUserEmail);
   const [password, setPassword] = useRecoilState(myPageUserPassword);
   const [newPassword, setNewPassword] = useRecoilState(myPageUserNewPassword);
@@ -46,69 +45,19 @@ export default function MyPage() {
   const fileInputRef = useRef(null);
 
   // 유저 정보
-  const {
-    data: getUserInfoValue,
-    isLoading,
-    isFetched,
-    isFetchedAfterMount,
-    isFetching,
-  } = useQueryMyPageGetUserValid();
-  // console.log(!getUserInfoValue);
-  console.log(isLoading);
-  console.log(isFetched);
-  console.log(isFetchedAfterMount, isFetching);
+  const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
-  // 이메일 변경
-  const { mutate: postEditEmail } = useMutationMyPagePostEditEmail();
-  const handleEditEmail = () => {
-    postEditEmail(email, {
-      onSuccess: (res) => {
-        console.log(res);
-      },
-      onError: (err) => {},
-    });
-  };
+  console.log(getUserInfoValue);
+  console.log(nickname);
 
-  // 닉네임, 비밀번호 변경
-  const userInfo = { nickname, password, newPassword };
-  const { mutate: putEditNickname, isLoading: UserProfileInfoLoading } =
-    useMutationMyPagePutEditUserInfo();
-  const handleEditNickname = () => {
-    putEditNickname(userInfo, {
-      onSuccess: (res) => {
-        console.log(res);
-      },
-      onError: (err) => {},
-    });
-  };
-
-  // 유저 회원탈퇴
-  const { mutate: deleteUserInfo } = useMutationMyPageDeleteUserInfo();
-  const handleDeleteUserInfo = (deleteInfo) => {
-    deleteUserInfo(deleteInfo, {
-      onSuccess: () => {
-        Swal.fire({
-          title: "탈퇴되었습니다",
-          cancelButtonColor: "#738598",
-          button: "확인",
-        }).then(() => {
-          removeCookieToken();
-          window.location.replace("/login");
-        });
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    });
-  };
-
+  // 유저 이미지 변경
   const { mutate: putUserProfile } = useMutation(
     "putUserProfile",
     () => myPageUseMutationPutUserProfile(imageSrc),
     {
       onSuccess: (data) => {
         console.log(data);
-        window.location.reload();
+        navigate("/home");
       },
       onError: (error) => {
         console.log(error);
@@ -119,6 +68,51 @@ export default function MyPage() {
           });
           return;
         }
+      },
+    }
+  );
+
+  // 이메일 변경
+  const { mutate: postEditEmail } = useMutation(
+    () => myPageUseMutationPutEditEmail(email),
+    {
+      onSuccess: () => {
+        // console.log("성공");
+      },
+    }
+  );
+
+  // 닉네임, 비밀번호 변경
+  const userInfo = { nickname, password, newPassword };
+  const { mutate: putUserInfo } = useMutation(
+    "putUserInfo",
+    () => myPageUseMutationPutEditUserInfo(userInfo),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  // 유저 회원탈퇴
+  const { mutate: deleteUserInfo } = useMutation(
+    (deleteInfo) => myPageUseMutationDeleteUserInfo(deleteInfo),
+    {
+      onSuccess: () => {
+        Swal.fire({
+          title: "탈퇴되었습니다",
+          cancelButtonColor: "#738598",
+          button: "확인",
+        }).then(() => {
+          removeCookieToken();
+          window.location.replace("/home");
+        });
+      },
+      onError: (error) => {
+        console.log(error);
       },
     }
   );
@@ -166,16 +160,16 @@ export default function MyPage() {
   const [isNewPassword, setIsNewPassword] = useState(false);
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
-  // useEffect(() => {
-  //   if (token === undefined) {
-  //     navigate("/login");
-  //   }
-  //   return () => {};
-  // }, [navigate, token]);
+  useEffect(() => {
+    if (getCookieToken("accessToken") === undefined) {
+      navigate("/login");
+    }
+    return () => {};
+  }, [navigate]);
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
   // 닉네임 유효성 검사
-  const onChangeNickname = _debounce((e) => {
+  const onChangeNickname = (e) => {
     // 한글 영어 숫자
     const regNickname = /^[가-힣a-zA-Z0-9]+$/;
     const userNicknameCurrent = e.target.value;
@@ -190,7 +184,7 @@ export default function MyPage() {
       setNicknameMessage("");
       setIsNickname(true);
     }
-  }, 3000);
+  };
 
   // 이메일 유효성 검사
   const onChangeEmail = (e) => {
@@ -301,7 +295,7 @@ export default function MyPage() {
 
   const onClickEmailSubmit = (e) => {
     e.preventDefault();
-    handleEditEmail(email);
+    postEditEmail(email);
     setEmail("");
     if (emailMessage.length > 0) {
       Swal.fire({
@@ -355,7 +349,7 @@ export default function MyPage() {
       });
       return;
     } else {
-      handleEditNickname(userInfo);
+      putUserInfo(userInfo);
       setNickname("");
       setPassword("");
       setNewPassword("");
@@ -376,7 +370,7 @@ export default function MyPage() {
       cancelButtonText: "취소하기",
       preConfirm: (password) => {
         console.log(password);
-        handleDeleteUserInfo(password);
+        deleteUserInfo(password);
       },
     });
   };
@@ -395,9 +389,19 @@ export default function MyPage() {
 
               <MyPageInputContainerInnerWrapper>
                 <MyPageInputWrapper className="profileImageContainer">
-                  {getUserInfoValue?.email !== undefined && (
-                    <ProfileImage src={`${getUserInfoValue?.profileImage}`} />
-                  )}
+                  <picture>
+                    {getUserInfoValue?.profileImage !== undefined && (
+                      <>
+                        <ProfileImage
+                          src={`${getUserInfoValue?.profileImage}`}
+                        />
+                        {/* <socure
+                          src={`${getUserInfoValue?.profileImage}`}
+                          
+                        /> */}
+                      </>
+                    )}
+                  </picture>
                 </MyPageInputWrapper>
                 <MyPageInputContainer className="editInputContainer">
                   <MyPageInputWrapper>

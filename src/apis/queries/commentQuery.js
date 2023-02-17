@@ -2,7 +2,7 @@ import { getCookieToken } from '../../cookie/cookie';
 import { api2 } from '../untils';
 
 export const commentUseQueryGetCommentList = async (index) => {
-  console.log("상세정보get");
+  console.log("상세 index", index);
   const res = await api2.get(`cards/2/comments`);
   return res.data;
 };

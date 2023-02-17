@@ -1,9 +1,6 @@
-import { useEffect } from 'react';
 import { atom, selector } from "recoil";
 import { v1 } from "uuid";
-import { api, cookieApi } from '../apis/untils';
-import { recoilPersist } from "recoil-persist";
-const { persistAtom } = recoilPersist();
+import { cookieApi } from '../apis/untils';
 
 const localStorageEffect =
   ( {setSelf, onSet} ) => {

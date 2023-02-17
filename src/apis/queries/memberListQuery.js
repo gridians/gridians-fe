@@ -9,7 +9,7 @@ export const memberListUseQueryGetCardList = async (num) => {
 };
 // 카드 상세정보 받아오기
 export const memberListUseQueryGetCardInfo = async (index)=>{
-    console.log("상세정보get")
+  console.log("상세정보get", index);
     const res = await api2.get(`/cards/2`);
     return res.data;
 }
