@@ -10,7 +10,7 @@ export const memberListUseQueryGetCardList = async (num) => {
 // 카드 상세정보 받아오기
 export const memberListUseQueryGetCardInfo = async (index) => {
   console.log("상세정보get");
-  const res = await api2.get(`/cards/2`);
+  const res = await api2.get(`/cards/${index}`);
   return res.data;
 };
 // 수정된 카드 상세정보 보내기
@@ -29,10 +29,10 @@ export const memberListuseMutationPostCardInfo = (editCardListUserInfo) => {
 //즐겨찾기 추가
 export const memberListuseMutationPostBookMark = (cardId) => {
   console.log("즐겨찾기 추가", cardId);
-  const res = api.post(
+  const res = api2.post(
     `/fav`,
     {
-      profileCardId: 2,
+      profileCardId: cardId,
     },
     {
       headers: {
@@ -44,10 +44,25 @@ export const memberListuseMutationPostBookMark = (cardId) => {
   );
   return res.data;
 };
+//즐겨찾기 해제
+export const memberListuseMutationDeleteBookMark = async (cardId) => {
+  console.log("즐겨찾기 해제", cardId);
+  const res = await api2.delete(
+    `/fav`, 
+  {
+    data: { profileCardId: cardId },
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json,",
+      Authorization: `Bearer ${getCookieToken("accessToken")}`,
+    },
+  });
+  return res.data;
+};
 //로그인한 유저에 즐겨찾기 리스트
 export const memberListuseQuerygetBookMarkList = async () => {
   console.log("즐겨찾기 리스트");
-  const res = await api.get(`/fav`,{
+  const res = await api2.get(`/fav`, {
     headers: {
       "Content-Type": "application/json",
       accept: "application/json,",
