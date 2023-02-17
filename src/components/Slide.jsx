@@ -22,6 +22,7 @@ import {
 } from "../store/cardInfoAtom";
 import { useMutation } from "react-query";
 import { memberListuseMutationPostCardInfo } from "../apis/queries/memberListQuery";
+import { loginUserNickname } from "../store/userInfoAtom";
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
   const [tagText, setTagText] = useState("");
@@ -35,6 +36,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
   const [nickName, setNickName] = useRecoilState(nickNameText);
+  const [userName,setUserName] = useRecoilState(loginUserNickname);
 
   //상세정보 수정 정보 보내기
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
@@ -49,6 +51,8 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       },
     }
   );
+
+  //slick-slide 기본셋팅
   const settings = {
     dots: true,
     infinite: true,
@@ -78,6 +82,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const reTouchOnClick = () => {
     setRetouch(!retouch);
   };
+  //카드 정보 수정 내용을 담은 객체
   const editCardListUserInfo = {
     statusMessage: statusMsg,
     field: field,
@@ -126,7 +131,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       <div>
         <First>
           <ProfileImg>
-            <AiFillSetting onClick={() => reTouchOnClick()} />
+            {userName===nickName?<AiFillSetting onClick={() => reTouchOnClick()} />:null}
             <img src={img} alt="d" />
           </ProfileImg>
           <Name value={nickName} disabled />
