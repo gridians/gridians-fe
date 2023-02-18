@@ -21,22 +21,9 @@ export default function CommentList() {
   const textRef = useRef();
   const replyCommentRef = useRef(null);
   const queryClient = useQueryClient();
-  const [commentNickname, setCommentNickname] = useState("");
 
-  // const commentNickname = useRecoilValue(loginUserNickname);
-  // console.log(commentNickname);
-
-  const { mutate: getUserInfoValue } = useQueryMyPageGetUserValid();
-
-  useEffect(() => {
-    if (getCookieToken("accessToken") === undefined) {
-      console.log("token 없어");
-      return;
-    } else {
-      getUserInfoValue();
-      postCommentList();
-    }
-  }, []);
+  const token = getCookieToken("accessToken");
+  const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
   const { data: CommentCardInfo, isLoading: CommentCardInfoLoading } = useQuery(
     "carCommentInfo",
@@ -146,35 +133,42 @@ export default function CommentList() {
       </CommentTitleContainer>
 
       <CommentFormContainer>
-        <CommentProfile />
-        <CommentInput
-          type="text"
-          placeholder="댓글 입력하기.."
-          ref={textRef}
-          onInput={handleResizeHeight}
-          onChange={(e) => {
-            setComment(e.target.value);
-          }}
-          value={comment}
-        />
-        <CommentButtonContainer>
-          {comment.length > 0 ? (
-            <CommentButton
-              style={{ backgroundColor: "#0025A7", color: "white" }}
-              onClick={postComment}
-            >
-              등록
-            </CommentButton>
-          ) : (
-            <CommentButton
-              style={{ cursor: "default" }}
-              disabled
-              onClick={postComment}
-            >
-              등록
-            </CommentButton>
-          )}
-        </CommentButtonContainer>
+        {token && (
+          <>
+            <CommentProfile
+              alt="image"
+              src={`${getUserInfoValue?.profileImage}`}
+            />
+            <CommentInput
+              type="text"
+              placeholder="댓글 입력하기.."
+              ref={textRef}
+              onInput={handleResizeHeight}
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+              value={comment}
+            />
+            <CommentButtonContainer>
+              {comment.length > 0 ? (
+                <CommentButton
+                  style={{ backgroundColor: "#0025A7", color: "white" }}
+                  onClick={postComment}
+                >
+                  등록
+                </CommentButton>
+              ) : (
+                <CommentButton
+                  style={{ cursor: "default" }}
+                  disabled
+                  onClick={postComment}
+                >
+                  등록
+                </CommentButton>
+              )}
+            </CommentButtonContainer>
+          </>
+        )}
       </CommentFormContainer>
       <CommentListContainer>
         {CommentCardInfo?.map((commentArr, commentIndex) => {
@@ -190,16 +184,22 @@ export default function CommentList() {
                   {commentArr.contents}
                 </CommentListComment>
                 <CommentListReplyComment>
-                  <CommentListReplayTitle
-                    onClick={() => onClickReplyComment(commentIndex)}
-                  >
-                    답글
-                  </CommentListReplayTitle>
-                  <CommentListReplayTitle
-                    onClick={() => onClickdeleteComment(commentArr.commentId)}
-                  >
-                    삭제
-                  </CommentListReplayTitle>
+                  {token && (
+                    <CommentListReplayTitle
+                      onClick={() => onClickReplyComment(commentIndex)}
+                    >
+                      답글
+                    </CommentListReplayTitle>
+                  )}
+
+                  {getUserInfoValue?.nickname === commentArr.nickname && (
+                    <CommentListReplayTitle
+                      onClick={() => onClickdeleteComment(commentArr.commentId)}
+                    >
+                      삭제
+                    </CommentListReplayTitle>
+                  )}
+
                   {/* {getUserInfoValue?.nickname === commentArr.nickname && ( */}
                   {/* )} */}
 
@@ -383,9 +383,9 @@ const CommentInput = styled.textarea`
   &:focus {
     outline: none;
   }
-  /* &::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     display: none;
-  } */
+  }
 `;
 const CommentButtonContainer = styled.div`
   display: flex;
@@ -444,8 +444,6 @@ const CommentListCommentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 70%;
-
-  /* padding-left: 40px; */
 `;
 const CommentListNickname = styled.span`
   font-weight: bold;
@@ -475,6 +473,7 @@ const CommentListReplayTitle = styled.span`
   cursor: pointer;
   color: #d28e8e;
   font-size: ${({ theme }) => theme.fontSizes.base};
+  margin-right: 5px;
 `;
 const CommentListReplyCommentWrapper = styled.div`
   ${(props) =>
