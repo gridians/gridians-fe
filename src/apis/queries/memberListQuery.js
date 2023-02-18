@@ -42,7 +42,7 @@ export const memberListuseMutationPostBookMark = (cardId) => {
       },
     }
   );
-  return res.data;
+  return res;
 };
 //즐겨찾기 해제
 export const memberListuseMutationDeleteBookMark = async (cardId) => {
