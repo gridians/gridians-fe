@@ -3,7 +3,7 @@ import { api, api2 } from "../untils";
 // 카드 리스트 받아오기
 export const memberListUseQueryGetCardList = async (num) => {
     console.log("카드리스트get","pageNum:",num);
-    const res = await api2.get(`/cards?page=${num}&size=1`);
+    const res = await api2.get(`/cards?page=${num}&size=16`);
     return res.data;
 };
 // 카드 상세정보 받아오기
