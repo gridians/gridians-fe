@@ -10,6 +10,8 @@ import {
   postLoginUseQueryUserInfo,
 } from "../apis/queries/loginQuery";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
+import { useRecoilState } from "recoil";
+import { loginUserNickname } from "../store/userInfoAtom";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,10 +25,12 @@ const Login = () => {
   const [isPassword, setIsPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [userName, setUserName] = useRecoilState(loginUserNickname);
   const { mutate: postLoginInfo } = useMutation(
     () => postLoginUseQueryUserInfo(userLoginInfo),
     {
       onSuccess: (res) => {
+        setUserName(res.nickname);
         setCookieToken("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
         setIsLoading(true);

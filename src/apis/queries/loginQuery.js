@@ -1,10 +1,10 @@
 import { getCookieToken } from '../../cookie/cookie';
-import { api } from "../untils";
+import { api, api2 } from "../untils";
 
 // login query
 // 로그인 정보 보내기
 export const postLoginUseQueryUserInfo = async (userLoginInfo) => {
-  const res = await api.post("/user/auth/login", {
+  const res = await api2.post("/user/auth/login", {
     email: userLoginInfo.email,
     password: userLoginInfo.password,
   });
