@@ -7,10 +7,10 @@ import {
   commentUseMutationDeleteCommentList,
   commentUseMutationPostCommentList,
   commentUseQueryGetCommentList,
+  replyCommentUseMutationDeleteCommentList,
   replyCommentUseMutationPostCommentList,
 } from "../../apis/queries/commentQuery";
 import { getCookieToken } from "../../cookie/cookie";
-import { loginUserNickname } from "../../store/userInfoAtom";
 
 export default function CommentList() {
   const [comment, setComment] = useState("");
@@ -19,7 +19,7 @@ export default function CommentList() {
   // const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const textRef = useRef();
-  const replyCommentRef = useRef(null);
+  const replyCommentRef = useRef();
   const queryClient = useQueryClient();
 
   const token = getCookieToken("accessToken");
@@ -54,6 +54,7 @@ export default function CommentList() {
     }
   );
 
+  // 댓글 삭제
   const { mutate: commentDelete } = useMutation(
     (commentId) => commentUseMutationDeleteCommentList(commentId),
     {
@@ -69,6 +70,7 @@ export default function CommentList() {
     }
   );
 
+  // 대댓글 기능
   const { mutate: replyCommentList } = useMutation(
     (commentId) =>
       replyCommentUseMutationPostCommentList(commentId, replyComment),
@@ -83,13 +85,37 @@ export default function CommentList() {
       },
     }
   );
+
+  // 대댓글 삭제
+  const { mutate: replyCommentDelete } = useMutation(
+    (commentIds) => replyCommentUseMutationDeleteCommentList(commentIds),
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (res) => {
+        console.log(res);
+        // queryClient.invalidateQueries("carCommentInfo");
+      },
+      onSettled: (data, error, variables, context) => {
+        // console.log(data);
+        queryClient.invalidateQueries();
+      },
+    }
+  );
+
   const postComment = () => {
+    textRef.current.style.height = "23px";
     postCommentList(comment);
     setComment("");
   };
 
-  const onClickdeleteComment = (commentId) => {
+  const onClickDeleteComment = (commentId) => {
     commentDelete(commentId);
+  };
+
+  const onClickDeleteReplyComment = (commentId, replyId) => {
+    const commentIds = { commentId, replyId };
+    console.log(commentIds);
+    replyCommentDelete(commentIds);
   };
 
   const postReplyComment = (commentId) => {
@@ -103,23 +129,22 @@ export default function CommentList() {
     setReplyComment("");
   };
 
-  const handleResizeHeight = useCallback(() => {
-    if (textRef === null || textRef.current === null) {
-      return;
-    }
-    textRef.current.style.height = "23px";
+  // const handleResizeHeight = useCallback(() => {
+  //   textRef.current.style.height = "auto";
+  //   textRef.current.style.height = textRef.current.scrollHeight + "px";
+  // }, []);
+
+  const onChange = (e) => {
+    setComment(e.target.value);
+  };
+  const handleResizeHeight = () => {
+    textRef.current.style.height = "auto";
     textRef.current.style.height = textRef.current.scrollHeight + "px";
-  }, []);
+  };
 
   const handleReplyCommentResizeHeight = useCallback(() => {
-    if (replyCommentRef === null || replyCommentRef.current === null) {
-      return;
-    }
-    replyCommentRef.current.style.height = "23px";
-    replyCommentRef.current.style.height =
-      replyCommentRef.current.scrollHeight + "px";
-    replyCommentRef.current.disabled = false;
-    replyCommentRef.current.focus();
+    replyCommentRef.current.style.height = "auto";
+    replyCommentRef.current.style.height = textRef.current.scrollHeight + "px";
   }, []);
 
   const onChangeRelyValue = (e) => {
@@ -140,13 +165,11 @@ export default function CommentList() {
               src={`${getUserInfoValue?.profileImage}`}
             />
             <CommentInput
-              type="text"
               placeholder="댓글 입력하기.."
-              ref={textRef}
-              onInput={handleResizeHeight}
-              onChange={(e) => {
-                setComment(e.target.value);
-              }}
+              // ref={textRef}
+              // onInput={handleResizeHeight}
+              // rows={1}
+              onChange={onChange}
               value={comment}
             />
             <CommentButtonContainer>
@@ -194,7 +217,7 @@ export default function CommentList() {
 
                   {getUserInfoValue?.nickname === commentArr.nickname && (
                     <CommentListReplayTitle
-                      onClick={() => onClickdeleteComment(commentArr.commentId)}
+                      onClick={() => onClickDeleteComment(commentArr.commentId)}
                     >
                       삭제
                     </CommentListReplayTitle>
@@ -216,7 +239,6 @@ export default function CommentList() {
                               key={index}
                               className="replyCommentListWrapper"
                             >
-                              {console.log(replyCommentList)}
                               <CommentProfile
                                 alt="image"
                                 src={`${replyCommentList.imageSrc}`}
@@ -231,6 +253,19 @@ export default function CommentList() {
                                 <CommentListComment>
                                   {replyCommentList.contents}
                                 </CommentListComment>
+                                {getUserInfoValue?.nickname ===
+                                  replyCommentList.nickname && (
+                                  <CommentListReplayTitle
+                                    onClick={() =>
+                                      onClickDeleteReplyComment(
+                                        replyCommentList.commentId,
+                                        replyCommentList.replyId
+                                      )
+                                    }
+                                  >
+                                    삭제
+                                  </CommentListReplayTitle>
+                                )}
                               </CommentListReplyCommentInnderWrapper>
                             </CommentListWrapper>
                           );
@@ -243,6 +278,7 @@ export default function CommentList() {
                               placeholder="댓글 입력하기.."
                               ref={replyCommentRef}
                               onInput={handleReplyCommentResizeHeight}
+                              rows={1}
                               onChange={onChangeRelyValue}
                               value={replyComment}
                             />
@@ -274,51 +310,6 @@ export default function CommentList() {
                     </>
                   )}
                 </CommentListReplyComment>
-                {/* {replyValid ? (
-             null
-                ) : (
-                  <>
-                    {replyCommentList.map((replyCommentArr, i) => {
-                      return (
-                        <CommentFormContainer key={i}>
-                          <CommentProfile/>
-                          <CommentInput
-                            type="text"
-                            placeholder="댓글 입력하기.."
-                            ref={replyCommentRef}
-                            onInput={handleReplyCommentResizeHeight}
-                            onChange={(e) => {
-                              setReplyComment(e.target.value);
-                            }}
-                            value={replyComment}
-                          />
-                          <CommentButtonContainer>
-                            {replyComment.length > 0 ? (
-                              <CommentButton
-                                style={{
-                                  backgroundColor: "#0025A7",
-                                  color: "white",
-                                }}
-                                onClick={postReplyComment}
-                              >
-                                등록
-                              </CommentButton>
-                            ) : (
-                              <CommentButton
-                                style={{ cursor: "default" }}
-                                disabled
-                                onClick={postReplyComment}
-                              >
-                                등록
-                              </CommentButton>
-                            )}
-                          </CommentButtonContainer>
-                          {replyCommentArr}
-                        </CommentFormContainer>
-                      );
-                    })}
-                  </>
-                )} */}
               </CommentListCommentWrapper>
             </CommentListWrapper>
           );
@@ -369,7 +360,7 @@ const CommentProfile = styled.img`
   color: white;
   /* margin-right: 20px; */
 `;
-const CommentInput = styled.textarea`
+const CommentInput = styled.input`
   width: 70%;
   border: none;
   height: 23px;
@@ -410,6 +401,7 @@ const CommentListContainer = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   z-index: 1;
+  padding: 5px;
   border: 2px solid white;
   &::-webkit-scrollbar {
     width: 5px;
@@ -461,7 +453,6 @@ const CommentListComment = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.base};
   width: 100%;
   margin-top: 10px;
-  border: 1px solid white;
   overflow-wrap: break-word;
 `;
 const CommentListReplyComment = styled.div`
@@ -485,8 +476,6 @@ const CommentListReplyCommentWrapper = styled.div`
           display: none;
         `}
   border: 2px solid white;
-
-  /* position: absolute; */
 `;
 
 const CommentListReplyCommentInnderWrapper = styled.div`

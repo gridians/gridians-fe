@@ -62,8 +62,8 @@ api.interceptors.response.use(
         const refreshToken = await localStorage.getItem("refreshToken");
         // console.log(refreshToken);
         // token refresh요청
-        const  {data}  = await axios.post(
-          "http://58.231.19.218:8000/user/auth/reissue",
+        const { data } = await axios.post(
+          "http://152.70.251.225:8080/user/auth/reissue",
           { refreshToken: `${refreshToken}` },
           { headers: {} }
         );
