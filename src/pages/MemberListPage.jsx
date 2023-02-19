@@ -37,6 +37,7 @@ import {
 } from "../apis/customQuery/memberListCustomQuery";
 import { getCookieToken } from "../cookie/cookie";
 import { cardIdSelector } from "../store/commentAtom";
+import MyCardBtn from "../components/MyCardBtn";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -320,6 +321,7 @@ const MemberListPage = () => {
 
   return (
     <Container>
+      <MyCardBtn setClick={setClick}/>
       <Background
         click={click ? click : undefined}
         onClick={() => backgrounOnClick()}

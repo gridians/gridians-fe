@@ -3,8 +3,21 @@ import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 import Swal from "sweetalert2";
+import { useMutation } from "react-query";
+import { cardEnrollUseMutationPostToken } from "../../apis/queries/cardEnrollQuery";
 
 const Header = () => {
+  //카드 등록 react-query
+  const { mutate: cardEnroll, isLoading: cardEnrollLoading } = useMutation(
+    "cardEnroll",
+    () => cardEnrollUseMutationPostToken(),
+    {
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
+
   const location = useLocation();
   if (location.pathname === "/") return null;
 
@@ -44,6 +57,8 @@ const Header = () => {
         popup: "animate__animated animate__fadeOutUp",
       },
       closeOnClickOutside: false,
+    }).then((data) => {
+      if (data.isConfirmed) cardEnroll();
     });
   };
 
