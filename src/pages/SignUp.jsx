@@ -14,16 +14,15 @@ import {
   userPassword,
   userPasswordMessage,
 } from "../store/registerAtom";
-import { api } from "../apis/untils";
 import { useNavigate } from "react-router";
-import { useMutation } from "react-query";
-import { signUpuseQueryPostInfo } from "../apis/queries/signUpQuery";
 import { loginGithubId } from "../store/userInfoAtom";
+import { signUpUseMutaionPostInfo } from "../apis/queries/signUpQuery";
+import { useMutation } from "react-query";
 
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const [githubId,setGithubId] = useRecoilState(loginGithubId);
+  const [githubId, setGithubId] = useRecoilState(loginGithubId);
 
   const [nickname, setNickname] = useRecoilState(userNickname);
   const [email, setEmail] = useRecoilState(userEmail);
@@ -39,8 +38,14 @@ export default function SignUp() {
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
 
+  useEffect(() => {
+    setNickname("");
+    setEmail("");
+    setPassword("");
+  }, []);
+
   const { mutate: loginFindUserPassword } = useMutation(
-    (userInfo) => signUpuseQueryPostInfo(userInfo),
+    (userInfo) => signUpUseMutaionPostInfo(userInfo),
     {
       onSuccess: (res) => {
         Swal.fire({
@@ -140,28 +145,12 @@ export default function SignUp() {
       setIsPassword(true);
     }
   };
-  const userInfo = { nickname, email, password,githubId };
+  const userInfo = { nickname, email, password, githubId };
 
   const onClickSubmit = (e) => {
     e.preventDefault();
     loginFindUserPassword(userInfo);
   };
-
-  // const postRegister = async () => {
-  //   try {
-  //     const res = await api.post("/user/auth/signup", {
-  //       nickname,
-  //       email,
-  //       password,
-  //     });
-  //     if (res.status === 200) {
-
-  //     }
-  //     return res.data;
-  //   } catch (err) {
-
-  //   }
-  // };
 
   return (
     <SignUpContainer>
@@ -314,12 +303,21 @@ const SignUpContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 100px 350px;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
+  @media ${(props) => props.theme.mobile} {
+    padding: 0;
+  }
 `;
 const SignUpFormWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
+  @media ${(props) => props.theme.mobile} {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const SignUpTitleListWrapper = styled.div`
   width: 40%;
@@ -330,6 +328,14 @@ const SignUpTitleListWrapper = styled.div`
   align-items: center;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    height: 10%;
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: ${({ theme }) => theme.colors.subColor3};
+  }
 `;
 const TitleWrapper = styled.div`
   display: flex;
@@ -338,12 +344,22 @@ const TitleWrapper = styled.div`
   justify-content: center;
   margin-top: 100px;
   background-color: ${({ theme }) => theme.colors.subColor3};
+  @media ${(props) => props.theme.mobile} {
+    height: 100%;
+    margin: 0px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid white;
+  }
 `;
 const Title = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   font-weight: bold;
   color: ${({ theme }) => theme.colors.white};
   margin-bottom: 10px;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.xxxl};
+  }
 `;
 
 const SignUpForm = styled.form`
@@ -357,6 +373,13 @@ const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  @media ${(props) => props.theme.mobile} {
+    height: 60%;
+    padding: 0;
+    border-radius: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
 `;
 const SignUpInnerWrapper = styled.div`
   width: 100%;
@@ -377,6 +400,14 @@ const SignUpInputContainer = styled.div`
   .icon {
     width: 40px;
     height: 40px;
+  }
+  @media ${(props) => props.theme.mobile} {
+    margin-top: -20px;
+    margin-bottom: 30px;
+    .icon {
+      width: 30px;
+      height: 30px;
+    }
   }
 `;
 const SignUpInputItem = styled.div`
@@ -400,6 +431,14 @@ const SignUpInput = styled.input`
     font-size: ${({ theme }) => theme.fontSizes.small};
     color: ${({ theme }) => theme.colors.subColor4};
   }
+  @media ${(props) => props.theme.mobile} {
+    padding: 5px;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    &::placeholder {
+      font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+      color: ${({ theme }) => theme.colors.subColor4};
+    }
+  }
 `;
 const InputMessage = styled.div`
   display: block;
@@ -408,6 +447,10 @@ const InputMessage = styled.div`
   line-height: 16px;
   font-size: ${({ theme }) => theme.fontSizes.small};
   margin-top: 5px;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+    margin-left: 5px;
+  }
 `;
 const SignUpButton = styled.button`
   display: block;
@@ -421,4 +464,8 @@ const SignUpButton = styled.button`
   background-color: transparent;
   transition: all 0.5s;
   cursor: pointer;
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 20px;
+    width: 50%;
+  }
 `;

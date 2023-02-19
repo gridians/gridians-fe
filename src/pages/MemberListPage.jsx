@@ -27,7 +27,16 @@ import {
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
+import CommentList from "../components/comment/CommentList";
+import { loginUserEmail } from "../store/userInfoAtom";
+import {
+  useMutationGetCardInfo,
+  useMutationGetCardInfoComment,
+  useMutationGetCardList,
+  useMutationPostCardComment,
+} from "../apis/customQuery/memberListCustomQuery";
 import { getCookieToken } from "../cookie/cookie";
+import { cardIdSelector } from "../store/commentAtom";
 import MyCardBtn from "../components/MyCardBtn";
 
 const MemberListPage = () => {
@@ -52,7 +61,9 @@ const MemberListPage = () => {
   const [eaditCardId, setEaditCardId] = useRecoilState(cardIdNum);
 
   const [pageNum, setPageNum] = useState(0);
-  //회원 카드 리스트 받아오기 react-query
+  const [cardId, setCardId] = useRecoilState(cardIdSelector);
+
+  // 회원 카드 리스트 받아오기 react-query
   const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
     "cardList",
     (num) => memberListUseQueryGetCardList(num),
@@ -65,8 +76,13 @@ const MemberListPage = () => {
           setCardList(res);
         }
       },
+      onError: (err) => {
+        // console.log(err);
+      },
     }
   );
+
+  // console.log(cardList);
 
   const { isEnd } = InfiniteScroll({
     onScrollEnd: cardListInfo,
@@ -78,6 +94,12 @@ const MemberListPage = () => {
     cardListInfo(pageNum);
     setPageNum(pageNum + 1);
   }, []);
+
+  const { mutate: mutateCardInfoComment } =
+    useMutationGetCardInfoComment(cardId);
+  const handleDetailCardComment = (index) => {
+    mutateCardInfoComment(index);
+  };
 
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
@@ -95,6 +117,9 @@ const MemberListPage = () => {
           if (data.name === "github") return setGithubId(data.account);
           else return setInstagramId(data.account);
         });
+      },
+      onError: (err) => {
+        // console.log(err);
       },
     }
   );
@@ -117,7 +142,6 @@ const MemberListPage = () => {
     }
   }, []);
 
-  const [cardId, setCardId] = useState();
   //북마크 클릭시 즐겨찾기에 추가 react-query
   const { mutate: addBookMark, isLoading: addBookMarkLoading } = useMutation(
     "bookMark",
@@ -129,7 +153,8 @@ const MemberListPage = () => {
     }
   );
   //북마크 클릭시 즐겨찾기에 해제 react-query
-  const { mutate: minusBookMark, isLoading: minusBookMarkLoading } = useMutation(
+  const { mutate: minusBookMark, isLoading: minusBookMarkLoading } =
+    useMutation(
       "minusbookMark",
       () => memberListuseMutationDeleteBookMark(cardId),
       {
@@ -157,12 +182,15 @@ const MemberListPage = () => {
     setCardId(data.profileCardId);
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
+    handleDetailCardComment(data.profileCardId);
+    // mutationCardInfoIndex({ index: data.profileCardId });
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);
     setClick("click");
   };
   const bookMarkOnClick = () => {
+    addBookMark();
     const boolean =
       bookMarkList &&
       bookMarkList.map((data) => data.nickname).includes(nickName);
@@ -360,7 +388,9 @@ const MemberListPage = () => {
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
-        <ReviewContainer></ReviewContainer>
+        <ReviewContainer>
+          <CommentList />
+        </ReviewContainer>
       </Detail>
       <Wrap>
         {cardList &&
@@ -406,7 +436,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   min-height: 90vh;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   border: 2px solid black;
 `;
 
@@ -428,8 +458,8 @@ const Background = styled.div`
   ${(props) =>
     props.click &&
     css`
-      z-index: 2;
-      background-color: rgba(215, 215, 215, 0.8);
+      z-index: 3;
+      background-color: rgba(0, 0, 0, 0.4);
     `}
   ${(props) =>
     props.click === "reset"
@@ -473,6 +503,7 @@ const MemberCard = styled.div`
       transform: rotateY(180deg);
     }
   }
+
   ${(props) =>
     props.nickName
       ? css`
@@ -672,7 +703,7 @@ const LanguageImg = styled.div`
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #738598;
+  background-color: #0e0606;
   cursor: auto;
 `;
 

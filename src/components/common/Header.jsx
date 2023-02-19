@@ -33,6 +33,7 @@ const Header = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         removeCookieToken();
+        localStorage.clear();
         window.location.replace("/login");
       } else {
         return;
@@ -113,12 +114,14 @@ const Header = () => {
 const HeaderBox = styled.header`
   display: flex;
   justify-content: center;
-  width: 100%;
   height: 10vh;
-
   padding: 20px 300px;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   color: ${({ theme }) => theme.colors.black};
+  @media ${(props) => props.theme.mobile} {
+    overflow: hidden;
+    padding: 0 20px;
+  }
 `;
 const HeaderWrap = styled.div`
   display: flex;
@@ -127,9 +130,12 @@ const HeaderWrap = styled.div`
   width: 1440px;
 `;
 const Logo = styled.span`
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
   font-size: 2.2rem;
   font-family: ${({ theme }) => theme.fontFace.font1};
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.base};
+  }
 `;
 const Menu = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.xl};
@@ -137,7 +143,7 @@ const Menu = styled.div`
   align-items: center;
   justify-content: space-between;
   a {
-    color: ${({ theme }) => theme.colors.black};
+    color: ${({ theme }) => theme.colors.white};
     font-weight: bold;
     cursor: pointer;
     padding: 6px;
@@ -149,6 +155,20 @@ const Menu = styled.div`
   }
   span {
     color: ${({ theme }) => theme.colors.white};
+  }
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    a {
+      color: ${({ theme }) => theme.colors.black};
+      font-weight: bold;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: 10px;
+      &:hover {
+        font-size: ${({ theme }) => theme.fontSizes.base};
+        color: ${({ theme }) => theme.colors.subColor2};
+      }
+    }
   }
 `;
 

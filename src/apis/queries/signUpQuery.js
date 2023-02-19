@@ -1,8 +1,7 @@
-import { getCookieToken } from '../../cookie/cookie';
 import { api } from '../untils';
 
-export const signUpuseQueryPostInfo = (userInfo) => {
-  const res =  api.post(
+export const signUpUseMutaionPostInfo = async(userInfo) => {
+  const res = await api.post(
     "/user/auth/signup",
     {
       nickname: userInfo.nickname,
@@ -10,13 +9,6 @@ export const signUpuseQueryPostInfo = (userInfo) => {
       password: userInfo.password,
       githubNumberId: userInfo.githubId
     },
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        accept: "application/json,",
-        Authorization: `Bearer ${getCookieToken("accessToken")}`,
-      },
-    }
   );
   return res.data;
 };
