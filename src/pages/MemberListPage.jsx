@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import { useRecoilState } from "recoil";
 import {
+  cardIdNum,
   github,
   imgSrc,
   instagram,
@@ -47,6 +48,7 @@ const MemberListPage = () => {
   const [githubId, setGithubId] = useRecoilState(github);
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
+  const [eaditCardId, setEaditCardId] = useRecoilState(cardIdNum);
 
   const [pageNum, setPageNum] = useState(0);
   //회원 카드 리스트 받아오기 react-query
@@ -71,6 +73,7 @@ const MemberListPage = () => {
     setPageNum: setPageNum,
   });
   useEffect(() => {
+    console.log(localStorage.getItem("name"));
     cardListInfo(pageNum);
     setPageNum(pageNum + 1);
   }, []);
@@ -106,6 +109,12 @@ const MemberListPage = () => {
       },
     }
   );
+  //로그인한 유저에 북마크 리스트를 첫렌더링시 실행
+  useEffect(() => {
+    if (getCookieToken("accessToken")) {
+      bookList();
+    }
+  }, []);
 
   const [cardId, setCardId] = useState();
   //북마크 클릭시 즐겨찾기에 추가 react-query
@@ -119,8 +128,7 @@ const MemberListPage = () => {
     }
   );
   //북마크 클릭시 즐겨찾기에 해제 react-query
-  const { mutate: minusBookMark, isLoading: minusBookMarkLoading } =
-    useMutation(
+  const { mutate: minusBookMark, isLoading: minusBookMarkLoading } = useMutation(
       "minusbookMark",
       () => memberListuseMutationDeleteBookMark(cardId),
       {
@@ -144,6 +152,7 @@ const MemberListPage = () => {
     setClick("reset");
   };
   const cardOnClick = (e, index, data) => {
+    setEaditCardId(data.profileCardId);
     setCardId(data.profileCardId);
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
@@ -173,13 +182,6 @@ const MemberListPage = () => {
   const skillOnChange = (text) => {
     setSkill(text.target.value);
   };
-
-  //로그인한 유저에 북마크 리스트를 렌더링시 실행
-  useEffect(() => {
-    if (getCookieToken("accessToken")) {
-      bookList();
-    }
-  }, []);
 
   //상세정보가 떠 있을시 스크롤 막기
   var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };

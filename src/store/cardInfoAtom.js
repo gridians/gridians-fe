@@ -1,6 +1,10 @@
 import { atom } from "recoil";
 import { v1 } from "uuid";
 
+export const cardIdNum = atom({
+  key: `cardIdNum/${v1()}`,
+  default: "",
+});
 export const list = atom({
   key: `list/${v1()}`,
   default: [],

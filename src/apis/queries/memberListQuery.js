@@ -1,5 +1,5 @@
 import { getCookieToken } from "../../cookie/cookie";
-import { api, api2, cookieApi } from "../untils";
+import { api2 } from "../untils";
 
 // 카드 리스트 받아오기
 export const memberListUseQueryGetCardList = async (num) => {
@@ -14,16 +14,29 @@ export const memberListUseQueryGetCardInfo = async (index) => {
   return res.data;
 };
 // 수정된 카드 상세정보 보내기
-export const memberListuseMutationPostCardInfo = (editCardListUserInfo) => {
+export const memberListuseMutationPostCardInfo = (
+  editCardListUserInfo,
+  eaditCardId
+) => {
   console.log(editCardListUserInfo);
-  const res = api2.post("/cards/2", {
-    statusMessage: editCardListUserInfo.statusMessage,
-    field: editCardListUserInfo.field,
-    skill: editCardListUserInfo.skillSet,
-    introduction: editCardListUserInfo.introduction,
-    snsSet: editCardListUserInfo.snsSet,
-    tagSet: editCardListUserInfo.tagSet,
-  });
+  const res = api2.put(
+    `/cards/${eaditCardId}`,
+    {
+      statusMessage: editCardListUserInfo.statusMessage,
+      field: editCardListUserInfo.field,
+      skill: editCardListUserInfo.skill,
+      introduction: editCardListUserInfo.introduction,
+      snsSet: editCardListUserInfo.snsSet,
+      tagSet: editCardListUserInfo.tagSet,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json,",
+        Authorization: `Bearer ${getCookieToken("accessToken")}`,
+      },
+    }
+  );
   return res.data;
 };
 //즐겨찾기 추가
@@ -47,9 +60,7 @@ export const memberListuseMutationPostBookMark = (cardId) => {
 //즐겨찾기 해제
 export const memberListuseMutationDeleteBookMark = async (cardId) => {
   console.log("즐겨찾기 해제", cardId);
-  const res = await api2.delete(
-    `/fav`, 
-  {
+  const res = await api2.delete(`/fav`, {
     data: { profileCardId: cardId },
     headers: {
       "Content-Type": "application/json",

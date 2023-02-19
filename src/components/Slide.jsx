@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -9,6 +9,7 @@ import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import {
+  cardIdNum,
   github,
   imgSrc,
   instagram,
@@ -36,21 +37,27 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
   const [nickName, setNickName] = useRecoilState(nickNameText);
-  const [userName,setUserName] = useRecoilState(loginUserNickname);
+  const [userName, setUserName] = useState();
+  const [eaditCardId, setEaditCardId] = useRecoilState(cardIdNum);
 
   //상세정보 수정 정보 보내기
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     (editCardListUserInfo) =>
-      memberListuseMutationPostCardInfo(editCardListUserInfo),
+      memberListuseMutationPostCardInfo(editCardListUserInfo, eaditCardId),
     {
       onSuccess: (res) => {
-        console.log("ok");
+        setRetouch(!retouch);
       },
       onError: (err) => {
         console.log(err);
       },
     }
   );
+
+
+  useEffect(() => {
+    setUserName(localStorage.getItem("name"));
+  }, [setUserName]);
 
   //slick-slide 기본셋팅
   const settings = {
@@ -89,9 +96,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
     skill: skill,
     introduction: introduce,
     snsSet: [
-      { id: githubId, name: "github" },
-      { id: instagramId, name: "instagram" },
-      { id: twitterId, name: "twitter" },
+      { account: githubId, name: "github" },
+      { account: instagramId, name: "instagram" },
+      { account: twitterId, name: "twitter" },
     ],
     tagSet: tagList,
   };
@@ -99,18 +106,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const submitBtnOnClick = (e) => {
     cardInfo(editCardListUserInfo);
     e.preventDefault();
-    /*axios.post(`http://175.215.143.189:8080/cards/3`, {
-      statusMessage: statusMsg,
-      field: field,
-      skillSet: ["Git"],
-      introduction:introduce,
-      snsSet: [
-        { id: githubId, name: "github" },
-        { id: instagramId, name: "instagram" },
-        { id: twitterId, name: "twitter" },
-      ],
-      tagSet: tagList,
-    });*/
   };
   //태그 삭제 버튼 클릭
   const tagXBtnOnClick = (index) => {
@@ -131,7 +126,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       <div>
         <First>
           <ProfileImg>
-            {userName===nickName?<AiFillSetting onClick={() => reTouchOnClick()} />:null}
+            {userName === nickName ? (
+              <AiFillSetting onClick={() => reTouchOnClick()} />
+            ) : null}
             <img src={img} alt="d" />
           </ProfileImg>
           <Name value={nickName} disabled />
