@@ -23,7 +23,7 @@ export const api2 = axios.create({
 });
 
 export const cookieApi = axios.create({
-  baseURL: "http://58.231.19.218:8000",
+  baseURL: "http://116.123.153.248:8000",
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
@@ -47,7 +47,6 @@ export const cookieApi = axios.create({
 
 api.interceptors.response.use(
   function (response) {
-    // console.log(response)
     return response;
   },
   async (error) => {

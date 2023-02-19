@@ -17,8 +17,9 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import {
+  memberListuseMutationDeleteBookMark,
   memberListuseMutationPostBookMark,
   memberListuseQuerygetBookMarkList,
   memberListUseQueryGetCardInfo,
@@ -31,7 +32,10 @@ import {
   useMutationGetCardInfo,
   useMutationGetCardInfoComment,
   useMutationGetCardList,
+  useMutationPostCardComment,
 } from "../apis/customQuery/memberListCustomQuery";
+import { getCookieToken } from "../cookie/cookie";
+import { cardIdSelector } from "../store/commentAtom";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -53,6 +57,7 @@ const MemberListPage = () => {
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
   const [pageNum, setPageNum] = useState(0);
+  const [cardId, setCardId] = useRecoilState(cardIdSelector);
 
   // 회원 카드 리스트 받아오기 react-query
   const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
@@ -61,7 +66,6 @@ const MemberListPage = () => {
     {
       retry: false,
       onSuccess: (res) => {
-        // console.log(res);
         if (cardList.length > 1) {
           setCardList((data) => [...data, res]);
         } else {
@@ -74,6 +78,8 @@ const MemberListPage = () => {
     }
   );
 
+  // console.log(cardList);
+
   const { isEnd } = InfiniteScroll({
     onScrollEnd: cardListInfo,
     pageNum: pageNum,
@@ -84,13 +90,18 @@ const MemberListPage = () => {
     setPageNum(pageNum + 1);
   }, []);
 
+  const { mutate: mutateCardInfoComment } =
+    useMutationGetCardInfoComment(cardId);
+  const handleDetailCardComment = (index) => {
+    mutateCardInfoComment(index);
+  };
+
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
     (index) => memberListUseQueryGetCardInfo(index),
     {
       onSuccess: (res) => {
-        // console.log(res);
         setField(res.field);
         setIntroduce(res.introduction);
         setSkill(res.skill);
@@ -108,36 +119,43 @@ const MemberListPage = () => {
     }
   );
 
-  const { mutate: mutateCardInfoComment } = useMutationGetCardInfoComment();
-  const handleDetailCardComment = (index) => {
-    mutateCardInfoComment(index, {
-      onSuccess: (res) => {},
-    });
-  };
-
+  const [bookMarkList, setBookList] = useState();
   //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
-  // const { data: bookMarkList, isLoading: bookMarkListLoading } = useQuery(
-  //   "bookMarkList",
-  //   memberListuseQuerygetBookMarkList,
-  //   {
-  //     retry: false,
-  //   }
-  // );
+  const { mutate: bookList, isLoading: bookMarkListLoading } = useMutation(
+    "bookMarkList",
+    () => memberListuseQuerygetBookMarkList(),
+    {
+      onSuccess: (res) => {
+        setBookList(res);
+      },
+    }
+  );
 
-  const [cardId, setCardId] = useState();
   //북마크 클릭시 즐겨찾기에 추가 react-query
   const { mutate: addBookMark, isLoading: addBookMarkLoading } = useMutation(
     "bookMark",
     () => memberListuseMutationPostBookMark(cardId),
     {
       onSuccess: (res) => {
-        // console.log(res);
-      },
-      onError: (err) => {
-        // console.log(err);
+        bookList();
       },
     }
   );
+  //북마크 클릭시 즐겨찾기에 해제 react-query
+  const { mutate: minusBookMark, isLoading: minusBookMarkLoading } =
+    useMutation(
+      "minusbookMark",
+      () => memberListuseMutationDeleteBookMark(cardId),
+      {
+        onSuccess: (res) => {
+          // console.log(res);
+          bookList();
+        },
+        onError: (err) => {
+          // console.log(err);
+        },
+      }
+    );
 
   //onClick
   const backgrounOnClick = () => {
@@ -153,6 +171,7 @@ const MemberListPage = () => {
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
     handleDetailCardComment(data.profileCardId);
+    // mutationCardInfoIndex({ index: data.profileCardId });
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);
@@ -160,6 +179,14 @@ const MemberListPage = () => {
   };
   const bookMarkOnClick = () => {
     addBookMark();
+    const boolean =
+      bookMarkList &&
+      bookMarkList.map((data) => data.nickname).includes(nickName);
+    if (!boolean) {
+      addBookMark();
+    } else {
+      minusBookMark();
+    }
   };
 
   //onChange
@@ -173,10 +200,12 @@ const MemberListPage = () => {
     setSkill(text.target.value);
   };
 
-  // useEffect(() => {
-  //   console.log("즐겨찾기 리스트", bookMarkList);
-  // }, [bookMarkList]);
-
+  //로그인한 유저에 북마크 리스트를 렌더링시 실행
+  useEffect(() => {
+    if (getCookieToken("accessToken")) {
+      bookList();
+    }
+  }, []);
   //상세정보가 떠 있을시 스크롤 막기
   var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
   function preventDefault(e) {
@@ -300,7 +329,15 @@ const MemberListPage = () => {
       <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
-            <BookMark onClick={() => bookMarkOnClick()}>
+            <BookMark
+              onClick={() => bookMarkOnClick()}
+              nickName={
+                bookMarkList &&
+                bookMarkList.map((data) => data.nickname).includes(nickName)
+                  ? true
+                  : undefined
+              }
+            >
               <BsFillBookmarkFill />
             </BookMark>
             {retouch ? (
@@ -354,13 +391,17 @@ const MemberListPage = () => {
             <MemberCard
               className="card"
               key={index}
-              click={click ? click : ""}
               onClick={(e) => cardOnClick(e, index, data)}
+              nickName={
+                bookMarkList &&
+                bookMarkList
+                  .map((data) => data.nickname)
+                  .includes(data.nickname)
+                  ? true
+                  : undefined
+              }
             >
-              <Card
-                click={click && num === index ? click : undefined}
-                className="front"
-              >
+              <Card className="front">
                 <Front>
                   <Skill>
                     <img src={data.skillImage} alt="34" />
@@ -452,9 +493,28 @@ const MemberCard = styled.div`
   cursor: pointer;
   &:hover {
     .front {
-      transform: rotateY(-180deg);
+      transform: rotateY(180deg);
     }
   }
+
+  ${(props) =>
+    props.nickName
+      ? css`
+          div {
+            div {
+              background-color: yellow;
+              border-radius: 10px;
+            }
+          }
+        `
+      : css`
+          div {
+            div {
+              background: #f6b8b8;
+              border-radius: 10px;
+            }
+          }
+        `}
 `;
 const Card = styled.div`
   position: absolute;
@@ -476,8 +536,6 @@ const Front = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  background: #f6b8b8;
-  border-radius: 10px;
   transition: all 0.5s ease-in-out;
   backface-visibility: hidden;
 `;
@@ -509,8 +567,6 @@ const Role = styled.h5`
 `;
 const Back = styled.div`
   height: 100%;
-  background: #f6b8b8;
-  border-radius: 10px;
   transform: rotateY(180deg);
 `;
 
@@ -580,10 +636,17 @@ const BookMark = styled.div`
   flex: 1;
   width: 197px;
   font-size: 40px;
-  color: white;
   svg {
     cursor: pointer;
   }
+  ${(props) =>
+    props.nickName
+      ? css`
+          color: #ff0000;
+        `
+      : css`
+          color: #494949;
+        `}
 `;
 const StatusMessage = styled.input`
   flex: 2;

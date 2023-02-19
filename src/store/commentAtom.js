@@ -2,11 +2,21 @@ import axios from 'axios';
 import { atom, selector } from 'recoil';
 import { v1 } from 'uuid';
 
-export const commentAtom = atom({
-  key: `commentAtom/${v1}`,
+export const cardId = atom({
+  key: `cardAtom/${v1}`,
   default:"",
 });
 
+export const cardIdSelector = selector({
+  key: `cardIdSelector/${v1}`,
+  get: ({ get }) => {
+    return get(cardId);
+  },
+  set:({set}, newValue)=>{
+    set(cardId, newValue)
+  }
+  
+})
 // export const validAtom = atom({
 //   key: `validAtom/${v1}`,
 //   default: false,

@@ -11,6 +11,7 @@ import {
   replyCommentUseMutationPostCommentList,
 } from "../../apis/queries/commentQuery";
 import { getCookieToken } from "../../cookie/cookie";
+import { cardIdSelector } from "../../store/commentAtom";
 
 export default function CommentList() {
   const [comment, setComment] = useState("");
@@ -18,6 +19,7 @@ export default function CommentList() {
   const [replyCommentId, setReplyCommentId] = useState([]);
   // const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
+  const cardId = useRecoilValue(cardIdSelector);
   const textRef = useRef();
   const replyCommentRef = useRef();
   const queryClient = useQueryClient();
@@ -25,7 +27,7 @@ export default function CommentList() {
   const token = getCookieToken("accessToken");
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
-  const { data: CommentCardInfo, isLoading: CommentCardInfoLoading } = useQuery(
+  const { data: CommentCardInfo } = useQuery(
     "carCommentInfo",
     commentUseQueryGetCommentList,
     {
@@ -40,8 +42,9 @@ export default function CommentList() {
     }
   );
 
+  // 댓글 보내기
   const { mutate: postCommentList } = useMutation(
-    (comment) => commentUseMutationPostCommentList(comment),
+    (postCommentInfo) => commentUseMutationPostCommentList(postCommentInfo),
     {
       refetchOnWindowFocus: false,
       enabled: false,
@@ -56,7 +59,8 @@ export default function CommentList() {
 
   // 댓글 삭제
   const { mutate: commentDelete } = useMutation(
-    (commentId) => commentUseMutationDeleteCommentList(commentId),
+    (deleteCommentInfo) =>
+      commentUseMutationDeleteCommentList(deleteCommentInfo),
     {
       refetchOnWindowFocus: false,
       onSuccess: (res) => {
@@ -71,9 +75,9 @@ export default function CommentList() {
   );
 
   // 대댓글 기능
-  const { mutate: replyCommentList } = useMutation(
-    (commentId) =>
-      replyCommentUseMutationPostCommentList(commentId, replyComment),
+  const { mutate: postReplyCommentList } = useMutation(
+    (postReplyCommentInfo) =>
+      replyCommentUseMutationPostCommentList(postReplyCommentInfo),
     {
       refetchOnWindowFocus: false,
       onSuccess: (res) => {
@@ -88,7 +92,8 @@ export default function CommentList() {
 
   // 대댓글 삭제
   const { mutate: replyCommentDelete } = useMutation(
-    (commentIds) => replyCommentUseMutationDeleteCommentList(commentIds),
+    (deleteReplyCommentInfo) =>
+      replyCommentUseMutationDeleteCommentList(deleteReplyCommentInfo),
     {
       refetchOnWindowFocus: false,
       onSuccess: (res) => {
@@ -102,31 +107,37 @@ export default function CommentList() {
     }
   );
 
-  const postComment = () => {
-    textRef.current.style.height = "23px";
-    postCommentList(comment);
+  // 댓글 보내기 온클릭
+  const onClickPostComment = () => {
+    const postCommentInfo = { cardId, comment };
+    postCommentList(postCommentInfo);
     setComment("");
   };
 
+  // 댓글 삭제 온클릭
   const onClickDeleteComment = (commentId) => {
-    commentDelete(commentId);
-  };
-
-  const onClickDeleteReplyComment = (commentId, replyId) => {
-    const commentIds = { commentId, replyId };
-    console.log(commentIds);
-    replyCommentDelete(commentIds);
-  };
-
-  const postReplyComment = (commentId) => {
-    replyCommentList(commentId, replyComment);
-    // setReplyComment("");
+    const deleteCommentInfo = { cardId, commentId };
+    commentDelete(deleteCommentInfo);
   };
 
   const onClickReplyComment = (commentIndex) => {
     setReplyValid(!replyValid);
     setReplyCommentId(commentIndex);
     setReplyComment("");
+  };
+
+  // 대댓글  온클릭
+  const onClickPostReplyComment = (commentId) => {
+    const postReplyCommentInfo = { cardId, commentId, replyComment };
+    postReplyCommentList(postReplyCommentInfo);
+    // setReplyComment("");
+  };
+
+  // 대댓글 삭제 온클릭
+  const onClickDeleteReplyComment = (commentId, replyId) => {
+    const deleteReplyCommentInfo = { cardId, commentId, replyId };
+    console.log(deleteReplyCommentInfo);
+    replyCommentDelete(deleteReplyCommentInfo);
   };
 
   // const handleResizeHeight = useCallback(() => {
@@ -176,7 +187,7 @@ export default function CommentList() {
               {comment.length > 0 ? (
                 <CommentButton
                   style={{ backgroundColor: "#0025A7", color: "white" }}
-                  onClick={postComment}
+                  onClick={onClickPostComment}
                 >
                   등록
                 </CommentButton>
@@ -184,7 +195,7 @@ export default function CommentList() {
                 <CommentButton
                   style={{ cursor: "default" }}
                   disabled
-                  onClick={postComment}
+                  onClick={onClickPostComment}
                 >
                   등록
                 </CommentButton>
@@ -290,7 +301,9 @@ export default function CommentList() {
                                     color: "white",
                                   }}
                                   onClick={() =>
-                                    postReplyComment(commentArr.commentId)
+                                    onClickPostReplyComment(
+                                      commentArr.commentId
+                                    )
                                   }
                                 >
                                   등록
