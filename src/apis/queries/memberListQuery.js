@@ -82,3 +82,15 @@ export const memberListuseQuerygetBookMarkList = async () => {
   });
   return res.data;
 };
+//로그인한 유저에 카드 정보를 token을 이용해 받아오기
+export const memberListuseMutationGetCardInfo = async () => {
+  console.log("MyCard 정보 가져오기");
+  const res = await api2.get(`/cards/my-card `, {
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json,",
+      Authorization: `Bearer ${getCookieToken("accessToken")}`,
+    },
+  });
+  return res.data;
+};
