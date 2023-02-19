@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import { useRecoilState } from "recoil";
 import {
+  cardIdNum,
   github,
   imgSrc,
   instagram,
@@ -56,6 +57,8 @@ const MemberListPage = () => {
   const [githubId, setGithubId] = useRecoilState(github);
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
+  const [eaditCardId, setEaditCardId] = useRecoilState(cardIdNum);
+
   const [pageNum, setPageNum] = useState(0);
   const [cardId, setCardId] = useRecoilState(cardIdSelector);
 
@@ -86,6 +89,7 @@ const MemberListPage = () => {
     setPageNum: setPageNum,
   });
   useEffect(() => {
+    console.log(localStorage.getItem("name"));
     cardListInfo(pageNum);
     setPageNum(pageNum + 1);
   }, []);
@@ -130,6 +134,12 @@ const MemberListPage = () => {
       },
     }
   );
+  //로그인한 유저에 북마크 리스트를 첫렌더링시 실행
+  useEffect(() => {
+    if (getCookieToken("accessToken")) {
+      bookList();
+    }
+  }, []);
 
   //북마크 클릭시 즐겨찾기에 추가 react-query
   const { mutate: addBookMark, isLoading: addBookMarkLoading } = useMutation(
@@ -167,6 +177,7 @@ const MemberListPage = () => {
     setClick("reset");
   };
   const cardOnClick = (e, index, data) => {
+    setEaditCardId(data.profileCardId);
     setCardId(data.profileCardId);
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
@@ -200,12 +211,6 @@ const MemberListPage = () => {
     setSkill(text.target.value);
   };
 
-  //로그인한 유저에 북마크 리스트를 렌더링시 실행
-  useEffect(() => {
-    if (getCookieToken("accessToken")) {
-      bookList();
-    }
-  }, []);
   //상세정보가 떠 있을시 스크롤 막기
   var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
   function preventDefault(e) {
@@ -696,7 +701,7 @@ const LanguageImg = styled.div`
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #738598;
+  background-color: #0e0606;
   cursor: auto;
 `;
 

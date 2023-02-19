@@ -20,8 +20,8 @@ export default function CommentList() {
   // const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const cardId = useRecoilValue(cardIdSelector);
-  const textRef = useRef();
-  const replyCommentRef = useRef();
+  const textRef = useRef(null);
+  const replyCommentRef = useRef(null);
   const queryClient = useQueryClient();
 
   const token = getCookieToken("accessToken");
@@ -148,15 +148,17 @@ export default function CommentList() {
   const onChange = (e) => {
     setComment(e.target.value);
   };
-  const handleResizeHeight = () => {
+  const handleCommentResizeHeight = () => {
     textRef.current.style.height = "auto";
-    textRef.current.style.height = textRef.current.scrollHeight + "px";
+    textRef.current.style.padding = "10px";
+    // textRef.current.style.height = textRef.current.scrollHeight + "px";
   };
 
-  const handleReplyCommentResizeHeight = useCallback(() => {
-    replyCommentRef.current.style.height = "auto";
-    replyCommentRef.current.style.height = textRef.current.scrollHeight + "px";
-  }, []);
+  const handleReplyCommentResizeHeight = () => {
+    replyCommentRef.current.style.height = "23px";
+    replyCommentRef.current.style.padding = "10px";
+    // replyCommentRef.current.style.height = textRef.current.scrollHeight + "px";
+  };
 
   const onChangeRelyValue = (e) => {
     setReplyComment(e.target.value);
@@ -176,10 +178,10 @@ export default function CommentList() {
               src={`${getUserInfoValue?.profileImage}`}
             />
             <CommentInput
-              placeholder="댓글 입력하기.."
-              // ref={textRef}
-              // onInput={handleResizeHeight}
-              // rows={1}
+              placeholder="댓글"
+              ref={textRef}
+              onInput={handleCommentResizeHeight}
+              rows={1}
               onChange={onChange}
               value={comment}
             />
@@ -234,9 +236,6 @@ export default function CommentList() {
                     </CommentListReplayTitle>
                   )}
 
-                  {/* {getUserInfoValue?.nickname === commentArr.nickname && ( */}
-                  {/* )} */}
-
                   {replyValid && (
                     <>
                       <CommentListReplyCommentWrapper
@@ -282,11 +281,14 @@ export default function CommentList() {
                           );
                         })}
                         <CommentListWrapper className="replyCommentListWrapper">
-                          <CommentProfile />
+                          <CommentProfile
+                            alt="image"
+                            src={`${getUserInfoValue?.profileImage}`}
+                          />
                           <CommentListReplyCommentInnderWrapper className="replyCommentInputContainer">
                             <CommentInput
                               type="text"
-                              placeholder="댓글 입력하기.."
+                              placeholder="답글"
                               ref={replyCommentRef}
                               onInput={handleReplyCommentResizeHeight}
                               rows={1}
@@ -335,7 +337,6 @@ export default function CommentList() {
 const CommentContainer = styled.div`
   width: 100%;
   height: 100%;
-  border: 2px solid black;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -366,29 +367,25 @@ const CommentFormContainer = styled.div`
   padding: 0 15px;
 `;
 const CommentProfile = styled.img`
-  border: 1px solid ${({ theme }) => theme.colors.subColor2};
   border-radius: 50%;
   width: 50px;
   height: 50px;
   color: white;
   /* margin-right: 20px; */
 `;
-const CommentInput = styled.input`
+const CommentInput = styled.textarea`
   width: 70%;
   border: none;
-  height: 23px;
+  /* height: 23px; */
   background-color: #191818;
   border-radius: 4px;
   resize: none;
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-size: ${({ theme }) => theme.fontSizes.base};
   color: ${({ theme }) => theme.colors.white};
-  padding: 0 10px;
+  padding: 10px;
   overflow: hidden;
   &:focus {
     outline: none;
-  }
-  &::-webkit-scrollbar {
-    display: none;
   }
 `;
 const CommentButtonContainer = styled.div`
@@ -399,6 +396,7 @@ const CommentButton = styled.button`
   background-color: transparent;
   color: ${({ theme }) => theme.colors.white};
   border: none;
+  border-radius: 10px;
   font-size: ${({ theme }) => theme.fontSizes.base};
   font-weight: bold;
   width: 40px;
@@ -411,11 +409,9 @@ const CommentListContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: auto;
   z-index: 1;
-  padding: 5px;
-  border: 2px solid white;
+  /* padding: 5px; */
   &::-webkit-scrollbar {
     width: 5px;
     background-color: transparent;
@@ -488,11 +484,9 @@ const CommentListReplyCommentWrapper = styled.div`
       : css`
           display: none;
         `}
-  border: 2px solid white;
 `;
 
 const CommentListReplyCommentInnderWrapper = styled.div`
-  border: 2px solid red;
   display: flex;
   align-items: center;
   width: 70%;
