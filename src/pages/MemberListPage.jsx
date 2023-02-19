@@ -28,6 +28,7 @@ import {
 } from "../apis/queries/memberListQuery";
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
 import { getCookieToken } from "../cookie/cookie";
+import MyCardBtn from "../components/MyCardBtn";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -292,6 +293,7 @@ const MemberListPage = () => {
 
   return (
     <Container>
+      <MyCardBtn setClick={setClick}/>
       <Background
         click={click ? click : undefined}
         onClick={() => backgrounOnClick()}
