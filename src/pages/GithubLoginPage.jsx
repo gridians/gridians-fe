@@ -14,13 +14,13 @@ const GithubLoginPage = () => {
   useEffect(() => {
     const code = location.search.split("=")[1];
     console.log(code);
-    axios.post(`http://116.123.153.248:8000/user/auth/social-login`, {
+    axios.post(`http://152.70.251.225:8080/user/auth/social-login`, {
       token: code
     }).then((data)=>{
       console.log("ok",data.data);
     }).catch((err)=>{
-      console.log(err.response.data.message);
-      if(err.response.data.message === "git id not found"){
+      console.log(err.response.data.param);
+      if(err.response.data.message === "Git id not found"){
         setGithubId(err.response.data.param);
         navigate("/signup");
       }
