@@ -1,11 +1,29 @@
-import { useEffect } from 'react';
 import { atom, selector } from "recoil";
 import { v1 } from "uuid";
-import { api, cookieApi } from '../apis/untils';
+import { cookieApi } from '../apis/untils';
+
+const localStorageEffect =
+  ( {setSelf, onSet} ) => {
+    const nicknameKey = `nickname`;
+    const savedValue = localStorage.getItem(nicknameKey);
+
+    // Callbacks to set or reset the value of the atom.
+    if (savedValue != null) {
+      setSelf(savedValue);
+    }
+
+    // Subscribe to changes in the atom value.
+     onSet((newValue, _, isReset) => {
+       isReset
+         ? localStorage.removeItem(nicknameKey)
+         : localStorage.setItem(nicknameKey, JSON.stringify(newValue));
+     });
+  };
 
 export const loginUserNickname = atom({
   key: `loginUserNickname/${v1()}`,
   default: "",
+  effects_UNSTABLE: [localStorageEffect],
 });
 
 export const loginUserEmail = atom({

@@ -1,12 +1,11 @@
-import React, { useRef, useState } from "react";
-import { useRecoilState } from "recoil";
+import React, { useEffect, useRef, useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { AiOutlineFileImage } from "react-icons/ai";
 import { AiOutlineIdcard } from "react-icons/ai";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { MdPassword } from "react-icons/md";
-
 import {
   myPageUserEmail,
   myPageUserEmailMessage,
@@ -22,65 +21,43 @@ import {
 import { getCookieToken, removeCookieToken } from "../cookie/cookie";
 
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import {
-  MyPageUseQueryGetUserInfo,
-  MyPageUseQueryPostEditEmail,
-  MyPageUseQueryPutUserProfile,
-  MyPageUseQueryPutEditUserInfo,
-  MyPageUseQueryDeleteUserInfo,
+  myPageUseMutationDeleteUserInfo,
+  myPageUseMutationPutEditEmail,
+  myPageUseMutationPutEditUserInfo,
+  myPageUseMutationPutUserProfile,
 } from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
+import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
+import { loginUserNickname } from "../store/userInfoAtom";
 
 export default function MyPage() {
-  const token = getCookieToken("accessToken");
   const navigate = useNavigate();
-  const [nickname, setNickname] = useRecoilState(myPageUserNickname);
+  const [nickname, setNickname] = useState("");
   const [email, setEmail] = useRecoilState(myPageUserEmail);
   const [password, setPassword] = useRecoilState(myPageUserPassword);
   const [newPassword, setNewPassword] = useRecoilState(myPageUserNewPassword);
   const [newPasswordConfirm, setNewPasswordConfirm] = useRecoilState(
     myPageUserNewPasswordConfirm
   );
-  const [imageSrc, setImageSrc] = useState(null);
+  const [imageSrc, setImageSrc] = useState();
   const fileInputRef = useRef(null);
 
-  const [deletePassword, setDeletePassword] = useState("");
+  // 유저 정보
+  const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
-  const { data: userInfoValue, isLoading: userInfoValueLoading } = useQuery(
-    ["userEmail", "userNickname"],
-    MyPageUseQueryGetUserInfo
-  );
-  const { mutate: postEditEmail } = useMutation(
-    "postEditUserEmail",
-    () => MyPageUseQueryPostEditEmail(email),
-    {
-      onSuccess: () => {
-        // console.log("성공");
-      },
-    }
-  );
-  const userInfo = { nickname, password, newPassword };
-  const { mutate: putUserInfo, isLoading: UserInfoLoading } = useMutation(
-    "putUserInfo",
-    () => MyPageUseQueryPutEditUserInfo(userInfo),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    }
-  );
+  console.log(getUserInfoValue);
+  console.log(nickname);
 
-  const { mutate: putUserProfile, isLoading: UserProfileLoading } = useMutation(
+  // 유저 이미지 변경
+  const { mutate: putUserProfile } = useMutation(
     "putUserProfile",
-    () => MyPageUseQueryPutUserProfile(imageSrc),
+    () => myPageUseMutationPutUserProfile(imageSrc),
     {
       onSuccess: (data) => {
         console.log(data);
-        window.location.reload();
+        navigate("/home");
       },
       onError: (error) => {
         console.log(error);
@@ -95,8 +72,34 @@ export default function MyPage() {
     }
   );
 
+  // 이메일 변경
+  const { mutate: postEditEmail } = useMutation(
+    () => myPageUseMutationPutEditEmail(email),
+    {
+      onSuccess: () => {
+        // console.log("성공");
+      },
+    }
+  );
+
+  // 닉네임, 비밀번호 변경
+  const userInfo = { nickname, password, newPassword };
+  const { mutate: putUserInfo } = useMutation(
+    "putUserInfo",
+    () => myPageUseMutationPutEditUserInfo(userInfo),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  // 유저 회원탈퇴
   const { mutate: deleteUserInfo } = useMutation(
-    (deleteInfo) => MyPageUseQueryDeleteUserInfo(deleteInfo),
+    (deleteInfo) => myPageUseMutationDeleteUserInfo(deleteInfo),
     {
       onSuccess: () => {
         Swal.fire({
@@ -116,14 +119,24 @@ export default function MyPage() {
 
   const uploadProfile = (e) => {
     const fileList = e.target.files;
-    if (fileList && fileList[0]) {
-      const reader = new FileReader();
-      reader.readAsDataURL(fileList[0]);
-      reader.onload = () => {
-        const base64data = reader.result;
-        setImageSrc(base64data);
-      };
+    const maxSizw = 2 * 1024 * 1024;
+    const fileSize = fileList[0].size;
+    if (fileSize > maxSizw) {
+      Swal.fire({
+        text:
+          "2MB 이하 파일만 등록할 수 있습니다.\n\n" +
+          "현재파일 용량 : " +
+          Math.round((fileSize / 1024 / 1024) * 100) / 100 +
+          "MB",
+      });
+      return (e.target.value = null);
     }
+    const reader = new FileReader();
+    reader.readAsDataURL(fileList[0]);
+    reader.onload = () => {
+      const base64data = reader.result;
+      setImageSrc(base64data);
+    };
   };
 
   const [nicknameMessage, setNicknameMessage] = useRecoilState(
@@ -147,12 +160,12 @@ export default function MyPage() {
   const [isNewPassword, setIsNewPassword] = useState(false);
   const [isNewPasswordConfirm, setIsNewPasswordConfirm] = useState(false);
 
-  // useEffect(() => {
-  //   if (token === undefined) {
-  //     navigate("/login");
-  //   }
-  //   return () => {};
-  // }, [navigate, token]);
+  useEffect(() => {
+    if (getCookieToken("accessToken") === undefined) {
+      navigate("/login");
+    }
+    return () => {};
+  }, [navigate]);
 
   const regPassword = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
   // 닉네임 유효성 검사
@@ -179,7 +192,7 @@ export default function MyPage() {
       /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const userEmailCurrent = e.target.value;
     setEmail(e.target.value);
-
+    console.log(email);
     if (!regEmail.test(userEmailCurrent)) {
       setEmailMessage("이메일 형식이 올바르지 않습니다.");
       setIsEmail(false);
@@ -254,8 +267,29 @@ export default function MyPage() {
     }
   };
 
-  const onClickInputFile = (e) => {
+  const onClickInputFile = async (e) => {
     e.preventDefault();
+    // const formData = new FormData();
+    // Array.from(imageSrc).forEach((el) => {
+    //   formData.append("userFile", el);
+    // });
+    // // formData.append("imageSrc",)
+    // for (const value of formData.values()) {
+    //   console.log(value);
+    // }
+    // try {
+    //   const res = await api.put(`/user/profile`, formData, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //       // accept: "application/json,",
+    //       Authorization: `Bearer ${getCookieToken("accessToken")}`,
+    //     },
+    //   });
+    //   console.log(res);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
     putUserProfile();
   };
 
@@ -323,11 +357,11 @@ export default function MyPage() {
       navigate("/home");
     }
   };
-  const deleteInfo = { token, deletePassword };
   const onClickDeleteUser = (e) => {
     e.preventDefault();
     Swal.fire({
       title: "탈퇴하시겠습니까?",
+      text: "비밀번호를 입력해주세요",
       input: "password",
       confirmButtonColor: "#DCC6C6",
       cancelButtonColor: "#738598",
@@ -336,276 +370,293 @@ export default function MyPage() {
       cancelButtonText: "취소하기",
       preConfirm: (password) => {
         console.log(password);
-        setDeletePassword(password);
-        deleteUserInfo(deleteInfo);
+        deleteUserInfo(password);
       },
     });
   };
-  const isLoading =
-    userInfoValueLoading || UserInfoLoading || UserProfileLoading;
 
   return (
-    <MyPageContainer>
-      <MyPageWrapper>
-        <MyPageFormInfoWrapper>
-          <MyPageFormInfoTitleWrapper>
-            <Title>MyPage</Title>
-          </MyPageFormInfoTitleWrapper>
+    <>
+      {!getUserInfoValue ? (
+        <div>asd</div>
+      ) : (
+        <MyPageContainer>
+          <MyPageWrapper>
+            <MyPageFormInfoWrapper>
+              <MyPageFormInfoTitleWrapper>
+                <Title>MyPage</Title>
+              </MyPageFormInfoTitleWrapper>
 
-          <MyPageInputContainerInnerWrapper>
-            <MyPageInputWrapper className="profileImageContainer">
-              {userInfoValue?.email !== undefined && (
-                <ProfileImage
-                  src={`http://58.231.19.218:8000/image/${userInfoValue?.email}`}
-                />
-              )}
-            </MyPageInputWrapper>
-            <MyPageInputContainer className="editInputContainer">
-              <MyPageInputWrapper>
-                <MyPageSpanContainer>
-                  <MyPageSpan>{userInfoValue?.email}</MyPageSpan>
-                </MyPageSpanContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
+              <MyPageInputContainerInnerWrapper>
+                <MyPageInputWrapper className="profileImageContainer">
+                  <picture>
+                    {getUserInfoValue?.profileImage !== undefined && (
+                      <>
+                        <ProfileImage
+                          src={`${getUserInfoValue?.profileImage}`}
+                        />
+                        {/* <socure
+                          src={`${getUserInfoValue?.profileImage}`}
+                          
+                        /> */}
+                      </>
+                    )}
+                  </picture>
+                </MyPageInputWrapper>
+                <MyPageInputContainer className="editInputContainer">
+                  <MyPageInputWrapper>
+                    <MyPageSpanContainer>
+                      <MyPageSpan>{getUserInfoValue?.email}</MyPageSpan>
+                    </MyPageSpanContainer>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
 
-            <MyPageInputContainer className="editInputContainer">
-              <MyPageInputWrapper>
-                <MyPageSpanContainer>
-                  <MyPageSpan>{userInfoValue?.nickname}</MyPageSpan>
-                </MyPageSpanContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
-          </MyPageInputContainerInnerWrapper>
-        </MyPageFormInfoWrapper>
+                <MyPageInputContainer className="editInputContainer">
+                  <MyPageInputWrapper>
+                    <MyPageSpanContainer>
+                      <MyPageSpan>{getUserInfoValue?.nickname}</MyPageSpan>
+                    </MyPageSpanContainer>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
+              </MyPageInputContainerInnerWrapper>
+            </MyPageFormInfoWrapper>
 
-        <MyPageForm>
-          {/* EditContainer */}
-          <MyPageFormEditInfoWrapper>
-            {/* 이미지 업로드 */}
-            <MyPageInputContainer>
-              <AiOutlineFileImage className="icon" />
-              <MyPageInputWrapper>
-                <MyPageInput
-                  type="file"
-                  className="fileInput"
-                  accept="image/jpg, image/jpeg, image/png"
-                  ref={fileInputRef}
-                  onChange={uploadProfile}
-                />
-                <EditButtonContainer className="email-button-container">
-                  <EditButton onClick={onClickInputFile} type="submit">
+            <MyPageForm>
+              {/* EditContainer */}
+              <MyPageFormEditInfoWrapper>
+                {/* 이미지 업로드 */}
+                <MyPageInputContainer>
+                  <AiOutlineFileImage className="icon" />
+                  <MyPageInputWrapper>
+                    <MyPageInput
+                      type="file"
+                      className="fileInput"
+                      accept="image/jpg, image/jpeg, image/png"
+                      ref={fileInputRef}
+                      onChange={uploadProfile}
+                    />
+                    <EditButtonContainer className="email-button-container">
+                      <EditButton onClick={onClickInputFile} type="submit">
+                        변경하기
+                      </EditButton>
+                    </EditButtonContainer>
+                  </MyPageInputWrapper>
+                </MyPageInputContainer>
+
+                {/* 이메일 */}
+                {email.length > 0 ? (
+                  <MyPageInputContainer>
+                    <AiOutlineMail className="icon" />
+                    <MyPageInputWrapper>
+                      {isEmail ? (
+                        <MyPageInput
+                          onChange={onChangeEmail}
+                          value={email}
+                          type="email"
+                          placeholder="이메일"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeEmail}
+                          value={email}
+                          type="email"
+                          placeholder="이메일"
+                        />
+                      )}
+                      <InputMessage>{emailMessage}</InputMessage>
+                      <EditButtonContainer className="email-button-container">
+                        <EditButton onClick={onClickEmailSubmit} type="submit">
+                          인증하기
+                        </EditButton>
+                      </EditButtonContainer>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <AiOutlineMail className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeEmail}
+                        value={email}
+                        type="email"
+                        placeholder="이메일"
+                      />
+                      <EditButtonContainer className="email-button-container">
+                        <EditButton style={{ pointerEvents: "none" }}>
+                          인증하기
+                        </EditButton>
+                      </EditButtonContainer>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 닉네임 */}
+                {nickname.length > 0 ? (
+                  <MyPageInputContainer>
+                    <AiOutlineIdcard className="icon" />
+                    <MyPageInputWrapper>
+                      {isNickname ? (
+                        <MyPageInput
+                          onChange={onChangeNickname}
+                          value={nickname}
+                          type="text"
+                          placeholder="닉네임"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeNickname}
+                          value={nickname}
+                          type="text"
+                          placeholder="닉네임"
+                        />
+                      )}
+                      <InputMessage>{nicknameMessage}</InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <AiOutlineIdcard className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeNickname}
+                        value={nickname}
+                        type="text"
+                        placeholder="닉네임"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 비밀번호 */}
+                {password.length > 0 ? (
+                  <MyPageInputContainer>
+                    <RiLockPasswordLine className="icon" />
+                    <MyPageInputWrapper>
+                      {isPassword ? (
+                        <MyPageInput
+                          onChange={onChangePassword}
+                          value={password}
+                          type="password"
+                          placeholder="현재 비밀번호"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangePassword}
+                          value={password}
+                          type="password"
+                          placeholder="현재 비밀번호"
+                        />
+                      )}
+                      <InputMessage className="passwordMessage">
+                        {passwordMessage}
+                      </InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <RiLockPasswordLine className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangePassword}
+                        value={password}
+                        type="password"
+                        placeholder="현재 비밀번호"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 비밀번호 변경 */}
+                {newPassword.length > 0 ? (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      {isNewPassword ? (
+                        <MyPageInput
+                          onChange={onChangeNewPassword}
+                          value={newPassword}
+                          type="password"
+                          placeholder="새비밀번호"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeNewPassword}
+                          value={newPassword}
+                          type="password"
+                          placeholder="새비밀번호"
+                        />
+                      )}
+                      <InputMessage className="passwordMessage">
+                        {newPasswordMessage}
+                      </InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeNewPassword}
+                        value={newPassword}
+                        type="password"
+                        placeholder="새비밀번호"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                {/* 비밀번호 확인 */}
+                {newPasswordConfirm.length > 0 ? (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      {isNewPasswordConfirm ? (
+                        <MyPageInput
+                          onChange={onChangeNewPasswordConfirm}
+                          value={newPasswordConfirm}
+                          type="password"
+                          placeholder="새비밀번호 확인"
+                        />
+                      ) : (
+                        <MyPageInput
+                          onChange={onChangeNewPasswordConfirm}
+                          value={newPasswordConfirm}
+                          type="password"
+                          placeholder="새비밀번호 확인"
+                        />
+                      )}
+                      <InputMessage className="passwordMessage">
+                        {newPasswordConfirmMessage}
+                      </InputMessage>
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                ) : (
+                  <MyPageInputContainer>
+                    <MdPassword className="icon" />
+                    <MyPageInputWrapper>
+                      <MyPageInput
+                        onChange={onChangeNewPasswordConfirm}
+                        value={newPasswordConfirm}
+                        type="password"
+                        placeholder="새비밀번호 확인"
+                      />
+                    </MyPageInputWrapper>
+                  </MyPageInputContainer>
+                )}
+
+                <EditButtonContainer>
+                  <EditButton onClick={onClickSubmit} type="submit">
                     변경하기
                   </EditButton>
+                  <EditButton>연동해제</EditButton>
+                  <EditButton onClick={onClickDeleteUser}>회원탈퇴</EditButton>
                 </EditButtonContainer>
-              </MyPageInputWrapper>
-            </MyPageInputContainer>
-
-            {/* 이메일 */}
-            {email.length > 0 ? (
-              <MyPageInputContainer>
-                <AiOutlineMail className="icon" />
-                <MyPageInputWrapper>
-                  {isEmail ? (
-                    <MyPageInput
-                      onChange={onChangeEmail}
-                      value={email}
-                      type="email"
-                      placeholder="이메일"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeEmail}
-                      value={email}
-                      type="email"
-                      placeholder="이메일"
-                    />
-                  )}
-                  <InputMessage>{emailMessage}</InputMessage>
-                  <EditButtonContainer className="email-button-container">
-                    <EditButton onClick={onClickEmailSubmit} type="submit">
-                      인증하기
-                    </EditButton>
-                  </EditButtonContainer>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <AiOutlineMail className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeEmail}
-                    value={email}
-                    type="email"
-                    placeholder="이메일"
-                  />
-                  <EditButtonContainer className="email-button-container">
-                    <EditButton style={{ pointerEvents: "none" }}>
-                      인증하기
-                    </EditButton>
-                  </EditButtonContainer>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 닉네임 */}
-            {nickname.length > 0 ? (
-              <MyPageInputContainer>
-                <AiOutlineIdcard className="icon" />
-                <MyPageInputWrapper>
-                  {isNickname ? (
-                    <MyPageInput
-                      onChange={onChangeNickname}
-                      value={nickname}
-                      type="text"
-                      placeholder="닉네임"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeNickname}
-                      value={nickname}
-                      type="text"
-                      placeholder="닉네임"
-                    />
-                  )}
-                  <InputMessage>{nicknameMessage}</InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <AiOutlineIdcard className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeNickname}
-                    value={nickname}
-                    type="text"
-                    placeholder="닉네임"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 비밀번호 */}
-            {password.length > 0 ? (
-              <MyPageInputContainer>
-                <RiLockPasswordLine className="icon" />
-                <MyPageInputWrapper>
-                  {isPassword ? (
-                    <MyPageInput
-                      onChange={onChangePassword}
-                      value={password}
-                      type="password"
-                      placeholder="현재 비밀번호"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangePassword}
-                      value={password}
-                      type="password"
-                      placeholder="현재 비밀번호"
-                    />
-                  )}
-                  <InputMessage>{passwordMessage}</InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <RiLockPasswordLine className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangePassword}
-                    value={password}
-                    type="password"
-                    placeholder="현재 비밀번호"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 비밀번호 변경 */}
-            {newPassword.length > 0 ? (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  {isNewPassword ? (
-                    <MyPageInput
-                      onChange={onChangeNewPassword}
-                      value={newPassword}
-                      type="password"
-                      placeholder="새비밀번호"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeNewPassword}
-                      value={newPassword}
-                      type="password"
-                      placeholder="새비밀번호"
-                    />
-                  )}
-                  <InputMessage>{newPasswordMessage}</InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeNewPassword}
-                    value={newPassword}
-                    type="password"
-                    placeholder="새비밀번호"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            {/* 비밀번호 확인 */}
-            {newPasswordConfirm.length > 0 ? (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  {isNewPasswordConfirm ? (
-                    <MyPageInput
-                      onChange={onChangeNewPasswordConfirm}
-                      value={newPasswordConfirm}
-                      type="password"
-                      placeholder="새비밀번호 확인"
-                    />
-                  ) : (
-                    <MyPageInput
-                      onChange={onChangeNewPasswordConfirm}
-                      value={newPasswordConfirm}
-                      type="password"
-                      placeholder="새비밀번호 확인"
-                    />
-                  )}
-                  <InputMessage>{newPasswordConfirmMessage}</InputMessage>
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            ) : (
-              <MyPageInputContainer>
-                <MdPassword className="icon" />
-                <MyPageInputWrapper>
-                  <MyPageInput
-                    onChange={onChangeNewPasswordConfirm}
-                    value={newPasswordConfirm}
-                    type="password"
-                    placeholder="새비밀번호 확인"
-                  />
-                </MyPageInputWrapper>
-              </MyPageInputContainer>
-            )}
-
-            <EditButtonContainer>
-              <EditButton onClick={onClickSubmit} type="submit">
-                변경하기
-              </EditButton>
-              <EditButton>연동해제</EditButton>
-              <EditButton onClick={onClickDeleteUser}>회원탈퇴</EditButton>
-            </EditButtonContainer>
-          </MyPageFormEditInfoWrapper>
-        </MyPageForm>
-      </MyPageWrapper>
-    </MyPageContainer>
+              </MyPageFormEditInfoWrapper>
+            </MyPageForm>
+          </MyPageWrapper>
+        </MyPageContainer>
+      )}
+    </>
   );
 }
 
@@ -616,12 +667,20 @@ const MyPageContainer = styled.div`
   padding: 70px 350px;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
+  @media ${(props) => props.theme.mobile} {
+    padding: 0;
+    justify-content: center;
+  }
 `;
 const MyPageWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
+  @media ${(props) => props.theme.mobile} {
+    flex-direction: column;
+    height: auto;
+  }
 `;
 const MyPageFormInfoWrapper = styled.div`
   width: 40%;
@@ -644,6 +703,13 @@ const MyPageFormInfoWrapper = styled.div`
     width: 40px;
     height: 40px;
   }
+  @media ${(props) => props.theme.mobile} {
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+    height: 80px;
+  }
 `;
 const MyPageFormInfoTitleWrapper = styled.div`
   width: 100%;
@@ -654,6 +720,9 @@ const MyPageFormInfoTitleWrapper = styled.div`
   color: black;
   border: 1px solid white;
   background-color: white;
+  @media ${(props) => props.theme.mobile} {
+    display: none;
+  }
 `;
 const Title = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
@@ -679,6 +748,20 @@ const MyPageForm = styled.form`
     width: 30px;
     height: 30px;
   }
+  @media ${(props) => props.theme.mobile} {
+    border-radius: 0;
+    padding: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    .icon {
+      width: 25px;
+      height: 25px;
+    }
+    .show-icon {
+      width: 15px;
+      height: 15px;
+    }
+  }
 `;
 const MyPageFormEditInfoWrapper = styled.div`
   height: 100%;
@@ -686,9 +769,10 @@ const MyPageFormEditInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  .preview {
-    width: 100px;
-    height: 100px;
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
 `;
 const MyPageInputContainerInnerWrapper = styled.div`
@@ -697,11 +781,13 @@ const MyPageInputContainerInnerWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-const ShowFileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 9999px;
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 0;
+    flex-direction: row;
+    height: 80px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
 `;
 const MyPageInputContainer = styled.div`
   position: relative;
@@ -711,6 +797,9 @@ const MyPageInputContainer = styled.div`
   margin-top: 30px;
   padding: 10px;
   width: 100%;
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 10px;
+  }
 `;
 const MyPageInputWrapper = styled.div`
   width: 80%;
@@ -733,6 +822,23 @@ const MyPageInputWrapper = styled.div`
     right: -30px;
     width: 100px;
   }
+  @media ${(props) => props.theme.mobile} {
+    .fileInput {
+      font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+      color: ${({ theme }) => theme.colors.subColor4};
+      cursor: pointer;
+    }
+    .email-button-container {
+      padding: 10px;
+      margin: 0;
+      position: absolute;
+      right: -30px;
+      width: 100px;
+    }
+    .passwordMessage {
+      margin-top: 80px;
+    }
+  }
 `;
 const ProfileImage = styled.img`
   width: 120px;
@@ -741,6 +847,10 @@ const ProfileImage = styled.img`
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  @media ${(props) => props.theme.mobile} {
+    width: 60px;
+    height: 60px;
+  }
 `;
 
 const MyPageInput = styled.input`
@@ -759,6 +869,18 @@ const MyPageInput = styled.input`
     font-size: ${({ theme }) => theme.fontSizes.small};
     color: ${({ theme }) => theme.colors.subColor4};
   }
+  @media ${(props) => props.theme.mobile} {
+    width: 70%;
+    margin-left: 20px;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+      color: ${({ theme }) => theme.colors.subColor4};
+    }
+  }
 `;
 const MyPageSpanContainer = styled.div`
   width: 100%;
@@ -771,6 +893,9 @@ const MyPageSpan = styled.span`
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: bold;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
 `;
 const InputMessage = styled.div`
   display: block;
@@ -780,6 +905,11 @@ const InputMessage = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.small};
   margin-top: 80px;
   margin-left: 40px;
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+    margin-top: 70px;
+    margin-left: 20px;
+  }
 `;
 
 const EditButtonContainer = styled.div`
@@ -789,6 +919,11 @@ const EditButtonContainer = styled.div`
   align-items: center;
   justify-content: space-around;
   color: ${({ theme }) => theme.colors.white};
+  @media ${(props) => props.theme.mobile} {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+  }
 `;
 const EditButton = styled.button`
   width: 90px;
@@ -804,5 +939,10 @@ const EditButton = styled.button`
     background-color: ${({ theme }) => theme.colors.subColor6};
     color: ${({ theme }) => theme.colors.white};
     transition: all 0.5s;
+  }
+  @media ${(props) => props.theme.mobile} {
+    width: 70px;
+    height: 30px;
+    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
   }
 `;
