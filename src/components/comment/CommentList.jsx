@@ -410,7 +410,6 @@ const CommentListContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
-  z-index: 1;
   /* padding: 5px; */
   &::-webkit-scrollbar {
     width: 5px;
