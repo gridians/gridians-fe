@@ -33,6 +33,7 @@ const TopBtn = styled.button`
   width: 40px;
   background-color: transparent;
   border: none;
+  color: white;
   font-size: ${({ theme }) => theme.fontSizes.xxxl};
   cursor: pointer;
   &:hover {
