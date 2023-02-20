@@ -191,7 +191,6 @@ const MemberListPage = () => {
     setClick("click");
   };
   const bookMarkOnClick = () => {
-    addBookMark();
     const boolean =
       bookMarkList &&
       bookMarkList.map((data) => data.nickname).includes(nickName);
