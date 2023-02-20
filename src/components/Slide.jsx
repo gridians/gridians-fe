@@ -343,12 +343,12 @@ const Introduce = styled.textarea`
   margin-top: 30px;
   padding: 10px;
   width: 80%;
-  height: 200px;
+  height: 100%;
   background-color: transparent;
   resize: none;
   border: none;
   text-align: center;
-  font-size: 32px;
+  font-size: 22px;
   color: ${({ theme }) => theme.colors.white};
   ${(props) =>
     props.retouch

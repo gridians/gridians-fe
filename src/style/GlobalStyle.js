@@ -7,21 +7,21 @@ const GlobalStyle = createGlobalStyle`
   font-weight: 900;
   font-style: normal;
  }
+  &::-webkit-scrollbar {
+    width: 10px;
+    background-color: #0E0909;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 10px;
+  }
   *, *::before, *::after {
     box-sizing: border-box;
   }
-  /* #html{
-    border: 2px solid red;
-    width:200vw;
-    height:100%;
-  } */
   body {
     margin: 0;
     padding: 0;
-    #root{
-        /* width: 100%;
-        height: 100%; */
-    }
+    /* overflow: hidden; */
   }
   p {
     margin:0;

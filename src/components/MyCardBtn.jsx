@@ -93,7 +93,7 @@ const MyCardBtn = ({ setClick }) => {
 
 const MyCardButton = styled.button`
   position: fixed;
-  top: 90vh;
+  top: 85vh;
   right: 10%;
   background: ${({ theme }) => theme.colors.subColor2};
   width: 80px;
