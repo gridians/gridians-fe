@@ -38,6 +38,7 @@ import {
 import { getCookieToken } from "../cookie/cookie";
 import { cardIdSelector } from "../store/commentAtom";
 import MyCardBtn from "../components/MyCardBtn";
+import TopButton from "../components/TopButton";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -321,7 +322,8 @@ const MemberListPage = () => {
 
   return (
     <Container>
-      <MyCardBtn setClick={setClick}/>
+      <TopButton />
+      <MyCardBtn setClick={setClick} />
       <Background
         click={click ? click : undefined}
         onClick={() => backgrounOnClick()}
@@ -451,6 +453,7 @@ const Wrap = styled.div`
 `;
 const Background = styled.div`
   position: absolute;
+  display: none;
   width: 100%;
   height: 100%;
   background-color: transparent;
@@ -458,13 +461,14 @@ const Background = styled.div`
   ${(props) =>
     props.click &&
     css`
-      z-index: 3;
-      background-color: rgba(0, 0, 0, 0.4);
+      display: block;
+      z-index: 2;
+      background-color: rgba(215, 215, 215, 0.8);
     `}
   ${(props) =>
     props.click === "reset"
       ? css`
-          z-index: -2;
+          display: none;
           background-color: transparent;
         `
       : css``}
