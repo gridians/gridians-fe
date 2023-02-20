@@ -187,7 +187,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               retouch={retouch}
             />
           ) : (
-            <Introduce value={introduce} disabled />
+            <Introduce value={introduce||""} disabled />
           )}
           <TagList>
             {tagList &&
