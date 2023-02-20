@@ -46,7 +46,7 @@ const colors = {
   gray_1: "#222222",
   gray_2: "#767676",
   green_1: "#3cb46e",
-  mainBackgroundColor: "#1E1E1E",
+  mainBackgroundColor: "#0E0909",
   subBackgroundColor: "#dbdbdb",
   subColor1: "#6F6F6F",
   subColor2: "#B3B600",
