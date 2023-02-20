@@ -186,7 +186,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               retouch={retouch}
             />
           ) : (
-            <Introduce value={introduce} disabled />
+            <Introduce value={introduce || ""} disabled />
           )}
           <TagList>
             {tagList &&
@@ -251,16 +251,13 @@ const StyledSlider = styled(Slider)`
   }
   .slick-dots {
     li {
-      <<<<<<<
-        HEAD
-        =======
-        ${(props) =>
-          props.retouch
-            ? css`
-                display: none;
-              `
-            : css``}>>>>>>>5d520a678d071308b910c80dd6278271f9f94e39
-        button {
+      ${(props) =>
+        props.retouch
+          ? css`
+              display: none;
+            `
+          : css``}
+      button {
         &::before {
           font-size: 15px;
           color: white;
@@ -346,12 +343,12 @@ const Introduce = styled.textarea`
   margin-top: 30px;
   padding: 10px;
   width: 80%;
-  height: 200px;
+  height: 100%;
   background-color: transparent;
   resize: none;
   border: none;
   text-align: center;
-  font-size: 32px;
+  font-size: 22px;
   color: ${({ theme }) => theme.colors.white};
   ${(props) =>
     props.retouch

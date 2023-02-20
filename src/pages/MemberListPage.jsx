@@ -37,6 +37,8 @@ import {
 } from "../apis/customQuery/memberListCustomQuery";
 import { getCookieToken } from "../cookie/cookie";
 import { cardIdSelector } from "../store/commentAtom";
+import MyCardBtn from "../components/MyCardBtn";
+import TopButton from "../components/TopButton";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -182,7 +184,6 @@ const MemberListPage = () => {
     setNickName(data.nickname);
     cardInfo(data.profileCardId);
     handleDetailCardComment(data.profileCardId);
-    // mutationCardInfoIndex({ index: data.profileCardId });
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);
@@ -320,6 +321,8 @@ const MemberListPage = () => {
 
   return (
     <Container>
+      <TopButton />
+      <MyCardBtn setClick={setClick} />
       <Background
         click={click ? click : undefined}
         onClick={() => backgrounOnClick()}
@@ -449,6 +452,7 @@ const Wrap = styled.div`
 `;
 const Background = styled.div`
   position: absolute;
+  display: none;
   width: 100%;
   height: 100%;
   background-color: transparent;
@@ -456,13 +460,14 @@ const Background = styled.div`
   ${(props) =>
     props.click &&
     css`
-      z-index: 3;
-      background-color: rgba(0, 0, 0, 0.4);
+      display: block;
+      z-index: 2;
+      background-color: rgba(215, 215, 215, 0.8);
     `}
   ${(props) =>
     props.click === "reset"
       ? css`
-          z-index: -2;
+          display: none;
           background-color: transparent;
         `
       : css``}
@@ -630,6 +635,7 @@ const DetailContainer = styled.div`
   width: 70%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
+  border: 2px solid red;
   cursor: auto;
 `;
 const DefaultInfo = styled.div`
