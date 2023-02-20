@@ -328,16 +328,16 @@ const MemberListPage = () => {
         click={click ? click : undefined}
         onClick={() => backgrounOnClick()}
       />
-      <XBtn
-        scrollY={scrollY}
-        click={click ? click : undefined}
-        onClick={() => XBtnOnClick()}
-      >
-        X
-      </XBtn>
       <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
+            <XBtn
+              scrollY={scrollY}
+              click={click ? click : undefined}
+              onClick={() => XBtnOnClick()}
+            >
+              X
+            </XBtn>
             <BookMark
               onClick={() => bookMarkOnClick()}
               nickName={
@@ -358,6 +358,7 @@ const MemberListPage = () => {
             ) : (
               <StatusMessage value={statusMsg || ""} disabled />
             )}
+            <FiledText>{field}</FiledText>
             <LanguageImg retouch={retouch}>
               {retouch ? (
                 <>
@@ -382,7 +383,6 @@ const MemberListPage = () => {
                 </>
               ) : (
                 <>
-                  <h4>{field}</h4>
                   <img src={skillUrl} alt="사용언어" />
                 </>
               )}
@@ -474,10 +474,8 @@ const Background = styled.div`
       : css``}
 `;
 const XBtn = styled.button`
-  position: absolute;
-  z-index: 2;
-  top: ${(props) => props.scrollY}px;
-  left: 30px;
+  flex: 1;
+  margin-right: 45px;
   width: 40px;
   height: 40px;
   background-color: transparent;
@@ -645,7 +643,6 @@ const DefaultInfo = styled.div`
 `;
 const BookMark = styled.div`
   flex: 1;
-  width: 197px;
   font-size: 40px;
   svg {
     cursor: pointer;
@@ -699,9 +696,14 @@ const LanguageImg = styled.div`
     margin: 0;
   }
   img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
   }
+`;
+const FiledText = styled.h4`
+  flex: 1;
+  margin: 0;
+  width: 100px;
 `;
 
 const ReviewContainer = styled.div`
