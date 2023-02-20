@@ -1,8 +1,11 @@
 import React from "react";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import Swal from "sweetalert2";
 import { memberListuseMutationGetCardInfo } from "../apis/queries/memberListQuery";
+import { getCookieToken } from "../cookie/cookie";
 import {
   github,
   imgSrc,
@@ -18,6 +21,8 @@ import {
 } from "../store/cardInfoAtom";
 
 const MyCardBtn = ({ setClick }) => {
+  const navigate = useNavigate();
+
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
   const [field, setField] = useRecoilState(position);
   const [skill, setSkill] = useRecoilState(language);
@@ -54,8 +59,29 @@ const MyCardBtn = ({ setClick }) => {
   );
 
   const myCardOnClick = () => {
-    cardInfo();
-    setClick("click");
+    if (getCookieToken("accessToken")) {
+      cardInfo();
+      setClick("click");
+    } else {
+      Swal.fire({
+        title: "로그인을 해주세요",
+        confirmButtonColor: "#DCC6C6",
+        cancelButtonColor: "#738598",
+        showCancelButton: true,
+        confirmButtonText: "로그인하기",
+        cancelButtonText: "NO",
+        padding: "2em",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOutUp",
+        },
+        closeOnClickOutside: false,
+      }).then((data) => {
+        if (data.isConfirmed) navigate("/login");
+      });
+    }
   };
 
   return (
@@ -67,7 +93,6 @@ const MyCardBtn = ({ setClick }) => {
 
 const MyCardButton = styled.button`
   position: fixed;
-  z-index: 3;
   top: 90vh;
   right: 10%;
   background: ${({ theme }) => theme.colors.subColor2};
