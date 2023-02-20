@@ -215,11 +215,11 @@ const MemberListPage = () => {
   //상세정보가 떠 있을시 스크롤 막기
   var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
   function preventDefault(e) {
-    e.preventDefault();
+    // e.preventDefault();
   }
   function preventDefaultForScrollKeys(e) {
     if (keys[e.keyCode]) {
-      preventDefault(e);
+      // preventDefault(e);
       return false;
     }
   }
@@ -257,10 +257,15 @@ const MemberListPage = () => {
   }
   useEffect(() => {
     if (click === "click") {
-      disableScroll();
+      // disableScroll();
+      document.body.style.overflow = "hidden";
     }
-    return () => enableScroll();
+    return () => {
+      document.body.style.overflow = "scroll";
+      // enableScroll();
+    };
   }, [click]);
+  console.log(click);
 
   //선택 가능한 포지션 list
   const positionList = [
@@ -327,16 +332,18 @@ const MemberListPage = () => {
         click={click ? click : undefined}
         onClick={() => backgrounOnClick()}
       />
-      <XBtn
-        scrollY={scrollY}
-        click={click ? click : undefined}
-        onClick={() => XBtnOnClick()}
-      >
-        X
-      </XBtn>
       <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
+            <XBtnWrapper>
+              <XBtn
+                scrollY={scrollY}
+                click={click ? click : undefined}
+                onClick={() => XBtnOnClick()}
+              >
+                X
+              </XBtn>
+            </XBtnWrapper>
             <BookMark
               onClick={() => bookMarkOnClick()}
               nickName={
@@ -349,43 +356,52 @@ const MemberListPage = () => {
               <BsFillBookmarkFill />
             </BookMark>
             {retouch ? (
-              <StatusMessage
-                value={statusMsg || ""}
-                onChange={(text) => statusMsgOnChange(text)}
-                retouch={retouch}
-              />
+              <StatusMessageWrapper>
+                <StatusMessage
+                  value={statusMsg || ""}
+                  onChange={(text) => statusMsgOnChange(text)}
+                  retouch={retouch}
+                />
+              </StatusMessageWrapper>
             ) : (
-              <StatusMessage value={statusMsg || ""} disabled />
+              <StatusMessageWrapper>
+                <StatusMessage value={statusMsg || ""} disabled />
+              </StatusMessageWrapper>
             )}
-            <LanguageImg retouch={retouch}>
-              {retouch ? (
-                <>
-                  <select
-                    value={field}
-                    onChange={(text) => positionOnChange(text)}
-                    placeholder="포지션을 선택"
-                  >
-                    {positionList.map((name) => (
-                      <option key={name}>{name}</option>
-                    ))}
-                    <option>react</option>
-                  </select>
-                  <select
-                    value={skill}
-                    onChange={(text) => skillOnChange(text)}
-                  >
-                    {skillList.map((name) => (
-                      <option key={name}>{name}</option>
-                    ))}
-                  </select>
-                </>
-              ) : (
-                <>
-                  <h4>{field}</h4>
-                  <img src={skillUrl} alt="사용언어" />
-                </>
-              )}
-            </LanguageImg>
+            <FiledTextWrapper>
+              <FiledText>{field}</FiledText>
+            </FiledTextWrapper>
+            <LanguageImgWrapper>
+              <LanguageImg retouch={retouch}>
+                {retouch ? (
+                  <>
+                    <select
+                      value={field}
+                      onChange={(text) => positionOnChange(text)}
+                      placeholder="포지션을 선택"
+                    >
+                      {positionList.map((name) => (
+                        <option key={name}>{name}</option>
+                      ))}
+                      <option>react</option>
+                    </select>
+
+                    <select
+                      value={skill}
+                      onChange={(text) => skillOnChange(text)}
+                    >
+                      {skillList.map((name) => (
+                        <option key={name}>{name}</option>
+                      ))}
+                    </select>
+                  </>
+                ) : (
+                  <>
+                    <img src={skillUrl} alt="사용언어" />
+                  </>
+                )}
+              </LanguageImg>
+            </LanguageImgWrapper>
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
@@ -438,7 +454,6 @@ const Container = styled.div`
   width: 100%;
   min-height: 90vh;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
-  border: 2px solid black;
 `;
 
 const Wrap = styled.div`
@@ -462,7 +477,7 @@ const Background = styled.div`
     css`
       display: block;
       z-index: 2;
-      background-color: rgba(215, 215, 215, 0.8);
+      background-color: rgba(0, 0, 0, 0.7);
     `}
   ${(props) =>
     props.click === "reset"
@@ -472,11 +487,12 @@ const Background = styled.div`
         `
       : css``}
 `;
+const XBtnWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 const XBtn = styled.button`
-  position: absolute;
-  z-index: 2;
-  top: ${(props) => props.scrollY}px;
-  left: 30px;
   width: 40px;
   height: 40px;
   background-color: transparent;
@@ -635,18 +651,21 @@ const DetailContainer = styled.div`
   width: 70%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  border: 2px solid red;
   cursor: auto;
 `;
 const DefaultInfo = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   height: 10%;
 `;
 const BookMark = styled.div`
-  flex: 1;
-  width: 197px;
-  font-size: 40px;
+  /* flex: 1; */
+  width: 20%;
+  font-size: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   svg {
     cursor: pointer;
   }
@@ -659,9 +678,16 @@ const BookMark = styled.div`
           color: #494949;
         `}
 `;
+const StatusMessageWrapper = styled.div`
+  /* flex: 4; */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 const StatusMessage = styled.input`
-  flex: 2;
-  width: 50%;
+  width: 90%;
   height: 30px;
   background-color: #262626;
   border-radius: 10px;
@@ -674,8 +700,12 @@ const StatusMessage = styled.input`
         `
       : css``}
 `;
+const LanguageImgWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 const LanguageImg = styled.div`
-  flex: 1;
   ${(props) =>
     props.retouch
       ? css`
@@ -684,7 +714,7 @@ const LanguageImg = styled.div`
         `
       : css`
           display: flex;
-          justify-content: flex-end;
+          justify-content: center;
         `}
   select {
     height: 30px;
@@ -699,9 +729,22 @@ const LanguageImg = styled.div`
     margin: 0;
   }
   img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
   }
+`;
+
+const FiledTextWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 20%;
+  /* flex: 1; */
+`;
+const FiledText = styled.h4`
+  width: 100%;
+  text-align: center;
+  margin: 0;
 `;
 
 const ReviewContainer = styled.div`

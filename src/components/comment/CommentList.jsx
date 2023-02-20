@@ -108,10 +108,26 @@ export default function CommentList() {
   );
 
   // 댓글 보내기 온클릭
-  const onClickPostComment = () => {
+  const onClickPostComment = (e) => {
     const postCommentInfo = { cardId, comment };
     postCommentList(postCommentInfo);
     setComment("");
+  };
+
+  const enterPostComment = (e) => {
+    const postCommentInfo = { cardId, comment };
+    if (e.nativeEvent.isComposing) {
+      // isComposing 이 true 이면
+      return; // 조합 중이므로 동작을 막는다.
+    }
+    if (e.key === "Enter" && e.shiftKey) {
+      return;
+    } else if (e.key === "Enter") {
+      postCommentList(postCommentInfo);
+      setComment("");
+    } else {
+      return;
+    }
   };
 
   // 댓글 삭제 온클릭
@@ -133,6 +149,22 @@ export default function CommentList() {
     // setReplyComment("");
   };
 
+  const enterPostReplyComment = (e) => {
+    const postCommentInfo = { cardId, comment };
+    if (e.nativeEvent.isComposing) {
+      // isComposing 이 true 이면
+      return; // 조합 중이므로 동작을 막는다.
+    }
+    if (e.key === "Enter" && e.shiftKey) {
+      return;
+    } else if (e.key === "Enter") {
+      postCommentList(postCommentInfo);
+      setComment("");
+    } else {
+      return;
+    }
+  };
+
   // 대댓글 삭제 온클릭
   const onClickDeleteReplyComment = (commentId, replyId) => {
     const deleteReplyCommentInfo = { cardId, commentId, replyId };
@@ -145,7 +177,7 @@ export default function CommentList() {
   //   textRef.current.style.height = textRef.current.scrollHeight + "px";
   // }, []);
 
-  const onChange = (e) => {
+  const onChangeCommentValue = (e) => {
     setComment(e.target.value);
   };
   const handleCommentResizeHeight = () => {
@@ -182,8 +214,9 @@ export default function CommentList() {
               ref={textRef}
               onInput={handleCommentResizeHeight}
               rows={1}
-              onChange={onChange}
-              value={comment}
+              onChange={onChangeCommentValue}
+              onKeyDown={enterPostComment}
+              value={comment || ""}
             />
             <CommentButtonContainer>
               {comment.length > 0 ? (
@@ -293,7 +326,8 @@ export default function CommentList() {
                               onInput={handleReplyCommentResizeHeight}
                               rows={1}
                               onChange={onChangeRelyValue}
-                              value={replyComment}
+                              onKeyDown={enterPostReplyComment}
+                              value={replyComment || ""}
                             />
                             <CommentButtonContainer>
                               {replyComment.length > 0 ? (
@@ -409,16 +443,10 @@ const CommentListContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: auto;
-  /* padding: 5px; */
-  &::-webkit-scrollbar {
-    width: 5px;
-    background-color: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: #eee;
-    border-radius: 10px;
-  }
+  overflow-y: scroll;
+  border: 2px solid white;
+  padding: 5px;
+
   .replyCommentListWrapper {
     justify-content: space-between;
     .replyCommentList {
