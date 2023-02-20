@@ -33,7 +33,7 @@ const Login = () => {
       onSuccess: (res) => {
         setCookieToken("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
-        setNickname(res.nickname);
+        localStorage.setItem("name",res.nickname);
         setIsLoading(true);
         setTimeout(() => {
           navigate("/home");
