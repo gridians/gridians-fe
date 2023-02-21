@@ -1,4 +1,4 @@
-import { getCookieToken } from '../../cookie/cookie';
+import { getCookieToken, setCookieToken } from "../../cookie/cookie";
 import { api, api2 } from "../untils";
 
 // login query
@@ -8,12 +8,14 @@ export const postLoginUseQueryUserInfo = async (userLoginInfo) => {
     email: userLoginInfo.email,
     password: userLoginInfo.password,
   });
+  if (res.data.accessToken) {
+    setCookieToken("accessToken", res.data.accessToken);
+  }
   return res.data;
 };
 
 // 비밀번호 찾기
 export const postLoginQueryFindUserPassword = async (email) => {
-
   console.log(email);
   const res = api.post(
     "/user/auth/find-password",
@@ -33,9 +35,9 @@ export const postLoginQueryFindUserPassword = async (email) => {
 };
 
 //github 로그인 토큰 보내기
-export const loginUseMutationPostToken = (token) =>{
-  const res = api.post("/user/auth/social-login",{
-    token:token
-  })
+export const loginUseMutationPostToken = (token) => {
+  const res = api.post("/user/auth/social-login", {
+    token: token,
+  });
   return res.data;
-}
+};
