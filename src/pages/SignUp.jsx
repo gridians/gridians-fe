@@ -53,12 +53,6 @@ export default function SignUp() {
           title: "회원가입 성공",
           text: "이메일을 확인해주세요",
           buttons: "확인",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp",
-          },
           closeOnClickOutside: false,
         }).then(function () {
           navigate("/login");
@@ -70,12 +64,6 @@ export default function SignUp() {
             padding: "3em",
             title: "이미 가입한 이메일입니다",
             buttons: "확인",
-            showClass: {
-              popup: "animate__animated animate__fadeInDown",
-            },
-            hideClass: {
-              popup: "animate__animated animate__fadeOutUp",
-            },
             closeOnClickOutside: false,
           });
         } else {
@@ -83,12 +71,6 @@ export default function SignUp() {
             padding: "3em",
             title: "회원가입에 실패했습니다",
             buttons: "확인",
-            showClass: {
-              popup: "animate__animated animate__fadeInDown",
-            },
-            hideClass: {
-              popup: "animate__animated animate__fadeOutUp",
-            },
             closeOnClickOutside: false,
           });
         }

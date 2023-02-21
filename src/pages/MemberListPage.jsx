@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import SimpleSlider from "../components/Slide";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   cardIdNum,
   github,
@@ -11,6 +11,7 @@ import {
   introduceText,
   language,
   list,
+  nicknameSelector,
   nickNameText,
   position,
   skillSrc,
@@ -36,7 +37,6 @@ import {
   useMutationPostCardComment,
 } from "../apis/customQuery/memberListCustomQuery";
 import { getCookieToken } from "../cookie/cookie";
-import { cardIdSelector } from "../store/commentAtom";
 import MyCardBtn from "../components/MyCardBtn";
 import TopButton from "../components/TopButton";
 
@@ -46,6 +46,7 @@ const MemberListPage = () => {
   const [click, setClick] = useState();
   //클릭한 카드에 index번호 저장
   const [num, setNum] = useState();
+  const [nickname, setNickname] = useRecoilState(nickNameText);
   //카드 정보를 수정중인지 아닌지 판별
   const [retouch, setRetouch] = useState(false);
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
@@ -55,14 +56,13 @@ const MemberListPage = () => {
   const [img, setImg] = useRecoilState(imgSrc);
   const [skillUrl, setSkillUrl] = useRecoilState(skillSrc);
   const [skill, setSkill] = useRecoilState(language);
-  const [nickName, setNickName] = useRecoilState(nickNameText);
   const [githubId, setGithubId] = useRecoilState(github);
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
   const [eaditCardId, setEaditCardId] = useRecoilState(cardIdNum);
 
   const [pageNum, setPageNum] = useState(0);
-  const [cardId, setCardId] = useRecoilState(cardIdSelector);
+  const [cardId, setCardId] = useRecoilState(cardIdNum);
 
   // 회원 카드 리스트 받아오기 react-query
   const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
@@ -83,8 +83,6 @@ const MemberListPage = () => {
     }
   );
 
-  // console.log(cardList);
-
   const { isEnd } = InfiniteScroll({
     onScrollEnd: cardListInfo,
     pageNum: pageNum,
@@ -103,7 +101,7 @@ const MemberListPage = () => {
   };
 
   //회원 카드 상세정보 가져오기 react-query
-  const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
+  const { mutate: cardInfo } = useMutation(
     "cardInfo",
     (index) => memberListUseQueryGetCardInfo(index),
     {
@@ -143,32 +141,6 @@ const MemberListPage = () => {
     }
   }, []);
 
-  //북마크 클릭시 즐겨찾기에 추가 react-query
-  const { mutate: addBookMark, isLoading: addBookMarkLoading } = useMutation(
-    "bookMark",
-    () => memberListuseMutationPostBookMark(cardId),
-    {
-      onSuccess: (res) => {
-        bookList();
-      },
-    }
-  );
-  //북마크 클릭시 즐겨찾기에 해제 react-query
-  const { mutate: minusBookMark, isLoading: minusBookMarkLoading } =
-    useMutation(
-      "minusbookMark",
-      () => memberListuseMutationDeleteBookMark(cardId),
-      {
-        onSuccess: (res) => {
-          // console.log(res);
-          bookList();
-        },
-        onError: (err) => {
-          // console.log(err);
-        },
-      }
-    );
-
   //onClick
   const backgrounOnClick = () => {
     setRetouch(false);
@@ -181,7 +153,7 @@ const MemberListPage = () => {
   const cardOnClick = (e, index, data) => {
     setEaditCardId(data.profileCardId);
     setCardId(data.profileCardId);
-    setNickName(data.nickname);
+    setNickname(data.nickname);
     cardInfo(data.profileCardId);
     handleDetailCardComment(data.profileCardId);
     setImg(data.profileImage);
@@ -189,140 +161,16 @@ const MemberListPage = () => {
     setNum(index);
     setClick("click");
   };
-  const bookMarkOnClick = () => {
-    addBookMark();
-    const boolean =
-      bookMarkList &&
-      bookMarkList.map((data) => data.nickname).includes(nickName);
-    if (!boolean) {
-      addBookMark();
-    } else {
-      minusBookMark();
-    }
-  };
 
-  //onChange
-  const statusMsgOnChange = (text) => {
-    setStatusMsg(text.target.value);
-  };
-  const positionOnChange = (text) => {
-    setField(text.target.value);
-  };
-  const skillOnChange = (text) => {
-    setSkill(text.target.value);
-  };
-
-  //상세정보가 떠 있을시 스크롤 막기
-  var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
-  function preventDefault(e) {
-    // e.preventDefault();
-  }
-  function preventDefaultForScrollKeys(e) {
-    if (keys[e.keyCode]) {
-      // preventDefault(e);
-      return false;
-    }
-  }
-  // modern Chrome requires { passive: false } when adding event
-  var supportsPassive = false;
-  try {
-    window.addEventListener(
-      "test",
-      null,
-      Object.defineProperty({}, "passive", {
-        get: function () {
-          supportsPassive = true;
-        },
-      })
-    );
-  } catch (e) {}
-
-  var wheelOpt = supportsPassive ? { passive: false } : false;
-  var wheelEvent =
-    "onwheel" in document.createElement("div") ? "wheel" : "mousewheel";
-
-  // call this to Disable
-  function disableScroll() {
-    window.addEventListener("DOMMouseScroll", preventDefault, false); // older FF
-    window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
-    window.addEventListener("touchmove", preventDefault, wheelOpt); // mobile
-    window.addEventListener("keydown", preventDefaultForScrollKeys, false);
-  }
-  // call this to Enable
-  function enableScroll() {
-    window.removeEventListener("DOMMouseScroll", preventDefault, false);
-    window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
-    window.removeEventListener("touchmove", preventDefault, wheelOpt);
-    window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
-  }
   useEffect(() => {
+    document.body.style.overflowY = "scroll";
     if (click === "click") {
-      // disableScroll();
-      document.body.style.overflow = "hidden";
+      document.body.style.overflowY = "hidden";
     }
     return () => {
-      document.body.style.overflow = "scroll";
-      // enableScroll();
+      document.body.style.overflowY = "hidden";
     };
   }, [click]);
-  console.log(click);
-
-  //선택 가능한 포지션 list
-  const positionList = [
-    "Back-end Developer",
-    "Front-end Developer",
-    "Software Engineer",
-    "Publisher",
-    "Android",
-    "IOS",
-    "Nerwork Engineer",
-    "Machine Learning",
-    "PM",
-    "Data Scientist",
-    "QA",
-    "Big Data Enineer",
-    "Security Engineer",
-    "Embebdded",
-    "Block Chain",
-    "Designer",
-    "DBA",
-    "VR Engineer",
-    "Hardware Engineer",
-  ];
-  //선택 가능한 사용언어 list
-  const skillList = [
-    "javaScript",
-    "TypeScript",
-    "React",
-    "Vue",
-    "Svelte",
-    "Next",
-    "Java",
-    "Spring",
-    "Node.js",
-    "Nest.js",
-    "Go",
-    "Kotlin",
-    "Express",
-    "MySQL",
-    "MongoDB",
-    "Python",
-    "Django",
-    "php",
-    "GraphQL",
-    "Firebase",
-    "Flutter",
-    "Swift",
-    "ReactNative",
-    "Unity",
-    "AWS",
-    "Kubernetes",
-    "Docker",
-    "Git",
-    "Figma",
-    "Zeplin",
-    "Jest",
-  ];
 
   return (
     <Container>
@@ -344,64 +192,6 @@ const MemberListPage = () => {
                 X
               </XBtn>
             </XBtnWrapper>
-            <BookMark
-              onClick={() => bookMarkOnClick()}
-              nickName={
-                bookMarkList &&
-                bookMarkList.map((data) => data.nickname).includes(nickName)
-                  ? true
-                  : undefined
-              }
-            >
-              <BsFillBookmarkFill />
-            </BookMark>
-            {retouch ? (
-              <StatusMessageWrapper>
-                <StatusMessage
-                  value={statusMsg || ""}
-                  onChange={(text) => statusMsgOnChange(text)}
-                  retouch={retouch}
-                />
-              </StatusMessageWrapper>
-            ) : (
-              <StatusMessageWrapper>
-                <StatusMessage value={statusMsg || ""} disabled />
-              </StatusMessageWrapper>
-            )}
-            <FiledTextWrapper>
-              <FiledText>{field}</FiledText>
-            </FiledTextWrapper>
-            <LanguageImgWrapper>
-              <LanguageImg retouch={retouch}>
-                {retouch ? (
-                  <>
-                    <select
-                      value={field}
-                      onChange={(text) => positionOnChange(text)}
-                      placeholder="포지션을 선택"
-                    >
-                      {positionList.map((name) => (
-                        <option key={name}>{name}</option>
-                      ))}
-                      <option>react</option>
-                    </select>
-
-                    <select
-                      value={skill}
-                      onChange={(text) => skillOnChange(text)}
-                    >
-                      {skillList.map((name) => (
-                        <option key={name}>{name}</option>
-                      ))}
-                    </select>
-                  </>
-                ) : (
-                  <>
-                    <img src={skillUrl} alt="사용언어" />
-                  </>
-                )}
-              </LanguageImg>
-            </LanguageImgWrapper>
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
@@ -647,7 +437,7 @@ const DetailBtn = styled.div`
 `;
 
 const DetailContainer = styled.div`
-  padding: 30px;
+  padding: 10px 30px;
   width: 70%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
@@ -655,96 +445,9 @@ const DetailContainer = styled.div`
 `;
 const DefaultInfo = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  height: 10%;
-`;
-const BookMark = styled.div`
-  /* flex: 1; */
-  width: 20%;
-  font-size: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  svg {
-    cursor: pointer;
-  }
-  ${(props) =>
-    props.nickName
-      ? css`
-          color: #ff0000;
-        `
-      : css`
-          color: #494949;
-        `}
-`;
-const StatusMessageWrapper = styled.div`
-  /* flex: 4; */
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const StatusMessage = styled.input`
-  width: 90%;
-  height: 30px;
-  background-color: #262626;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
-  ${(props) =>
-    props.retouch
-      ? css`
-          outline: 1px solid;
-        `
-      : css``}
-`;
-const LanguageImgWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const LanguageImg = styled.div`
-  ${(props) =>
-    props.retouch
-      ? css`
-          display: flex;
-          flex-direction: column;
-        `
-      : css`
-          display: flex;
-          justify-content: center;
-        `}
-  select {
-    height: 30px;
-    background-color: transparent;
-    outline: none;
-    color: ${({ theme }) => theme.colors.white};
-    option {
-      color: ${({ theme }) => theme.colors.black};
-    }
-  }
-  h4 {
-    margin: 0;
-  }
-  img {
-    width: 50px;
-    height: 50px;
-  }
-`;
-
-const FiledTextWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 20%;
-  /* flex: 1; */
-`;
-const FiledText = styled.h4`
-  width: 100%;
-  text-align: center;
-  margin: 0;
+  height: 5%;
 `;
 
 const ReviewContainer = styled.div`
