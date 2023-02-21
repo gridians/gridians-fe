@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import SimpleSlider from "../components/Slide";
-import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
+import { BsFillChatDotsFill } from "react-icons/bs";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   cardIdNum,
@@ -11,7 +11,6 @@ import {
   introduceText,
   language,
   list,
-  nicknameSelector,
   nickNameText,
   position,
   skillSrc,
@@ -21,21 +20,14 @@ import {
 } from "../store/cardInfoAtom";
 import { useMutation } from "react-query";
 import {
-  memberListuseMutationDeleteBookMark,
-  memberListuseMutationPostBookMark,
   memberListuseQuerygetBookMarkList,
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
 import CommentList from "../components/comment/CommentList";
-import { loginUserEmail } from "../store/userInfoAtom";
-import {
-  useMutationGetCardInfo,
-  useMutationGetCardInfoComment,
-  useMutationGetCardList,
-  useMutationPostCardComment,
-} from "../apis/customQuery/memberListCustomQuery";
+import { userBookMarkList } from "../store/userInfoAtom";
+import { useMutationGetCardInfoComment } from "../apis/customQuery/memberListCustomQuery";
 import { getCookieToken } from "../cookie/cookie";
 import MyCardBtn from "../components/MyCardBtn";
 import TopButton from "../components/TopButton";
@@ -46,26 +38,26 @@ const MemberListPage = () => {
   const [click, setClick] = useState();
   //클릭한 카드에 index번호 저장
   const [num, setNum] = useState();
-  const [nickname, setNickname] = useRecoilState(nickNameText);
+  const setNickname = useSetRecoilState(nickNameText);
   //카드 정보를 수정중인지 아닌지 판별
   const [retouch, setRetouch] = useState(false);
-  const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
-  const [field, setField] = useRecoilState(position);
-  const [tagList, setTagList] = useRecoilState(tag);
-  const [introduce, setIntroduce] = useRecoilState(introduceText);
-  const [img, setImg] = useRecoilState(imgSrc);
-  const [skillUrl, setSkillUrl] = useRecoilState(skillSrc);
-  const [skill, setSkill] = useRecoilState(language);
-  const [githubId, setGithubId] = useRecoilState(github);
-  const [instagramId, setInstagramId] = useRecoilState(instagram);
-  const [twitterId, setTwitterId] = useRecoilState(twitter);
-  const [eaditCardId, setEaditCardId] = useRecoilState(cardIdNum);
+  const setStatusMsg = useSetRecoilState(statusMessage);
+  const setField = useSetRecoilState(position);
+  const setTagList = useSetRecoilState(tag);
+  const setIntroduce = useSetRecoilState(introduceText);
+  const setImg = useSetRecoilState(imgSrc);
+  const setSkillUrl = useSetRecoilState(skillSrc);
+  const setSkill = useSetRecoilState(language);
+  const setGithubId = useSetRecoilState(github);
+  const setInstagramId = useSetRecoilState(instagram);
+  const setTwitterId = useSetRecoilState(twitter);
+  const setEaditCardId = useSetRecoilState(cardIdNum);
 
   const [pageNum, setPageNum] = useState(0);
   const [cardId, setCardId] = useRecoilState(cardIdNum);
 
   // 회원 카드 리스트 받아오기 react-query
-  const { mutate: cardListInfo, isLoading: cardListInfoLoading } = useMutation(
+  const { mutate: cardListInfo } = useMutation(
     "cardList",
     (num) => memberListUseQueryGetCardList(num),
     {
@@ -123,9 +115,9 @@ const MemberListPage = () => {
     }
   );
 
-  const [bookMarkList, setBookList] = useState();
+  const [bookMarkList, setBookList] = useRecoilState(userBookMarkList);
   //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
-  const { mutate: bookList, isLoading: bookMarkListLoading } = useMutation(
+  const { mutate: bookList } = useMutation(
     "bookMarkList",
     () => memberListuseQuerygetBookMarkList(),
     {
@@ -160,17 +152,6 @@ const MemberListPage = () => {
     setSkillUrl(data.skillImage);
     setNum(index);
     setClick("click");
-  };
-
-  //onChange
-  const statusMsgOnChange = (text) => {
-    setStatusMsg(text.target.value);
-  };
-  const positionOnChange = (text) => {
-    setField(text.target.value);
-  };
-  const skillOnChange = (text) => {
-    setSkill(text.target.value);
   };
 
   //카드 모달 띄워져있을떈 스크롤 막기

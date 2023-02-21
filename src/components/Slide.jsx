@@ -1,11 +1,10 @@
-import { Component, useEffect } from "react";
+import { useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled, { css } from "styled-components";
 import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
-import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -15,7 +14,6 @@ import {
   instagram,
   introduceText,
   language,
-  nicknameSelector,
   nickNameText,
   position,
   skillSrc,
@@ -24,7 +22,7 @@ import {
   twitter,
 } from "../store/cardInfoAtom";
 import { useMutation } from "react-query";
-import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
+import { BsFillBookmarkFill } from "react-icons/bs";
 import {
   memberListuseMutationDeleteBookMark,
   memberListuseMutationPostBookMark,
@@ -32,8 +30,8 @@ import {
   memberListuseQuerygetBookMarkList,
 } from "../apis/queries/memberListQuery";
 import { getCookieToken } from "../cookie/cookie";
-// import { cardIdSelector } from "../store/commentAtom";
 import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
+import { userBookMarkList } from "../store/userInfoAtom";
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
   const [tagText, setTagText] = useState("");
@@ -45,16 +43,12 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const [twitterId, setTwitterId] = useRecoilState(twitter);
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
-  const [img, setImg] = useRecoilState(imgSrc);
-  const [cardId, setCardId] = useRecoilState(cardIdNum);
-  const imgUrl = useRecoilValue(imgSrc);
+  const img = useRecoilValue(imgSrc);
+  const cardId = useRecoilValue(cardIdNum);
   const skillUrl = useRecoilValue(skillSrc);
   const nickname = useRecoilValue(nickNameText);
 
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
-
-  // const nickname = useRecoilValue(nicknameSelector);
-  console.log(nickname, getUserInfoValue.nickname);
 
   //상세정보 수정 정보 보내기
   const { mutate: editCardInfo } = useMutation(
@@ -70,14 +64,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
     }
   );
 
-  //로그인한 유저에 북마크 리스트를 첫렌더링시 실행
-  useEffect(() => {
-    if (getCookieToken("accessToken")) {
-      bookList();
-    }
-  }, []);
-
-  const [bookMarkList, setBookList] = useState();
+  const [bookMarkList, setBookList] = useRecoilState(userBookMarkList);
   //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
   const { mutate: bookList } = useMutation(
     "bookMarkList",
@@ -88,6 +75,13 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       },
     }
   );
+  //로그인한 유저에 북마크 리스트를 첫렌더링시 실행
+  useEffect(() => {
+    if (getCookieToken("accessToken")) {
+      bookList();
+    }
+  }, []);
+
   //북마크 클릭시 즐겨찾기에 추가 react-query
   const { mutate: addBookMark } = useMutation(
     "bookMark",
@@ -166,7 +160,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   };
 
   const bookMarkOnClick = () => {
-    addBookMark();
     const boolean =
       bookMarkList &&
       bookMarkList.map((data) => data.nickname).includes(nickname);
