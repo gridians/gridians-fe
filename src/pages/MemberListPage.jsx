@@ -162,6 +162,18 @@ const MemberListPage = () => {
     setClick("click");
   };
 
+  //onChange
+  const statusMsgOnChange = (text) => {
+    setStatusMsg(text.target.value);
+  };
+  const positionOnChange = (text) => {
+    setField(text.target.value);
+  };
+  const skillOnChange = (text) => {
+    setSkill(text.target.value);
+  };
+
+  //카드 모달 띄워져있을떈 스크롤 막기
   useEffect(() => {
     document.body.style.overflowY = "scroll";
     if (click === "click") {
