@@ -23,7 +23,7 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
 import {
   memberListuseMutationDeleteBookMark,
@@ -51,10 +51,8 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const skillUrl = useRecoilValue(skillSrc);
   const nickname = useRecoilValue(nickNameText);
 
+  const queryClient = useQueryClient();
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
-
-  // const nickname = useRecoilValue(nicknameSelector);
-  console.log(nickname, getUserInfoValue.nickname);
 
   //상세정보 수정 정보 보내기
   const { mutate: editCardInfo } = useMutation(
@@ -66,6 +64,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       },
       onError: (err) => {
         console.log(err);
+      },
+      onSettled: (data, error, variables, context) => {
+        queryClient.invalidateQueries();
       },
     }
   );
@@ -166,7 +167,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   };
 
   const bookMarkOnClick = () => {
-    addBookMark();
     const boolean =
       bookMarkList &&
       bookMarkList.map((data) => data.nickname).includes(nickname);

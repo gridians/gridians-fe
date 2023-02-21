@@ -19,7 +19,7 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import {
   memberListuseMutationDeleteBookMark,
   memberListuseMutationPostBookMark,
