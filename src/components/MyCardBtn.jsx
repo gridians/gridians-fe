@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { memberListuseMutationGetCardInfo } from "../apis/queries/memberListQuery";
 import { getCookieToken } from "../cookie/cookie";
 import {
+  cardIdNum,
   github,
   imgSrc,
   instagram,
@@ -34,6 +35,7 @@ const MyCardBtn = ({ setClick }) => {
   const [githubId, setGithubId] = useRecoilState(github);
   const [instagramId, setInstagramId] = useRecoilState(instagram);
   const [twitterId, setTwitterId] = useRecoilState(twitter);
+  const [cardId, setCardId] = useRecoilState(cardIdNum);
 
   const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
     "cardInfo",
@@ -41,6 +43,7 @@ const MyCardBtn = ({ setClick }) => {
     {
       onSuccess: (res) => {
         console.log(res);
+        setCardId(res.profileCardId);
         setField(res.field);
         setIntroduce(res.introduction);
         setSkill(res.skill);
