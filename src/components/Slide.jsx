@@ -7,7 +7,7 @@ import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   cardIdNum,
   github,
@@ -15,15 +15,25 @@ import {
   instagram,
   introduceText,
   language,
+  nicknameSelector,
   nickNameText,
   position,
+  skillSrc,
   statusMessage,
   tag,
   twitter,
 } from "../store/cardInfoAtom";
 import { useMutation } from "react-query";
-import { memberListuseMutationPostCardInfo } from "../apis/queries/memberListQuery";
-import { loginUserNickname } from "../store/userInfoAtom";
+import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
+import {
+  memberListuseMutationDeleteBookMark,
+  memberListuseMutationPostBookMark,
+  memberListuseMutationPostCardInfo,
+  memberListuseQuerygetBookMarkList,
+} from "../apis/queries/memberListQuery";
+import { getCookieToken } from "../cookie/cookie";
+// import { cardIdSelector } from "../store/commentAtom";
+import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
   const [tagText, setTagText] = useState("");
@@ -36,14 +46,20 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
   const [img, setImg] = useRecoilState(imgSrc);
-  const [nickName, setNickName] = useRecoilState(nickNameText);
-  const [userName, setUserName] = useState();
-  const [eaditCardId, setEaditCardId] = useRecoilState(cardIdNum);
+  const [cardId, setCardId] = useRecoilState(cardIdNum);
+  const imgUrl = useRecoilValue(imgSrc);
+  const skillUrl = useRecoilValue(skillSrc);
+  const nickname = useRecoilValue(nickNameText);
+
+  const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
+
+  // const nickname = useRecoilValue(nicknameSelector);
+  console.log(nickname, getUserInfoValue.nickname);
 
   //상세정보 수정 정보 보내기
-  const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
+  const { mutate: editCardInfo } = useMutation(
     (editCardListUserInfo) =>
-      memberListuseMutationPostCardInfo(editCardListUserInfo, eaditCardId),
+      memberListuseMutationPostCardInfo(editCardListUserInfo, cardId),
     {
       onSuccess: (res) => {
         setRetouch(!retouch);
@@ -54,9 +70,47 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
     }
   );
 
+  //로그인한 유저에 북마크 리스트를 첫렌더링시 실행
   useEffect(() => {
-    setUserName(localStorage.getItem("name"));
-  }, [setUserName]);
+    if (getCookieToken("accessToken")) {
+      bookList();
+    }
+  }, []);
+
+  const [bookMarkList, setBookList] = useState();
+  //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
+  const { mutate: bookList } = useMutation(
+    "bookMarkList",
+    () => memberListuseQuerygetBookMarkList(),
+    {
+      onSuccess: (res) => {
+        setBookList(res);
+      },
+    }
+  );
+  //북마크 클릭시 즐겨찾기에 추가 react-query
+  const { mutate: addBookMark } = useMutation(
+    "bookMark",
+    () => memberListuseMutationPostBookMark(cardId),
+    {
+      onSuccess: (res) => {
+        bookList();
+      },
+    }
+  );
+  //북마크 클릭시 즐겨찾기에 해제 react-query
+  const { mutate: minusBookMark } = useMutation(
+    "minusbookMark",
+    () => memberListuseMutationDeleteBookMark(cardId),
+    {
+      onSuccess: (res) => {
+        bookList();
+      },
+      onError: (err) => {
+        // console.log(err);
+      },
+    }
+  );
 
   //slick-slide 기본셋팅
   const settings = {
@@ -103,12 +157,24 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   };
   //수정완료 버튼 클릭
   const submitBtnOnClick = (e) => {
-    cardInfo(editCardListUserInfo);
+    editCardInfo(editCardListUserInfo);
     e.preventDefault();
   };
   //태그 삭제 버튼 클릭
   const tagXBtnOnClick = (index) => {
     setTagList((tagList) => [...tagList].filter((value, i) => i !== index));
+  };
+
+  const bookMarkOnClick = () => {
+    addBookMark();
+    const boolean =
+      bookMarkList &&
+      bookMarkList.map((data) => data.nickname).includes(nickname);
+    if (!boolean) {
+      addBookMark();
+    } else {
+      minusBookMark();
+    }
   };
 
   //onSubmit
@@ -120,24 +186,152 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
     }
   };
 
+  //onChange
+  const statusMsgOnChange = (text) => {
+    setStatusMsg(text.target.value);
+  };
+  const positionOnChange = (text) => {
+    setField(text.target.value);
+  };
+  const skillOnChange = (text) => {
+    setSkill(text.target.value);
+  };
+
+  //선택 가능한 포지션 list
+  const positionList = [
+    "Back-end Developer",
+    "Front-end Developer",
+    "Software Engineer",
+    "Publisher",
+    "Android",
+    "IOS",
+    "Nerwork Engineer",
+    "Machine Learning",
+    "PM",
+    "Data Scientist",
+    "QA",
+    "Big Data Enineer",
+    "Security Engineer",
+    "Embebdded",
+    "Block Chain",
+    "Designer",
+    "DBA",
+    "VR Engineer",
+    "Hardware Engineer",
+  ];
+  //선택 가능한 사용언어 list
+  const skillList = [
+    "javaScript",
+    "TypeScript",
+    "React",
+    "Vue",
+    "Svelte",
+    "Next",
+    "Java",
+    "Spring",
+    "Node.js",
+    "Nest.js",
+    "Go",
+    "Kotlin",
+    "Express",
+    "MySQL",
+    "MongoDB",
+    "Python",
+    "Django",
+    "php",
+    "GraphQL",
+    "Firebase",
+    "Flutter",
+    "Swift",
+    "ReactNative",
+    "Unity",
+    "AWS",
+    "Kubernetes",
+    "Docker",
+    "Git",
+    "Figma",
+    "Zeplin",
+    "Jest",
+  ];
+
   return (
     <StyledSlider {...settings} retouch={retouch}>
       <div>
         <First>
+          <StatusWrapper>
+            <BookMark
+              onClick={() => bookMarkOnClick()}
+              nickName={
+                bookMarkList &&
+                bookMarkList.map((data) => data.nickname).includes(nickname)
+                  ? true
+                  : undefined
+              }
+            >
+              <BsFillBookmarkFill />
+              <LanguageImgWrapper>
+                <LanguageImg retouch={retouch}>
+                  {retouch ? (
+                    <>
+                      <select
+                        value={field || ""}
+                        onChange={(text) => positionOnChange(text)}
+                        placeholder="포지션을 선택"
+                      >
+                        {positionList.map((name) => (
+                          <option key={name}>{name}</option>
+                        ))}
+                        <option>react</option>
+                      </select>
+
+                      <select
+                        value={skill || ""}
+                        onChange={(text) => skillOnChange(text)}
+                      >
+                        {skillList.map((name) => (
+                          <option key={name}>{name}</option>
+                        ))}
+                      </select>
+                    </>
+                  ) : (
+                    <>
+                      <img src={skillUrl} alt="사용언어" />
+                    </>
+                  )}
+                </LanguageImg>
+              </LanguageImgWrapper>
+            </BookMark>
+            {retouch ? (
+              <StatusMessageWrapper>
+                <StatusMessage
+                  value={statusMsg || ""}
+                  onChange={(text) => statusMsgOnChange(text)}
+                  retouch={retouch}
+                />
+              </StatusMessageWrapper>
+            ) : (
+              <StatusMessageWrapper>
+                <StatusMessage value={statusMsg || ""} disabled />
+              </StatusMessageWrapper>
+            )}
+            <FiledTextWrapper>
+              <FiledText>{field}</FiledText>
+            </FiledTextWrapper>
+          </StatusWrapper>
           <ProfileImg>
-            {userName === nickName ? (
+            {getUserInfoValue?.nickname === nickname ? (
               <AiFillSetting onClick={() => reTouchOnClick()} />
             ) : null}
             <img src={img} alt="d" />
           </ProfileImg>
-          <Name value={nickName} disabled />
+          <Name value={nickname || ""} disabled />
           <SnsList>
             {retouch ? (
               <>
                 <SnsItem>
                   <span>Github</span>
                   <SnsAdressInput
-                    value={githubId}
+                    value={githubId || ""}
                     onChange={(text) => githubOnChange(text)}
                     placeholder="깃헙 name을 입력해주세요"
                   />
@@ -145,7 +339,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                 <SnsItem>
                   <span>Instagram</span>
                   <SnsAdressInput
-                    value={instagramId}
+                    value={instagramId || ""}
                     onChange={(text) => instagramOnChange(text)}
                     placeholder="Instagram @XXX를 입력해주세요"
                   />
@@ -153,7 +347,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                 <SnsItem>
                   <span>Twitter</span>
                   <SnsAdressInput
-                    value={twitterId}
+                    value={twitterId || ""}
                     onChange={(text) => twitterOnChange(text)}
                     placeholder="트위터 @XXX를 입력해주세요"
                   />
@@ -181,7 +375,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           </SnsList>
           {retouch ? (
             <Introduce
-              value={introduce}
+              value={introduce || ""}
               onChange={(text) => introduceOnChange(text)}
               retouch={retouch}
             />
@@ -204,13 +398,15 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <TagInputDiv onSubmit={(e) => tagOnSubmit(e)} retouch={retouch}>
                 <span>태그 추가하기</span>
                 <TagInput
-                  value={tagText}
+                  value={tagText || ""}
                   onChange={(text) => tagOnChange(text)}
                 />
+                <SubmitBtnWrapper>
+                  <SubmitBtn type="button" onClick={(e) => submitBtnOnClick(e)}>
+                    완료
+                  </SubmitBtn>
+                </SubmitBtnWrapper>
               </TagInputDiv>
-              <SubmitBtn type="button" onClick={(e) => submitBtnOnClick(e)}>
-                완료
-              </SubmitBtn>
             </>
           ) : null}
         </First>
@@ -218,11 +414,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       <div>
         <h1>2</h1>
       </div>
-      <div>
+      <div className="slick-slide">
         <Third>
-          <UserIcon>
-            <FaUser />
-          </UserIcon>
+          <ThirdContainer>{nickname}</ThirdContainer>
         </Third>
       </div>
     </StyledSlider>
@@ -230,8 +424,16 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
 };
 
 const StyledSlider = styled(Slider)`
-  height: 90%;
+  /* height: 100%; */
+  margin-top: 10px;
   transition: all 1s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .slick-slide {
+    height: 100%;
+    width: 100%;
+  }
   h3 {
     text-align: center;
   }
@@ -270,9 +472,105 @@ const First = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+`;
+const StatusWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const BookMark = styled.div`
+  width: 20%;
+  font-size: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  svg {
+    cursor: pointer;
+  }
+  ${(props) =>
+    props.nickName
+      ? css`
+          color: #ff0000;
+        `
+      : css`
+          color: #494949;
+        `}
+`;
+const StatusMessageWrapper = styled.div`
+  width: 60%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const StatusMessage = styled.input`
+  width: 90%;
+  height: 30px;
+  background-color: #262626;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  ${(props) =>
+    props.retouch
+      ? css`
+          outline: 1px solid;
+        `
+      : css``}
+`;
+const LanguageImgWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const LanguageImg = styled.div`
+  ${(props) =>
+    props.retouch
+      ? css`
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 40px;
+          right: 10px;
+        `
+      : css`
+          display: flex;
+          justify-content: center;
+        `}
+  select {
+    height: 30px;
+    background-color: transparent;
+    outline: none;
+    color: ${({ theme }) => theme.colors.white};
+    option {
+      color: ${({ theme }) => theme.colors.black};
+    }
+  }
+  h4 {
+    margin: 0;
+  }
+  img {
+    width: 50px;
+    height: 50px;
+  }
+`;
+
+const FiledTextWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 20%;
+`;
+const FiledText = styled.h4`
+  width: 100%;
+  text-align: center;
+  margin: 0;
 `;
 const ProfileImg = styled.div`
   position: relative;
+  margin-top: 10px;
   svg {
     position: absolute;
     top: 70%;
@@ -411,16 +709,41 @@ const TagInput = styled.input`
   font-size: ${({ theme }) => theme.fontSizes.base};
   outline: 1px solid white;
 `;
+const SubmitBtnWrapper = styled.div`
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
 const SubmitBtn = styled.button`
-  margin-bottom: 20px;
-  width: 100px;
-  height: 30px;
-  outline: none;
+  width: 90px;
+  height: 40px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.base};
   cursor: pointer;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.white};
+  border: none;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.subColor6};
+    color: ${({ theme }) => theme.colors.white};
+    transition: all 0.5s;
+  }
 `;
 
 const Second = styled(First)``;
-const Third = styled(First)``;
+const Third = styled(First)`
+  width: 100%;
+  height: 100%;
+  border: 1px solid white;
+`;
+const ThirdContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  border: 2px solid blue;
+`;
 const UserIcon = styled(ProfileImg)`
   font-size: 50px;
 `;

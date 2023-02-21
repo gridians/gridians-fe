@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
+import Swal from "sweetalert2";
 import { useQueryMyPageGetUserValid } from "../../apis/customQuery/myPageCustomQuery";
 import {
   commentUseMutationDeleteCommentList,
@@ -11,7 +12,7 @@ import {
   replyCommentUseMutationPostCommentList,
 } from "../../apis/queries/commentQuery";
 import { getCookieToken } from "../../cookie/cookie";
-import { cardIdSelector } from "../../store/commentAtom";
+import { cardIdNum } from "../../store/cardInfoAtom";
 
 export default function CommentList() {
   const [comment, setComment] = useState("");
@@ -19,7 +20,7 @@ export default function CommentList() {
   const [replyCommentId, setReplyCommentId] = useState([]);
   // const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
-  const cardId = useRecoilValue(cardIdSelector);
+  const cardId = useRecoilValue(cardIdNum);
   const textRef = useRef(null);
   const replyCommentRef = useRef(null);
   const queryClient = useQueryClient();
@@ -133,7 +134,15 @@ export default function CommentList() {
   // 댓글 삭제 온클릭
   const onClickDeleteComment = (commentId) => {
     const deleteCommentInfo = { cardId, commentId };
-    commentDelete(deleteCommentInfo);
+    Swal.fire({
+      padding: "3em",
+      title: "댓글을 삭제하시겠습니까?",
+      confirmButtonText: "확인",
+      showCancelButton: true,
+      cancelButtonText: "취소",
+    }).then((data) => {
+      if (data.isConfirmed) commentDelete(deleteCommentInfo);
+    });
   };
 
   const onClickReplyComment = (commentIndex) => {
@@ -444,7 +453,6 @@ const CommentListContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
-  border: 2px solid white;
   padding: 5px;
 
   .replyCommentListWrapper {

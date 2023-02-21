@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import { memberListuseMutationGetCardInfo } from "../apis/queries/memberListQuery";
@@ -13,6 +13,7 @@ import {
   instagram,
   introduceText,
   language,
+  nicknameSelector,
   nickNameText,
   position,
   skillSrc,
@@ -23,6 +24,7 @@ import {
 
 const MyCardBtn = ({ setClick }) => {
   const navigate = useNavigate();
+  // const setStatusMsg = useSetRecoilState(statusMessageSelector);
 
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
   const [field, setField] = useRecoilState(position);
@@ -42,7 +44,7 @@ const MyCardBtn = ({ setClick }) => {
     () => memberListuseMutationGetCardInfo(),
     {
       onSuccess: (res) => {
-        console.log(res);
+        setNickName(res.nickname);
         setCardId(res.profileCardId);
         setField(res.field);
         setIntroduce(res.introduction);
@@ -51,7 +53,6 @@ const MyCardBtn = ({ setClick }) => {
         setTagList(res.tagSet);
         setImgUrl(res.profileImage);
         setSkillUrl(res.skillImage);
-        setNickName(localStorage.getItem("name"));
         res.snsSet.map((data) => {
           if (data.name === "twitter") return setTwitterId(data.account);
           if (data.name === "github") return setGithubId(data.account);
@@ -71,15 +72,9 @@ const MyCardBtn = ({ setClick }) => {
         confirmButtonColor: "#DCC6C6",
         cancelButtonColor: "#738598",
         showCancelButton: true,
-        confirmButtonText: "로그인하기",
-        cancelButtonText: "NO",
+        confirmButtonText: "로그인",
+        cancelButtonText: "취소",
         padding: "2em",
-        showClass: {
-          popup: "animate__animated animate__fadeInDown",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOutUp",
-        },
         closeOnClickOutside: false,
       }).then((data) => {
         if (data.isConfirmed) navigate("/login");
