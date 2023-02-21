@@ -1,6 +1,5 @@
-import { atom, selector } from "recoil";
+import { atom } from "recoil";
 import { v1 } from "uuid";
-import { cookieApi } from '../apis/untils';
 
 const localStorageEffect =
   ( {setSelf, onSet} ) => {
@@ -43,6 +42,11 @@ export const loginUserPasswordLength = atom({
 
 export const loginGithubId = atom({
   key:`loginGithubId/${v1()}`,
+  default: "",
+})
+
+export const userBookMarkList = atom({
+  key:`userBookMarkList/${v1()}`,
   default: "",
 })
 

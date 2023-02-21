@@ -5,8 +5,6 @@ import GithubBtn from "../components/GithubBtn";
 import { setCookieToken } from "../cookie/cookie";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
-import { useSetRecoilState } from "recoil";
-import { loginUserNickname } from "../store/userInfoAtom";
 import {
   postLoginUseQueryUserInfo,
   postLoginQueryFindUserPassword,
@@ -17,7 +15,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const setNickname = useSetRecoilState(loginUserNickname);
 
   const [emailMessage, setEmailMessage] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
