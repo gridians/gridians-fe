@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
@@ -8,7 +8,7 @@ import { cardEnrollUseMutationPostToken } from "../../apis/queries/cardEnrollQue
 
 const Header = () => {
   //카드 등록 react-query
-  const { mutate: cardEnroll, isLoading: cardEnrollLoading } = useMutation(
+  const { mutate: cardEnroll } = useMutation(
     "cardEnroll",
     () => cardEnrollUseMutationPostToken(),
     {

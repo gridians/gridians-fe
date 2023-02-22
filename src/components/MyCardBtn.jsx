@@ -13,7 +13,6 @@ import {
   instagram,
   introduceText,
   language,
-  nicknameSelector,
   nickNameText,
   position,
   skillSrc,
@@ -26,20 +25,20 @@ const MyCardBtn = ({ setClick }) => {
   const navigate = useNavigate();
   // const setStatusMsg = useSetRecoilState(statusMessageSelector);
 
-  const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
-  const [field, setField] = useRecoilState(position);
-  const [skill, setSkill] = useRecoilState(language);
-  const [tagList, setTagList] = useRecoilState(tag);
-  const [imgUrl, setImgUrl] = useRecoilState(imgSrc);
-  const [skillUrl, setSkillUrl] = useRecoilState(skillSrc);
-  const [nickName, setNickName] = useRecoilState(nickNameText);
-  const [introduce, setIntroduce] = useRecoilState(introduceText);
-  const [githubId, setGithubId] = useRecoilState(github);
-  const [instagramId, setInstagramId] = useRecoilState(instagram);
-  const [twitterId, setTwitterId] = useRecoilState(twitter);
-  const [cardId, setCardId] = useRecoilState(cardIdNum);
+  const setStatusMsg = useSetRecoilState(statusMessage);
+  const setField = useSetRecoilState(position);
+  const setSkill = useSetRecoilState(language);
+  const setTagList = useSetRecoilState(tag);
+  const setImgUrl = useSetRecoilState(imgSrc);
+  const setSkillUrl = useSetRecoilState(skillSrc);
+  const setNickName = useSetRecoilState(nickNameText);
+  const setIntroduce = useSetRecoilState(introduceText);
+  const setGithubId = useSetRecoilState(github);
+  const setInstagramId = useSetRecoilState(instagram);
+  const setTwitterId = useSetRecoilState(twitter);
+  const setCardId = useSetRecoilState(cardIdNum);
 
-  const { mutate: cardInfo, isLoading: cardInfoLoading } = useMutation(
+  const { mutate: cardInfo } = useMutation(
     "cardInfo",
     () => memberListuseMutationGetCardInfo(),
     {

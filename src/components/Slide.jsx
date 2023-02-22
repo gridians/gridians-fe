@@ -1,13 +1,13 @@
-import { Component, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled, { css } from "styled-components";
 import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
-import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { saveAs } from "file-saver";
 import {
   cardIdNum,
   github,
@@ -15,7 +15,6 @@ import {
   instagram,
   introduceText,
   language,
-  nicknameSelector,
   nickNameText,
   position,
   skillSrc,
@@ -23,8 +22,8 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation, useQueryClient } from "react-query";
-import { BsFillChatDotsFill, BsFillBookmarkFill } from "react-icons/bs";
+import { useMutation } from "react-query";
+import { BsFillBookmarkFill } from "react-icons/bs";
 import {
   memberListuseMutationDeleteBookMark,
   memberListuseMutationPostBookMark,
@@ -32,8 +31,9 @@ import {
   memberListuseQuerygetBookMarkList,
 } from "../apis/queries/memberListQuery";
 import { getCookieToken } from "../cookie/cookie";
-// import { cardIdSelector } from "../store/commentAtom";
 import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
+import { userBookMarkList } from "../store/userInfoAtom";
+import domtoimage from "dom-to-image";
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
   const [tagText, setTagText] = useState("");
@@ -45,13 +45,12 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const [twitterId, setTwitterId] = useRecoilState(twitter);
   const [tagList, setTagList] = useRecoilState(tag);
   const [introduce, setIntroduce] = useRecoilState(introduceText);
-  const [img, setImg] = useRecoilState(imgSrc);
-  const [cardId, setCardId] = useRecoilState(cardIdNum);
-  const imgUrl = useRecoilValue(imgSrc);
+  const img = useRecoilValue(imgSrc);
+  const cardId = useRecoilValue(cardIdNum);
   const skillUrl = useRecoilValue(skillSrc);
   const nickname = useRecoilValue(nickNameText);
+  const cardRef = useRef();
 
-  const queryClient = useQueryClient();
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
   //상세정보 수정 정보 보내기
@@ -65,20 +64,10 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       onError: (err) => {
         console.log(err);
       },
-      onSettled: (data, error, variables, context) => {
-        queryClient.invalidateQueries();
-      },
     }
   );
 
-  //로그인한 유저에 북마크 리스트를 첫렌더링시 실행
-  useEffect(() => {
-    if (getCookieToken("accessToken")) {
-      bookList();
-    }
-  }, []);
-
-  const [bookMarkList, setBookList] = useState();
+  const [bookMarkList, setBookList] = useRecoilState(userBookMarkList);
   //로그인한 유저에 즐겨찾기 리스트 가져오기 react-query
   const { mutate: bookList } = useMutation(
     "bookMarkList",
@@ -89,6 +78,13 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       },
     }
   );
+  //로그인한 유저에 북마크 리스트를 첫렌더링시 실행
+  useEffect(() => {
+    if (getCookieToken("accessToken")) {
+      bookList();
+    }
+  }, []);
+
   //북마크 클릭시 즐겨찾기에 추가 react-query
   const { mutate: addBookMark } = useMutation(
     "bookMark",
@@ -195,6 +191,19 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   };
   const skillOnChange = (text) => {
     setSkill(text.target.value);
+  };
+
+  // cardImage화
+  const onDownloadBtn = () => {
+    const card = cardRef.current;
+    domtoimage
+      .toBlob(card)
+      .then((blob) => {
+        saveAs(blob, "card.png");
+      })
+      .catch(function (error) {
+        console.error("oops, something went wrong!", error);
+      });
   };
 
   //선택 가능한 포지션 list
@@ -416,7 +425,34 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       </div>
       <div className="slick-slide">
         <Third>
-          <ThirdContainer>{nickname}</ThirdContainer>
+          <ThirdUploadWrapper>
+            <ThirdUploadFile type="file" className="fileUploadInput" />
+            <CardImageButtonWrapper>
+              <UploadImageButton className="fileUploadButton">
+                카드이미지 업로드
+              </UploadImageButton>
+            </CardImageButtonWrapper>
+          </ThirdUploadWrapper>
+          <ThirdWrapper>
+            <CardWrapper>
+              <Card ref={cardRef} className="card">
+                <Skill>
+                  <img src={skillUrl} alt="34" />
+                </Skill>
+                <ThirdProfileImg>
+                  <img src={img} alt="앗 안나와여" />
+                </ThirdProfileImg>
+                <Nickname>{nickname}</Nickname>
+                <Role>{field}</Role>
+              </Card>
+
+              <CardImageButtonWrapper>
+                <CardImageButton onClick={onDownloadBtn}>
+                  이미지 다운로드
+                </CardImageButton>
+              </CardImageButtonWrapper>
+            </CardWrapper>
+          </ThirdWrapper>
         </Third>
       </div>
     </StyledSlider>
@@ -737,15 +773,139 @@ const Second = styled(First)``;
 const Third = styled(First)`
   width: 100%;
   height: 100%;
-  border: 1px solid white;
 `;
-const ThirdContainer = styled.div`
+const ThirdUploadWrapper = styled.div`
+  width: 100%;
+  padding-left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  .fileUploadInput {
+    margin-right: 40px;
+  }
+  .fileUploadButton {
+  }
+`;
+const ThirdUploadFile = styled.input`
+  border: none;
+  width: 55%;
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid ${({ theme }) => theme.colors.white};
+  padding: 10px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  border-radius: 10px;
+  &:focus {
+    outline: none;
+  }
+  &::placeholder {
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    color: ${({ theme }) => theme.colors.subColor4};
+  }
+`;
+const ThirdWrapper = styled.div`
   height: 100%;
   width: 100%;
-  border: 2px solid blue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
 `;
-const UserIcon = styled(ProfileImg)`
-  font-size: 50px;
+const CardWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  background-color: transparent;
+  align-items: center;
+  justify-content: center;
+  margin-top: -30px;
+`;
+const Card = styled.div`
+  position: relative;
+  width: 250px;
+  height: 250px;
+  color: black;
+  background: #f6b8b8;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const Skill = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 15%;
+  img {
+    width: 100%;
+  }
+`;
+const ThirdProfileImg = styled.div`
+  margin-top: 50px;
+  width: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  img {
+    width: 130px;
+    height: 130px;
+  }
+`;
+const Nickname = styled.div`
+  font-weight: bold;
+  font-size: 30px;
+  margin-bottom: 5px;
+`;
+const Role = styled.div`
+  color: #505050;
+  margin-bottom: 5px;
 `;
 
+const CardImageButtonWrapper = styled.div`
+  width: 100%;
+`;
+const CardImageButton = styled.button`
+  width: 130px;
+  height: 40px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  position: absolute;
+  cursor: pointer;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.white};
+  border: none;
+  bottom: 60px;
+  right: 60px;
+  border: 2px solid white;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.subColor6};
+    color: ${({ theme }) => theme.colors.white};
+    transition: all 0.5s;
+  }
+`;
+
+const UploadImageButton = styled.button`
+  width: 150px;
+  height: 40px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  cursor: pointer;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.white};
+  border: none;
+  bottom: 60px;
+  right: 60px;
+  border: 2px solid white;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.subColor6};
+    color: ${({ theme }) => theme.colors.white};
+    transition: all 0.5s;
+  }
+`;
 export default SimpleSlider;
