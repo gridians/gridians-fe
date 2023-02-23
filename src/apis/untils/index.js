@@ -1,10 +1,9 @@
 import axios from "axios";
-import { getCookieToken, setCookieToken } from '../../cookie/cookie';
-
+import { getCookieToken, setCookieToken } from "../../cookie/cookie";
 
 export const api = axios.create({
   // baseURL: `${process.env.REACT_APP_BASE_URL}`,
-  baseURL: "http://152.70.251.225:8080/",
+  baseURL: "http://116.123.153.248:8000/",
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
@@ -14,7 +13,6 @@ export const api = axios.create({
 export const api2 = axios.create({
   // baseURL: `${process.env.REACT_APP_BASE_URL}`,
   baseURL: "http://152.70.251.225:8080/",
-
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
@@ -65,16 +63,15 @@ api.interceptors.response.use(
           { refreshToken: `${refreshToken}` },
           { headers: {} }
         );
-        
+
         // refreshToken을 통해 새로운 accessToken 토큰 저장
-        const  newAccessToken  =
-          data.accessToken;
+        const newAccessToken = data.accessToken;
         await setCookieToken("accessToken", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axios(originalRequest);
-      };
+      }
     }
 
     return Promise.reject(error);
   }
-)
+);
