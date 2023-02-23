@@ -7,6 +7,7 @@ import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import GitHubCalendar from "react-github-calendar";
 import {
   cardIdNum,
   github,
@@ -32,8 +33,23 @@ import {
 import { getCookieToken } from "../cookie/cookie";
 import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
 import { userBookMarkList } from "../store/userInfoAtom";
+import {
+  follower,
+  following,
+  githubAccount,
+  githubConnection,
+  githubProfileImageUrl,
+  recentCommitMessage,
+} from "../store/githubInfoAtom";
+import { useNavigate } from "react-router-dom";
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
+  const navigate = useNavigate();
+
+  const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
+  const loginUri = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo:status read:repo_hook user:email&redirect_uri=http://localhost:3000/githubloginpage`;
+
+  const [loginUserName, setLoginUserName] = useState();
   const [tagText, setTagText] = useState("");
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
   const [field, setField] = useRecoilState(position);
@@ -47,6 +63,13 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const cardId = useRecoilValue(cardIdNum);
   const skillUrl = useRecoilValue(skillSrc);
   const nickname = useRecoilValue(nickNameText);
+  //github 관련 recoil
+  const hasGithub = useRecoilValue(githubConnection);
+  const lastCommitMsg = useRecoilValue(recentCommitMessage);
+  const githubProfileImgUrl = useRecoilValue(githubProfileImageUrl);
+  const githubfollower = useRecoilValue(follower);
+  const githubfollowing = useRecoilValue(following);
+  const githubName = useRecoilValue(githubAccount);
 
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
@@ -80,6 +103,10 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
     if (getCookieToken("accessToken")) {
       bookList();
     }
+  }, []);
+  useEffect(() => {
+    setLoginUserName(localStorage.getItem("name"));
+    console.log(localStorage.getItem("name"));
   }, []);
 
   //북마크 클릭시 즐겨찾기에 추가 react-query
@@ -404,9 +431,41 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           ) : null}
         </First>
       </div>
-      <div>
-        <h1>2</h1>
-      </div>
+      {hasGithub === false && nickname === loginUserName ? (
+        <div>
+          <Second>
+            <GithubConnectionBtn onClick={() => navigator("/")}>
+              Github 연동
+            </GithubConnectionBtn>
+          </Second>
+        </div>
+      ) : hasGithub ? (
+        <div>
+          <Second hasGithub={true}>
+            <GithubDiv>
+              <GithubLastCommitMsg
+                value={"마지막 커밋: " + lastCommitMsg}
+                disabled
+              ></GithubLastCommitMsg>
+              <GithubProfileImg>
+                <img src={githubProfileImgUrl} alt="github profile img" />
+              </GithubProfileImg>
+              <GithubName>{githubName}</GithubName>
+              <FollowerFollowingDiv>
+                <Follower>
+                  <p>Follower</p>
+                  <span>{githubfollower}</span>
+                </Follower>
+                <Following>
+                  <p>Following</p>
+                  <span>{githubfollowing}</span>
+                </Following>
+              </FollowerFollowingDiv>
+              <GitHubCalendar username={githubName} style={{ width: "90%" }} year="2023"/>
+            </GithubDiv>
+          </Second>
+        </div>
+      ) : null}
       <div className="slick-slide">
         <Third>
           <ThirdContainer>{nickname}</ThirdContainer>
@@ -461,6 +520,7 @@ const StyledSlider = styled(Slider)`
     }
   }
 `;
+
 const First = styled.div`
   display: flex;
   flex-direction: column;
@@ -726,7 +786,69 @@ const SubmitBtn = styled.button`
   }
 `;
 
-const Second = styled(First)``;
+const Second = styled.div`
+  display: flex;
+  ${(props) =>
+    props.hasGithub
+      ? null
+      : css`
+          align-items: center;
+        `}
+  justify-content: center;
+  height: 49vh;
+`;
+const GithubConnectionBtn = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 50px;
+  background-color: ${({ theme }) => theme.colors.green_1};
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  cursor: pointer;
+  &:hover {
+    box-shadow: inset 10px 10px 5px -5px rgba(0, 0, 0, 0.36),
+      inset -8px -11px 5px -5px rgba(0, 0, 0, 0.36);
+  }
+`;
+const GithubDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+`;
+const GithubLastCommitMsg = styled(StatusMessage)`
+  width: 50%;
+`;
+const GithubProfileImg = styled(ProfileImg)`
+  margin: 25px 0 5px 0;
+`;
+const GithubName = styled.h1`
+  margin-bottom: 10px;
+`;
+const FollowerFollowingDiv = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  margin: 15px 0 35px 0;
+  width: 60%;
+`;
+const Follower = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  p {
+    font-size: ${({ theme }) => theme.fontSizes.xxl};
+    font-weight: bold;
+  }
+  span {
+    font-size: ${({ theme }) => theme.fontSizes.xxl};
+  }
+`;
+const Following = styled(Follower)``;
+
 const Third = styled(First)`
   width: 100%;
   height: 100%;

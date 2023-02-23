@@ -172,7 +172,7 @@ const Login = () => {
                 </LoginBtn>
               )}
 
-              <GithubBtn />
+              {/* <GithubBtn /> */}
               <MenuList>
                 {/* <MenuItem>
                 <Link to="/findid">아이디 찾기</Link>
