@@ -16,7 +16,6 @@ export const postLoginUseQueryUserInfo = async (userLoginInfo) => {
 
 // 비밀번호 찾기
 export const postLoginQueryFindUserPassword = async (email) => {
-  console.log(email);
   const res = api.post(
     "/user/auth/find-password",
     {

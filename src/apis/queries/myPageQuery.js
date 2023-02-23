@@ -21,7 +21,6 @@ export const myPageUseQueryGetUserInfo = async () => {
 
 // 유저프로필 이미지
 export const myPageUseMutationPutUserProfile = async (uploadProfile) => {
-  console.log(uploadProfile);
   const res = await api.put(
     `/user/profile`,
     {

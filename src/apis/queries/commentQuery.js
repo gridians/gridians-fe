@@ -2,17 +2,14 @@ import { getCookieToken } from '../../cookie/cookie';
 import { api2 } from '../untils';
 
 export const commentUseQueryGetCommentList = async (index) => {
-  console.log(index);
-  const res = await api2.get(`cards/101/comments`);
+  const res = await api2.get(`cards/${index.queryKey[1]}/comments`);
   return res.data;
 };
 
 // 댓글 보내기
 export const commentUseMutationPostCommentList = async (postCommentInfo) => {
-  console.log(postCommentInfo);
   const res = await api2.post(
-    // `cards/${postCommentInfo.cardId}/comments`,
-    `cards/101/comments`,
+    `cards/${postCommentInfo.cardId}/comments`,
     { contents: postCommentInfo.comment },
     {
       headers: {
@@ -27,10 +24,8 @@ export const commentUseMutationPostCommentList = async (postCommentInfo) => {
 
 // 댓글 삭제
 export const commentUseMutationDeleteCommentList = async (deleteCommentInfo) => {
-  console.log(deleteCommentInfo);
   const res = await api2.delete(
-    // `/cards/${deleteCommentInfo.cardId}/comments/${deleteCommentInfo.commentId}`,
-    `/cards/101/comments/${deleteCommentInfo.commentId}`,
+    `/cards/${deleteCommentInfo.cardId}/comments/${deleteCommentInfo.commentId}`,
     {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -43,12 +38,10 @@ export const commentUseMutationDeleteCommentList = async (deleteCommentInfo) => 
 };
 
 // 대댓글 보내기
-export const replyCommentUseMutationPostCommentList = async (deleteReplyCommentInfo) => {
-  console.log(deleteReplyCommentInfo);
+export const replyCommentUseMutationPostCommentList = async (postReplyCommentInfo) => {
   const res = await api2.post(
-    // `cards/2/comments/${deleteReplyCommentInfo.id}/replies`,
-    `cards/101/comments/${deleteReplyCommentInfo.commentId}`,
-    { contents: deleteReplyCommentInfo.info },
+    `cards/${postReplyCommentInfo.cardId}/comments/${postReplyCommentInfo.commentId}/replies`,
+    { contents: postReplyCommentInfo.replyComment },
     {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -61,10 +54,9 @@ export const replyCommentUseMutationPostCommentList = async (deleteReplyCommentI
 };
 
 // 대댓글 삭제
-export const replyCommentUseMutationDeleteCommentList = async (commentIds) => {
-  console.log("여기다",commentIds);
+export const replyCommentUseMutationDeleteCommentList = async (deleteReplyCommentInfo) => {
   const res = await api2.delete(
-    `cards/101/comments/${commentIds.commentId}/replies/${commentIds.replyId}`,
+    `cards/${deleteReplyCommentInfo.cardId}/comments/${deleteReplyCommentInfo.commentId}/replies/${deleteReplyCommentInfo.replyId}`,
     {
       headers: {
         "Content-type": "application/json; charset=UTF-8",

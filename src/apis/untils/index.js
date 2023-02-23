@@ -55,18 +55,17 @@ api.interceptors.response.use(
       response: { status },
     } = error;
     if (status === 401) {
-      console.log(error);
       if (error.response.data.message === "Expire") {
         const originalRequest = config;
         const refreshToken = await localStorage.getItem("refreshToken");
-        // console.log(refreshToken);
+
         // token refresh요청
         const { data } = await axios.post(
           "http://152.70.251.225:8080/user/auth/reissue",
           { refreshToken: `${refreshToken}` },
           { headers: {} }
         );
-        // console.log(data);
+        
         // refreshToken을 통해 새로운 accessToken 토큰 저장
         const  newAccessToken  =
           data.accessToken;

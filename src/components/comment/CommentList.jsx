@@ -21,15 +21,15 @@ export default function CommentList() {
   // const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const cardId = useRecoilValue(cardIdNum);
-  const textRef = useRef(null);
+  const commentRef = useRef(null);
   const replyCommentRef = useRef(null);
   const queryClient = useQueryClient();
 
   const token = getCookieToken("accessToken");
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
-  const { data: CommentCardInfo } = useQuery(
-    "carCommentInfo",
+  const { data: commentCardInfo } = useQuery(
+    ["cardCommentInfo", cardId],
     commentUseQueryGetCommentList,
     {
       refetchOnWindowFocus: false,
@@ -111,6 +111,13 @@ export default function CommentList() {
   // 댓글 보내기 온클릭
   const onClickPostComment = (e) => {
     const postCommentInfo = { cardId, comment };
+    if (comment.trim() === "") {
+      e.preventDefault();
+      Swal.fire({
+        text: "내용을 입력해주세요",
+      });
+      return;
+    }
     postCommentList(postCommentInfo);
     setComment("");
   };
@@ -118,12 +125,20 @@ export default function CommentList() {
   const enterPostComment = (e) => {
     const postCommentInfo = { cardId, comment };
     if (e.nativeEvent.isComposing) {
-      // isComposing 이 true 이면
       return; // 조합 중이므로 동작을 막는다.
     }
     if (e.key === "Enter" && e.shiftKey) {
       return;
-    } else if (e.key === "Enter") {
+    }
+    if (e.key === "Enter") {
+      if (comment.trim() === "") {
+        Swal.fire({
+          text: "내용을 입력해주세요",
+        });
+        e.preventDefault();
+        return;
+      }
+      commentRef.current.blur();
       postCommentList(postCommentInfo);
       setComment("");
     } else {
@@ -152,23 +167,37 @@ export default function CommentList() {
   };
 
   // 대댓글  온클릭
-  const onClickPostReplyComment = (commentId) => {
+  const onClickPostReplyComment = (commentId, e) => {
     const postReplyCommentInfo = { cardId, commentId, replyComment };
+    if (comment.trim() === "") {
+      e.preventDefault();
+      Swal.fire({
+        text: "내용을 입력해주세요",
+      });
+      return;
+    }
     postReplyCommentList(postReplyCommentInfo);
-    // setReplyComment("");
+    setReplyComment("");
   };
 
-  const enterPostReplyComment = (e) => {
-    const postCommentInfo = { cardId, comment };
+  const enterPostReplyComment = (e, commentId) => {
+    const postReplyCommentInfo = { cardId, commentId, replyComment };
     if (e.nativeEvent.isComposing) {
-      // isComposing 이 true 이면
       return; // 조합 중이므로 동작을 막는다.
     }
     if (e.key === "Enter" && e.shiftKey) {
       return;
-    } else if (e.key === "Enter") {
-      postCommentList(postCommentInfo);
-      setComment("");
+    }
+    if (e.key === "Enter") {
+      if (replyComment.trim() === "") {
+        Swal.fire({
+          text: "내용을 입력해주세요",
+        });
+        e.preventDefault();
+        return;
+      }
+      postReplyCommentList(postReplyCommentInfo);
+      setReplyComment("");
     } else {
       return;
     }
@@ -181,24 +210,17 @@ export default function CommentList() {
     replyCommentDelete(deleteReplyCommentInfo);
   };
 
-  // const handleResizeHeight = useCallback(() => {
-  //   textRef.current.style.height = "auto";
-  //   textRef.current.style.height = textRef.current.scrollHeight + "px";
-  // }, []);
-
   const onChangeCommentValue = (e) => {
     setComment(e.target.value);
   };
   const handleCommentResizeHeight = () => {
-    textRef.current.style.height = "auto";
-    textRef.current.style.padding = "10px";
-    // textRef.current.style.height = textRef.current.scrollHeight + "px";
+    commentRef.current.style.height = "auto";
+    commentRef.current.style.padding = "10px";
   };
 
   const handleReplyCommentResizeHeight = () => {
     replyCommentRef.current.style.height = "23px";
     replyCommentRef.current.style.padding = "10px";
-    // replyCommentRef.current.style.height = textRef.current.scrollHeight + "px";
   };
 
   const onChangeRelyValue = (e) => {
@@ -220,11 +242,11 @@ export default function CommentList() {
             />
             <CommentInput
               placeholder="댓글"
-              ref={textRef}
+              ref={commentRef}
               onInput={handleCommentResizeHeight}
               rows={1}
               onChange={onChangeCommentValue}
-              onKeyDown={enterPostComment}
+              onKeyDown={(e) => enterPostComment(e)}
               value={comment || ""}
             />
             <CommentButtonContainer>
@@ -249,7 +271,7 @@ export default function CommentList() {
         )}
       </CommentFormContainer>
       <CommentListContainer>
-        {CommentCardInfo?.map((commentArr, commentIndex) => {
+        {commentCardInfo?.map((commentArr, commentIndex) => {
           return (
             <CommentListWrapper key={commentIndex}>
               <CommentProfile alt="image" src={`${commentArr.profileImage}`} />
@@ -335,7 +357,9 @@ export default function CommentList() {
                               onInput={handleReplyCommentResizeHeight}
                               rows={1}
                               onChange={onChangeRelyValue}
-                              onKeyDown={enterPostReplyComment}
+                              onKeyDown={(e) =>
+                                enterPostReplyComment(e, commentArr.commentId)
+                              }
                               value={replyComment || ""}
                             />
                             <CommentButtonContainer>
@@ -511,6 +535,7 @@ const CommentListReplayTitle = styled.span`
   margin-right: 5px;
 `;
 const CommentListReplyCommentWrapper = styled.div`
+  margin-top: 5px;
   ${(props) =>
     props.replyComment === "true"
       ? css`
