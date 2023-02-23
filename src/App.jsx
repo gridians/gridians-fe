@@ -1,7 +1,7 @@
 //전역 스타일링
 
 import { ThemeProvider } from "styled-components";
-import theme from "./style/Theme";
+import theme from "./style/theme";
 import Router from "./Router";
 
 function App() {

@@ -7,18 +7,23 @@ const GlobalStyle = createGlobalStyle`
   font-weight: 900;
   font-style: normal;
  }
+  &::-webkit-scrollbar {
+    width: 10px;
+    background-color: #0E0909;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 10px;
+  }
   *, *::before, *::after {
     box-sizing: border-box;
   }
   body {
-    /* line-height: 1.5; */
     margin: 0;
     padding: 0;
-    height: 100vh;
-    background-color: black;
     #root{
-        width: 100%;
-        height: 100%;
+        /* width: 100%;
+        height: 100%; */
     }
   }
   p {
