@@ -450,7 +450,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       {hasGithub === false && nickname === loginUserName ? (
         <div>
           <Second>
-            <GithubConnectionBtn onClick={() => navigator("/")}>
+            <GithubConnectionBtn href={loginUri}>
               Github 연동
             </GithubConnectionBtn>
           </Second>

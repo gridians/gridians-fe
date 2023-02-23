@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import GithubBtn from "../components/GithubBtn";
 import { setCookieToken } from "../cookie/cookie";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
@@ -171,7 +170,6 @@ const Login = () => {
                   로그인
                 </LoginBtn>
               )}
-
               {/* <GithubBtn /> */}
               <MenuList>
                 <MenuItem>
