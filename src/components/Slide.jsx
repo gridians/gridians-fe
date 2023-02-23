@@ -7,6 +7,7 @@ import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import GitHubCalendar from "react-github-calendar";
 import {
   cardIdNum,
   github,
@@ -40,9 +41,11 @@ import {
   githubProfileImageUrl,
   recentCommitMessage,
 } from "../store/githubInfoAtom";
-import theme from "../style/theme";
+import { useNavigate } from "react-router-dom";
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
+  const navigate = useNavigate();
+
   const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
   const loginUri = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo:status read:repo_hook user:email&redirect_uri=http://localhost:3000/githubloginpage`;
 
@@ -439,9 +442,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       ) : hasGithub ? (
         <div>
           <Second hasGithub={true}>
-            <GithubHeader>
+            <GithubDiv>
               <GithubLastCommitMsg
-                value={"마지막 커밋: "+lastCommitMsg}
+                value={"마지막 커밋: " + lastCommitMsg}
                 disabled
               ></GithubLastCommitMsg>
               <GithubProfileImg>
@@ -458,7 +461,8 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <span>{githubfollowing}</span>
                 </Following>
               </FollowerFollowingDiv>
-            </GithubHeader>
+              <GitHubCalendar username={githubName} style={{ width: "90%" }} year="2023"/>
+            </GithubDiv>
           </Second>
         </div>
       ) : null}
@@ -516,6 +520,7 @@ const StyledSlider = styled(Slider)`
     }
   }
 `;
+
 const First = styled.div`
   display: flex;
   flex-direction: column;
@@ -808,7 +813,7 @@ const GithubConnectionBtn = styled.a`
       inset -8px -11px 5px -5px rgba(0, 0, 0, 0.36);
   }
 `;
-const GithubHeader = styled.div`
+const GithubDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -824,14 +829,22 @@ const GithubProfileImg = styled(ProfileImg)`
 const GithubName = styled.h1`
   margin-bottom: 10px;
 `;
-const FollowerFollowingDiv = styled.div``;
+const FollowerFollowingDiv = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  margin: 15px 0 35px 0;
+  width: 60%;
+`;
 const Follower = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   p {
-    font-size: ${({ theme }) => theme.fontSizes.lg};
+    font-size: ${({ theme }) => theme.fontSizes.xxl};
     font-weight: bold;
+  }
+  span {
+    font-size: ${({ theme }) => theme.fontSizes.xxl};
   }
 `;
 const Following = styled(Follower)``;
