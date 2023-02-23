@@ -1,18 +1,10 @@
 import axios from "axios";
-import { getCookieToken, setCookieToken } from "../../cookie/cookie";
+import {  setCookieToken } from '../../cookie/cookie';
+
 
 export const api = axios.create({
-  // baseURL: `${process.env.REACT_APP_BASE_URL}`,
-  baseURL: "http://116.123.153.248:8000/",
-  headers: {
-    "Content-type": "application/json; charset=UTF-8",
-    accept: "application/json,",
-  },
-  withCredentials: true,
-});
-export const api2 = axios.create({
-  // baseURL: `${process.env.REACT_APP_BASE_URL}`,
-  baseURL: "http://152.70.251.225:8080/",
+  baseURL: `${process.env.REACT_APP_BASE_URL}`,
+
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
@@ -20,28 +12,6 @@ export const api2 = axios.create({
   withCredentials: true,
 });
 
-export const cookieApi = axios.create({
-  baseURL: "http://116.123.153.248:8000",
-  headers: {
-    "Content-type": "application/json; charset=UTF-8",
-    accept: "application/json,",
-    Authorization: `Bearer ${getCookieToken("accessToken")}`,
-  },
-  ithCredentials: true,
-});
-
-// axios.interceptors.request.use(
-//   async (config) => {
-//     const accessToken = getCookieToken("accessToken");
-//     console.log(accessToken);
-//       config.headers = {
-//         ...config.headers,
-//         authorization: `Bearer ${accessToken}`,
-//       };
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
 
 api.interceptors.response.use(
   function (response) {

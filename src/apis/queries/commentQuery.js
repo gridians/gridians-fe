@@ -1,14 +1,14 @@
 import { getCookieToken } from '../../cookie/cookie';
-import { api2 } from '../untils';
+import { api } from '../untils';
 
 export const commentUseQueryGetCommentList = async (index) => {
-  const res = await api2.get(`cards/${index.queryKey[1]}/comments`);
+  const res = await api.get(`cards/${index.queryKey[1]}/comments`);
   return res.data;
 };
 
 // 댓글 보내기
 export const commentUseMutationPostCommentList = async (postCommentInfo) => {
-  const res = await api2.post(
+  const res = await api.post(
     `cards/${postCommentInfo.cardId}/comments`,
     { contents: postCommentInfo.comment },
     {
@@ -24,7 +24,7 @@ export const commentUseMutationPostCommentList = async (postCommentInfo) => {
 
 // 댓글 삭제
 export const commentUseMutationDeleteCommentList = async (deleteCommentInfo) => {
-  const res = await api2.delete(
+  const res = await api.delete(
     `/cards/${deleteCommentInfo.cardId}/comments/${deleteCommentInfo.commentId}`,
     {
       headers: {
@@ -39,7 +39,7 @@ export const commentUseMutationDeleteCommentList = async (deleteCommentInfo) => 
 
 // 대댓글 보내기
 export const replyCommentUseMutationPostCommentList = async (postReplyCommentInfo) => {
-  const res = await api2.post(
+  const res = await api.post(
     `cards/${postReplyCommentInfo.cardId}/comments/${postReplyCommentInfo.commentId}/replies`,
     { contents: postReplyCommentInfo.replyComment },
     {
@@ -55,7 +55,7 @@ export const replyCommentUseMutationPostCommentList = async (postReplyCommentInf
 
 // 대댓글 삭제
 export const replyCommentUseMutationDeleteCommentList = async (deleteReplyCommentInfo) => {
-  const res = await api2.delete(
+  const res = await api.delete(
     `cards/${deleteReplyCommentInfo.cardId}/comments/${deleteReplyCommentInfo.commentId}/replies/${deleteReplyCommentInfo.replyId}`,
     {
       headers: {

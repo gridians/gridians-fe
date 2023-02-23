@@ -1,15 +1,15 @@
 import { getCookieToken } from "../../cookie/cookie";
-import { api2 } from "../untils";
+import { api } from "../untils";
 
 // 카드 리스트 받아오기
 export const memberListUseQueryGetCardList = async (num) => {
-  const res = await api2.get(`/cards?page=${num}&size=16`);
+  const res = await api.get(`/cards?page=${num}&size=16`);
   return res.data;
 };
 // 카드 상세정보 받아오기
 
 export const memberListUseQueryGetCardInfo = async (index) => {
-  const res = await api2.get(`/cards/${index}`);
+  const res = await api.get(`/cards/${index}`);
   return res.data;
 };
 // 수정된 카드 상세정보 보내기
@@ -17,7 +17,7 @@ export const memberListuseMutationPostCardInfo = (
   editCardListUserInfo,
   eaditCardId
 ) => {
-  const res = api2.put(
+  const res = api.put(
     `/cards/${eaditCardId}`,
     {
       statusMessage: editCardListUserInfo.statusMessage,
@@ -39,7 +39,7 @@ export const memberListuseMutationPostCardInfo = (
 };
 //즐겨찾기 추가
 export const memberListuseMutationPostBookMark = (cardId) => {
-  const res = api2.post(
+  const res = api.post(
     `/fav`,
     {
       profileCardId: cardId,
@@ -56,7 +56,7 @@ export const memberListuseMutationPostBookMark = (cardId) => {
 };
 //즐겨찾기 해제
 export const memberListuseMutationDeleteBookMark = async (cardId) => {
-  const res = await api2.delete(`/fav`, {
+  const res = await api.delete(`/fav`, {
     data: { profileCardId: cardId },
     headers: {
       "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export const memberListuseMutationDeleteBookMark = async (cardId) => {
 };
 //로그인한 유저에 즐겨찾기 리스트
 export const memberListuseQuerygetBookMarkList = async () => {
-  const res = await api2.get(`/fav`, {
+  const res = await api.get(`/fav`, {
     headers: {
       "Content-Type": "application/json",
       accept: "application/json,",
@@ -79,7 +79,7 @@ export const memberListuseQuerygetBookMarkList = async () => {
 };
 //로그인한 유저에 카드 정보를 token을 이용해 받아오기
 export const memberListuseMutationGetCardInfo = async () => {
-  const res = await api2.get(`/cards/my-card `, {
+  const res = await api.get(`/cards/my-card `, {
     headers: {
       "Content-Type": "application/json",
       accept: "application/json,",
