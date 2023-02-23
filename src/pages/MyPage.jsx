@@ -48,8 +48,6 @@ export default function MyPage() {
   // 유저 정보
   const { data: getUserInfoValue } = useQueryMyPageGetUserValid();
 
-  console.log(getUserInfoValue);
-  console.log(nickname);
 
   // 유저 이미지 변경
   const { mutate: putUserProfile } = useMutation(
@@ -193,7 +191,6 @@ export default function MyPage() {
       /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const userEmailCurrent = e.target.value;
     setEmail(e.target.value);
-    console.log(email);
     if (!regEmail.test(userEmailCurrent)) {
       setEmailMessage("이메일 형식이 올바르지 않습니다.");
       setIsEmail(false);
@@ -270,27 +267,6 @@ export default function MyPage() {
 
   const onClickInputFile = async (e) => {
     e.preventDefault();
-    // const formData = new FormData();
-    // Array.from(imageSrc).forEach((el) => {
-    //   formData.append("userFile", el);
-    // });
-    // // formData.append("imageSrc",)
-    // for (const value of formData.values()) {
-    //   console.log(value);
-    // }
-    // try {
-    //   const res = await api.put(`/user/profile`, formData, {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //       // accept: "application/json,",
-    //       Authorization: `Bearer ${getCookieToken("accessToken")}`,
-    //     },
-    //   });
-    //   console.log(res);
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
     putUserProfile();
   };
 

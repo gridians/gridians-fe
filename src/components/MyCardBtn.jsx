@@ -20,6 +20,7 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
+import { follower, following, githubAccount, githubConnection, githubProfileImageUrl, recentCommitMessage } from "../store/githubInfoAtom";
 
 const MyCardBtn = ({ setClick }) => {
   const navigate = useNavigate();
@@ -37,12 +38,25 @@ const MyCardBtn = ({ setClick }) => {
   const setInstagramId = useSetRecoilState(instagram);
   const setTwitterId = useSetRecoilState(twitter);
   const setCardId = useSetRecoilState(cardIdNum);
+  //github 관련 recoil
+  const setGithubConnection = useSetRecoilState(githubConnection);
+  const setLastCommitMsg = useSetRecoilState(recentCommitMessage);
+  const setGithubProfileImgUrl = useSetRecoilState(githubProfileImageUrl);
+  const setFollower = useSetRecoilState(follower);
+  const setFollowing = useSetRecoilState(following);
+  const setGithubName = useSetRecoilState(githubAccount);
 
   const { mutate: cardInfo } = useMutation(
     "cardInfo",
     () => memberListuseMutationGetCardInfo(),
     {
       onSuccess: (res) => {
+        setGithubName(res.githubAccount);
+        setFollower(res.follower);
+        setFollowing(res.following);
+        setGithubProfileImgUrl(res.githubProfileImageUrl);
+        setLastCommitMsg(res.recentCommitMessage);
+        setGithubConnection(res.hasGithub);
         setNickName(res.nickname);
         setCardId(res.profileCardId);
         setField(res.field);

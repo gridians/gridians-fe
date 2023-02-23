@@ -3,7 +3,6 @@ import { api2 } from "../untils";
 
 // 카드 리스트 받아오기
 export const memberListUseQueryGetCardList = async (num) => {
-  console.log("카드리스트get", "pageNum:", num);
   const res = await api2.get(`/cards?page=${num}&size=16`);
   return res.data;
 };
@@ -18,7 +17,6 @@ export const memberListuseMutationPostCardInfo = (
   editCardListUserInfo,
   eaditCardId
 ) => {
-  console.log(editCardListUserInfo);
   const res = api2.put(
     `/cards/${eaditCardId}`,
     {
@@ -41,7 +39,6 @@ export const memberListuseMutationPostCardInfo = (
 };
 //즐겨찾기 추가
 export const memberListuseMutationPostBookMark = (cardId) => {
-  console.log("즐겨찾기 추가", cardId);
   const res = api2.post(
     `/fav`,
     {
@@ -59,7 +56,6 @@ export const memberListuseMutationPostBookMark = (cardId) => {
 };
 //즐겨찾기 해제
 export const memberListuseMutationDeleteBookMark = async (cardId) => {
-  console.log("즐겨찾기 해제", cardId);
   const res = await api2.delete(`/fav`, {
     data: { profileCardId: cardId },
     headers: {
@@ -72,7 +68,6 @@ export const memberListuseMutationDeleteBookMark = async (cardId) => {
 };
 //로그인한 유저에 즐겨찾기 리스트
 export const memberListuseQuerygetBookMarkList = async () => {
-  console.log("즐겨찾기 리스트");
   const res = await api2.get(`/fav`, {
     headers: {
       "Content-Type": "application/json",
@@ -84,7 +79,6 @@ export const memberListuseQuerygetBookMarkList = async () => {
 };
 //로그인한 유저에 카드 정보를 token을 이용해 받아오기
 export const memberListuseMutationGetCardInfo = async () => {
-  console.log("MyCard 정보 가져오기");
   const res = await api2.get(`/cards/my-card `, {
     headers: {
       "Content-Type": "application/json",

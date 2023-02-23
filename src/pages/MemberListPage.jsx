@@ -27,11 +27,18 @@ import {
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
 import CommentList from "../components/comment/CommentList";
 import { userBookMarkList } from "../store/userInfoAtom";
-// import { useMutationGetCardInfoComment } from "../apis/customQuery/memberListCustomQuery";
 import { getCookieToken } from "../cookie/cookie";
 import MyCardBtn from "../components/MyCardBtn";
 import TopButton from "../components/TopButton";
-// import { useMutationGetCardInfoComment } from "../apis/customQuery/memberListCustomQuery";
+
+import {
+  follower,
+  following,
+  githubAccount,
+  githubConnection,
+  githubProfileImageUrl,
+  recentCommitMessage,
+} from "../store/githubInfoAtom";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -53,6 +60,13 @@ const MemberListPage = () => {
   const setInstagramId = useSetRecoilState(instagram);
   const setTwitterId = useSetRecoilState(twitter);
   const setEaditCardId = useSetRecoilState(cardIdNum);
+  //깃헙 관련 recoil
+  const setgithubConnection = useSetRecoilState(githubConnection);
+  const setLastCommitMsg = useSetRecoilState(recentCommitMessage);
+  const setGithubProfileImgUrl = useSetRecoilState(githubProfileImageUrl);
+  const setFollower = useSetRecoilState(follower);
+  const setFollowing = useSetRecoilState(following);
+  const setGithubName = useSetRecoilState(githubAccount);
 
   const [pageNum, setPageNum] = useState(0);
   const [cardId, setCardId] = useRecoilState(cardIdNum);
@@ -100,6 +114,13 @@ const MemberListPage = () => {
     (index) => memberListUseQueryGetCardInfo(index),
     {
       onSuccess: (res) => {
+        console.log(res);
+        setGithubName(res.githubAccount);
+        setFollower(res.follower);
+        setFollowing(res.following);
+        setGithubProfileImgUrl(res.githubProfileImageUrl);
+        setLastCommitMsg(res.recentCommitMessage);
+        setgithubConnection(res.hasGithub);
         setField(res.field);
         setIntroduce(res.introduction);
         setSkill(res.skill);
