@@ -27,10 +27,11 @@ import {
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
 import CommentList from "../components/comment/CommentList";
 import { userBookMarkList } from "../store/userInfoAtom";
-import { useMutationGetCardInfoComment } from "../apis/customQuery/memberListCustomQuery";
+// import { useMutationGetCardInfoComment } from "../apis/customQuery/memberListCustomQuery";
 import { getCookieToken } from "../cookie/cookie";
 import MyCardBtn from "../components/MyCardBtn";
 import TopButton from "../components/TopButton";
+// import { useMutationGetCardInfoComment } from "../apis/customQuery/memberListCustomQuery";
 
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
@@ -86,11 +87,12 @@ const MemberListPage = () => {
     setPageNum(pageNum + 1);
   }, []);
 
-  const { mutate: mutateCardInfoComment } =
-    useMutationGetCardInfoComment(cardId);
-  const handleDetailCardComment = (index) => {
-    mutateCardInfoComment(index);
-  };
+  // const { mutate: mutateCardInfoComment } =
+  //   useMutationGetCardInfoComment(cardId);
+  // const handleDetailCardComment = (index) => {
+  //   mutateCardInfoComment(index);
+  //   console.log(index);
+  // };
 
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo } = useMutation(
@@ -147,7 +149,7 @@ const MemberListPage = () => {
     setCardId(data.profileCardId);
     setNickname(data.nickname);
     cardInfo(data.profileCardId);
-    handleDetailCardComment(data.profileCardId);
+    // handleDetailCardComment(data.profileCardId);
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);

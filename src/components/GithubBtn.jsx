@@ -6,15 +6,14 @@ const GithubBtn = () => {
   const loginUri = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo:status read:repo_hook user:email&redirect_uri=http://localhost:3000/githubloginpage`;
   return (
     <GithubContainer>
-      <Github href={loginUri}>
-        <img src="Github.svg" alt="Github" />
-      </Github>
+      <Github href={loginUri}>연동하기</Github>
     </GithubContainer>
   );
 };
 
 const GithubContainer = styled.div`
   width: 100%;
+
   @media ${(props) => props.theme.mobile} {
     padding: 0 20px;
   }
@@ -24,8 +23,10 @@ const Github = styled.a`
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  img {
-    width: 100%;
+  color: black;
+  &:hover {
+    color: white;
+    transition: all 0.5s;
   }
 `;
 

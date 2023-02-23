@@ -31,6 +31,7 @@ import {
 import Swal from "sweetalert2";
 import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
 import { loginUserNickname } from "../store/userInfoAtom";
+import GithubBtn from "../components/GithubBtn";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -648,7 +649,9 @@ export default function MyPage() {
                   <EditButton onClick={onClickSubmit} type="submit">
                     변경하기
                   </EditButton>
-                  <EditButton>연동해제</EditButton>
+                  <EditButton>
+                    <GithubBtn />
+                  </EditButton>
                   <EditButton onClick={onClickDeleteUser}>회원탈퇴</EditButton>
                 </EditButtonContainer>
               </MyPageFormEditInfoWrapper>

@@ -30,7 +30,7 @@ const Login = () => {
       onSuccess: (res) => {
         setCookieToken("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
-        localStorage.setItem("name",res.nickname);
+        localStorage.setItem("name", res.nickname);
         setIsLoading(true);
         setTimeout(() => {
           navigate("/home");
@@ -172,11 +172,8 @@ const Login = () => {
                 </LoginBtn>
               )}
 
-              <GithubBtn />
+              {/* <GithubBtn /> */}
               <MenuList>
-                {/* <MenuItem>
-                <Link to="/findid">아이디 찾기</Link>
-              </MenuItem> */}
                 <MenuItem>
                   <FindPwContainer onClick={onClickFindPw}>
                     비밀번호 찾기
