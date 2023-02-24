@@ -39,10 +39,9 @@ api.interceptors.response.use(
       if (error.response.data.message === "Expire") {
         const originalRequest = config;
         const refreshToken = await localStorage.getItem("refreshToken");
-
         // token refresh요청
         const { data } = await axios.post(
-          "http://152.70.251.225:8080/user/auth/reissue",
+          `${process.env.REACT_APP_BASE_URL}user/auth/reissue`,
           { refreshToken: `${refreshToken}` },
           { headers: {} }
         );
