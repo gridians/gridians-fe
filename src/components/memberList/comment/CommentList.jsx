@@ -3,16 +3,16 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
 import Swal from "sweetalert2";
-import { useQueryMyPageGetUserValid } from "../../apis/customQuery/myPageCustomQuery";
+import { useQueryMyPageGetUserValid } from "../../../apis/customQuery/myPageCustomQuery";
 import {
   commentUseMutationDeleteCommentList,
   commentUseMutationPostCommentList,
   commentUseQueryGetCommentList,
   replyCommentUseMutationDeleteCommentList,
   replyCommentUseMutationPostCommentList,
-} from "../../apis/queries/commentQuery";
-import { getCookieToken } from "../../cookie/cookie";
-import { cardIdNum } from "../../store/cardInfoAtom";
+} from "../../../apis/queries/commentQuery";
+import { getCookieToken } from "../../../cookie/cookie";
+import { cardIdNum } from "../../../store/cardInfoAtom";
 
 export default function CommentList() {
   const [comment, setComment] = useState("");

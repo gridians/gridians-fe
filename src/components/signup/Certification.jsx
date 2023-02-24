@@ -76,7 +76,7 @@ export default function Certification() {
 const CertificationContainer = styled.div`
   width: 100%;
   height: 90vh;
-  background-color: ${({ theme }) => theme.colors.subBackgroundColor};
+  background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   display: flex;
   flex-direction: column;
   align-items: center;

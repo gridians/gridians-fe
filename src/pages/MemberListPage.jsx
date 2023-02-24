@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import SimpleSlider from "../components/Slide";
+import SimpleSlider from "../components/memberList/card/Slide";
 import { BsFillChatDotsFill } from "react-icons/bs";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
@@ -18,18 +18,18 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import {
   memberListuseQuerygetBookMarkList,
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
-import CommentList from "../components/comment/CommentList";
+import CommentList from "../components/memberList/comment/CommentList";
 import { userBookMarkList } from "../store/userInfoAtom";
 import { getCookieToken } from "../cookie/cookie";
-import MyCardBtn from "../components/MyCardBtn";
-import TopButton from "../components/TopButton";
+import MyCardBtn from "../components/memberList/card/MyCardBtn";
+import TopButton from "../components/memberList/card/TopButton";
 
 import {
   follower,
@@ -101,13 +101,6 @@ const MemberListPage = () => {
     setPageNum(pageNum + 1);
   }, []);
 
-  // const { mutate: mutateCardInfoComment } =
-  //   useMutationGetCardInfoComment(cardId);
-  // const handleDetailCardComment = (index) => {
-  //   mutateCardInfoComment(index);
-  //   console.log(index);
-  // };
-
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo } = useMutation(
     "cardInfo",
@@ -170,7 +163,6 @@ const MemberListPage = () => {
     setCardId(data.profileCardId);
     setNickname(data.nickname);
     cardInfo(data.profileCardId);
-    // handleDetailCardComment(data.profileCardId);
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);

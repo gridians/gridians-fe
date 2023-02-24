@@ -84,7 +84,7 @@ export const certificationUseQueryGetEmail =async (id) => {
 // 유저닉네임, 아이디, 비밀번호 수정
 export const myPageUseMutationPutEditUserInfo =async (userInfo) => {
   const res = api.put(
-    "/user/update-user",
+    "/user",
     {
       nickname: userInfo.nickname,
       password: userInfo.password,
@@ -105,7 +105,7 @@ export const myPageUseMutationPutEditUserInfo =async (userInfo) => {
 // 유저 회원탈퇴
 export const myPageUseMutationDeleteUserInfo = async(deleteInfo) => {
   const res = await api.delete(
-    "/user/delete",
+    "/user",
     {
       data: { password: deleteInfo } ,
       headers: {
