@@ -82,6 +82,7 @@ const CertificationContainer = styled.div`
   align-items: center;
   justify-content: center;
   font-size: ${({ theme }) => theme.fontSizes.lg};
+  color: white;
   font-weight: bold;
 `;
 const CretificationButton = styled.button`
@@ -91,8 +92,9 @@ const CretificationButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   font-size: ${({ theme }) => theme.fontSizes.lg};
+  color: white;
   font-weight: bold;
-  border: 1px solid black;
+  border: 1px solid white;
   &:hover {
     background-color: ${({ theme }) => theme.colors.subColor6};
     color: white;
