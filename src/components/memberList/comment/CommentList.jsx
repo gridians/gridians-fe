@@ -1,24 +1,23 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
 import Swal from "sweetalert2";
-import { useQueryMyPageGetUserValid } from "../../apis/customQuery/myPageCustomQuery";
+import { useQueryMyPageGetUserValid } from "../../../apis/customQuery/myPageCustomQuery";
 import {
   commentUseMutationDeleteCommentList,
   commentUseMutationPostCommentList,
   commentUseQueryGetCommentList,
   replyCommentUseMutationDeleteCommentList,
   replyCommentUseMutationPostCommentList,
-} from "../../apis/queries/commentQuery";
-import { getCookieToken } from "../../cookie/cookie";
-import { cardIdNum } from "../../store/cardInfoAtom";
+} from "../../../apis/queries/commentQuery";
+import { getCookieToken } from "../../../cookie/cookie";
+import { cardIdNum } from "../../../store/cardInfoAtom";
 
 export default function CommentList() {
   const [comment, setComment] = useState("");
   const [replyComment, setReplyComment] = useState("");
   const [replyCommentId, setReplyCommentId] = useState([]);
-  // const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const cardId = useRecoilValue(cardIdNum);
   const commentRef = useRef(null);

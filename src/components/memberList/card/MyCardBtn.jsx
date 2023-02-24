@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import { memberListuseMutationGetCardInfo } from "../apis/queries/memberListQuery";
-import { getCookieToken } from "../cookie/cookie";
+import { memberListuseMutationGetCardInfo } from "../../../apis/queries/memberListQuery";
+import { getCookieToken } from "../../../cookie/cookie";
 import {
   cardIdNum,
   github,
@@ -19,8 +19,15 @@ import {
   statusMessage,
   tag,
   twitter,
-} from "../store/cardInfoAtom";
-import { follower, following, githubAccount, githubConnection, githubProfileImageUrl, recentCommitMessage } from "../store/githubInfoAtom";
+} from "../../../store/cardInfoAtom";
+import {
+  follower,
+  following,
+  githubAccount,
+  githubConnection,
+  githubProfileImageUrl,
+  recentCommitMessage,
+} from "../../../store/githubInfoAtom";
 
 const MyCardBtn = ({ setClick }) => {
   const navigate = useNavigate();
