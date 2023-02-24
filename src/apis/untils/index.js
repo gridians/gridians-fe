@@ -5,6 +5,7 @@ import {  setCookieToken } from '../../cookie/cookie';
 export const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
 
+
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
@@ -12,19 +13,6 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-
-// axios.interceptors.request.use(
-//   async (config) => {
-//     const accessToken = getCookieToken("accessToken");
-//     console.log(accessToken);
-//       config.headers = {
-//         ...config.headers,
-//         authorization: `Bearer ${accessToken}`,
-//       };
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
 
 api.interceptors.response.use(
   function (response) {
