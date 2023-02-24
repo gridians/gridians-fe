@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import { loginGithubId } from "../store/userInfoAtom";
 import { signUpUseMutaionPostInfo } from "../apis/queries/signUpQuery";
 import { useMutation } from "react-query";
+import LoadingSpinner from "../components/loading/LoadingSpinner";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function SignUp() {
     setPassword("");
   }, []);
 
-  const { mutate: loginFindUserPassword } = useMutation(
+  const { mutate: signUpUser, isLoading: signUpLoading } = useMutation(
     (userInfo) => signUpUseMutaionPostInfo(userInfo),
     {
       onSuccess: (res) => {
@@ -131,149 +132,157 @@ export default function SignUp() {
 
   const onClickSubmit = (e) => {
     e.preventDefault();
-    loginFindUserPassword(userInfo);
+    signUpUser(userInfo);
   };
 
   return (
     <SignUpContainer>
-      <SignUpFormWrapper>
-        <SignUpTitleListWrapper>
-          <TitleWrapper>
-            <Title>SignUp</Title>
-          </TitleWrapper>
-        </SignUpTitleListWrapper>
-        <SignUpForm>
-          <SignUpInnerWrapper>
-            {/* 닉네임 */}
-            {nickname.length > 0 ? (
-              <SignUpInputContainer>
-                <AiOutlineIdcard className="icon" />
-                <SignUpInputItem>
-                  {isNickname ? (
-                    <SignUpInput
-                      onChange={onChangeNickname}
-                      value={nickname}
-                      type="text"
-                      placeholder="닉네임"
-                    />
-                  ) : (
-                    <SignUpInput
-                      onChange={onChangeNickname}
-                      value={nickname}
-                      type="text"
-                      placeholder="닉네임"
-                    />
-                  )}
-                  <InputMessage>{nicknameMessage}</InputMessage>
-                </SignUpInputItem>
-              </SignUpInputContainer>
-            ) : (
-              <SignUpInputContainer>
-                <AiOutlineIdcard className="icon" />
-                <SignUpInputItem>
-                  <SignUpInput
-                    onChange={onChangeNickname}
-                    value={nickname}
-                    type="text"
-                    placeholder="닉네임"
-                  />
-                </SignUpInputItem>
-              </SignUpInputContainer>
-            )}
+      {signUpLoading ? (
+        <>
+          <LoadingSpinner />
+        </>
+      ) : (
+        <>
+          <SignUpFormWrapper>
+            <SignUpTitleListWrapper>
+              <TitleWrapper>
+                <Title>SignUp</Title>
+              </TitleWrapper>
+            </SignUpTitleListWrapper>
+            <SignUpForm>
+              <SignUpInnerWrapper>
+                {/* 닉네임 */}
+                {nickname.length > 0 ? (
+                  <SignUpInputContainer>
+                    <AiOutlineIdcard className="icon" />
+                    <SignUpInputItem>
+                      {isNickname ? (
+                        <SignUpInput
+                          onChange={onChangeNickname}
+                          value={nickname}
+                          type="text"
+                          placeholder="닉네임"
+                        />
+                      ) : (
+                        <SignUpInput
+                          onChange={onChangeNickname}
+                          value={nickname}
+                          type="text"
+                          placeholder="닉네임"
+                        />
+                      )}
+                      <InputMessage>{nicknameMessage}</InputMessage>
+                    </SignUpInputItem>
+                  </SignUpInputContainer>
+                ) : (
+                  <SignUpInputContainer>
+                    <AiOutlineIdcard className="icon" />
+                    <SignUpInputItem>
+                      <SignUpInput
+                        onChange={onChangeNickname}
+                        value={nickname}
+                        type="text"
+                        placeholder="닉네임"
+                      />
+                    </SignUpInputItem>
+                  </SignUpInputContainer>
+                )}
 
-            {/* 이메일 */}
-            {email.length > 0 ? (
-              <SignUpInputContainer>
-                <AiOutlineMail className="icon" />
-                <SignUpInputItem>
-                  {isEmail ? (
-                    <SignUpInput
-                      onChange={onChangeEmail}
-                      value={email}
-                      type="email"
-                      placeholder="이메일"
-                    />
-                  ) : (
-                    <SignUpInput
-                      onChange={onChangeEmail}
-                      value={email}
-                      type="email"
-                      placeholder="이메일"
-                    />
-                  )}
-                  <InputMessage>{emailMessage}</InputMessage>
-                </SignUpInputItem>
-              </SignUpInputContainer>
-            ) : (
-              <SignUpInputContainer>
-                <AiOutlineMail className="icon" />
-                <SignUpInputItem>
-                  <SignUpInput
-                    onChange={onChangeEmail}
-                    value={email}
-                    type="email"
-                    placeholder="이메일"
-                  />
-                </SignUpInputItem>
-              </SignUpInputContainer>
-            )}
+                {/* 이메일 */}
+                {email.length > 0 ? (
+                  <SignUpInputContainer>
+                    <AiOutlineMail className="icon" />
+                    <SignUpInputItem>
+                      {isEmail ? (
+                        <SignUpInput
+                          onChange={onChangeEmail}
+                          value={email}
+                          type="email"
+                          placeholder="이메일"
+                        />
+                      ) : (
+                        <SignUpInput
+                          onChange={onChangeEmail}
+                          value={email}
+                          type="email"
+                          placeholder="이메일"
+                        />
+                      )}
+                      <InputMessage>{emailMessage}</InputMessage>
+                    </SignUpInputItem>
+                  </SignUpInputContainer>
+                ) : (
+                  <SignUpInputContainer>
+                    <AiOutlineMail className="icon" />
+                    <SignUpInputItem>
+                      <SignUpInput
+                        onChange={onChangeEmail}
+                        value={email}
+                        type="email"
+                        placeholder="이메일"
+                      />
+                    </SignUpInputItem>
+                  </SignUpInputContainer>
+                )}
 
-            {/* 비밀번호 */}
-            {password.length > 0 ? (
-              <SignUpInputContainer>
-                <RiLockPasswordLine className="icon" />
-                <SignUpInputItem>
-                  {isPassword ? (
-                    <SignUpInput
-                      onChange={onChangePassword}
-                      value={password}
-                      type="password"
-                      placeholder="비밀번호"
-                    />
-                  ) : (
-                    <SignUpInput
-                      onChange={onChangePassword}
-                      value={password}
-                      type="password"
-                      placeholder="비밀번호"
-                    />
-                  )}
-                  <InputMessage>{passwordMessage}</InputMessage>
-                </SignUpInputItem>
-              </SignUpInputContainer>
-            ) : (
-              <SignUpInputContainer>
-                <RiLockPasswordLine className="icon" />
-                <SignUpInputItem>
-                  <SignUpInput
-                    onChange={onChangePassword}
-                    value={password}
-                    type="password"
-                    placeholder="비밀번호"
-                  />
-                </SignUpInputItem>
-              </SignUpInputContainer>
-            )}
-            {isNickname && isEmail && isPassword ? (
-              <SignUpButton
-                onClick={onClickSubmit}
-                style={{
-                  backgroundColor: "#738598",
-                  color: "white",
-                  border: "none",
-                }}
-                type="submit"
-              >
-                가입하기
-              </SignUpButton>
-            ) : (
-              <SignUpButton style={{ pointerEvents: "none" }}>
-                가입하기
-              </SignUpButton>
-            )}
-          </SignUpInnerWrapper>
-        </SignUpForm>
-      </SignUpFormWrapper>
+                {/* 비밀번호 */}
+                {password.length > 0 ? (
+                  <SignUpInputContainer>
+                    <RiLockPasswordLine className="icon" />
+                    <SignUpInputItem>
+                      {isPassword ? (
+                        <SignUpInput
+                          onChange={onChangePassword}
+                          value={password}
+                          type="password"
+                          placeholder="비밀번호"
+                        />
+                      ) : (
+                        <SignUpInput
+                          onChange={onChangePassword}
+                          value={password}
+                          type="password"
+                          placeholder="비밀번호"
+                        />
+                      )}
+                      <InputMessage>{passwordMessage}</InputMessage>
+                    </SignUpInputItem>
+                  </SignUpInputContainer>
+                ) : (
+                  <SignUpInputContainer>
+                    <RiLockPasswordLine className="icon" />
+                    <SignUpInputItem>
+                      <SignUpInput
+                        onChange={onChangePassword}
+                        value={password}
+                        type="password"
+                        placeholder="비밀번호"
+                      />
+                    </SignUpInputItem>
+                  </SignUpInputContainer>
+                )}
+                {isNickname && isEmail && isPassword ? (
+                  <SignUpButton
+                    onClick={onClickSubmit}
+                    style={{
+                      backgroundColor: "#738598",
+                      color: "white",
+                      border: "none",
+                    }}
+                    type="submit"
+                  >
+                    가입하기
+                  </SignUpButton>
+                ) : (
+                  <SignUpButton style={{ pointerEvents: "none" }}>
+                    가입하기
+                  </SignUpButton>
+                )}
+              </SignUpInnerWrapper>
+            </SignUpForm>
+          </SignUpFormWrapper>
+        </>
+      )}
     </SignUpContainer>
   );
 }

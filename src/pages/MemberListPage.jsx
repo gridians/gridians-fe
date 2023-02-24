@@ -96,17 +96,9 @@ const MemberListPage = () => {
     setPageNum: setPageNum,
   });
   useEffect(() => {
-    console.log(localStorage.getItem("name"));
     cardListInfo(pageNum);
     setPageNum(pageNum + 1);
   }, []);
-
-  // const { mutate: mutateCardInfoComment } =
-  //   useMutationGetCardInfoComment(cardId);
-  // const handleDetailCardComment = (index) => {
-  //   mutateCardInfoComment(index);
-  //   console.log(index);
-  // };
 
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo } = useMutation(
@@ -170,7 +162,6 @@ const MemberListPage = () => {
     setCardId(data.profileCardId);
     setNickname(data.nickname);
     cardInfo(data.profileCardId);
-    // handleDetailCardComment(data.profileCardId);
     setImg(data.profileImage);
     setSkillUrl(data.skillImage);
     setNum(index);

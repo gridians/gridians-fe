@@ -34,10 +34,8 @@ export default function CommentList() {
       refetchOnWindowFocus: false,
       retry: 0,
       onSuccess: (res) => {
-        console.log(res);
       },
       onError: (err) => {
-        console.log(err);
       },
     }
   );
