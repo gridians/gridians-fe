@@ -13,7 +13,6 @@ const Header = () => {
     () => cardEnrollUseMutationPostToken(),
     {
       onError: (err) => {
-        console.log(err);
       },
     }
   );

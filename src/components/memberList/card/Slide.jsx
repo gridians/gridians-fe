@@ -84,9 +84,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       onSuccess: (res) => {
         setRetouch(!retouch);
       },
-      onError: (err) => {
-        console.log(err);
-      },
+      onError: (err) => {},
     }
   );
 
@@ -109,7 +107,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   }, []);
   useEffect(() => {
     setLoginUserName(localStorage.getItem("name"));
-    console.log(localStorage.getItem("name"));
   }, []);
 
   //북마크 클릭시 즐겨찾기에 추가 react-query
@@ -131,7 +128,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
         bookList();
       },
       onError: (err) => {
-        // console.log(err);
       },
     }
   );

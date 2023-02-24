@@ -55,11 +55,9 @@ export default function MyPage() {
     () => myPageUseMutationPutUserProfile(imageSrc),
     {
       onSuccess: (data) => {
-        console.log(data);
         navigate("/home");
       },
       onError: (error) => {
-        console.log(error);
         if (error.response.data.status === 500) {
           Swal.fire({
             text: "이미지를 넣어주세요",
