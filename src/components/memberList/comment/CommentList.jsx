@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
@@ -18,7 +18,6 @@ export default function CommentList() {
   const [comment, setComment] = useState("");
   const [replyComment, setReplyComment] = useState("");
   const [replyCommentId, setReplyCommentId] = useState([]);
-  // const [replyCommentList, setReplyCommentList] = useState([]);
   const [replyValid, setReplyValid] = useState(false);
   const cardId = useRecoilValue(cardIdNum);
   const commentRef = useRef(null);
