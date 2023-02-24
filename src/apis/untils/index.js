@@ -3,13 +3,15 @@ import {  setCookieToken } from '../../cookie/cookie';
 
 
 export const api = axios.create({
-  baseURL: `${process.env.REACT_APP_BASE_URL}`,
+  baseURL: process.env.REACT_APP_BASE_URL,
+
   headers: {
     "Content-type": "application/json; charset=UTF-8",
     accept: "application/json,",
   },
   withCredentials: true,
 });
+
 
 // axios.interceptors.request.use(
 //   async (config) => {
@@ -46,14 +48,13 @@ api.interceptors.response.use(
         );
 
         // refreshToken을 통해 새로운 accessToken 토큰 저장
-        const  newAccessToken  =
-          data.accessToken;
+        const newAccessToken = data.accessToken;
         await setCookieToken("accessToken", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axios(originalRequest);
-      };
+      }
     }
 
     return Promise.reject(error);
   }
-)
+);

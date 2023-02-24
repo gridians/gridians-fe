@@ -25,7 +25,6 @@ export const postLoginQueryFindUserPassword = async (email) => {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         accept: "application/json,",
-
         Authorization: `Bearer ${getCookieToken("accessToken")}`,
       },
     }
@@ -34,9 +33,19 @@ export const postLoginQueryFindUserPassword = async (email) => {
 };
 
 //github 로그인 토큰 보내기
-export const loginUseMutationPostToken = (token) => {
-  const res = api.post("/user/auth/social-login", {
-    token: token,
-  });
+export const loginUseMutationPostToken = (code) => {
+  const res = api.post(
+    "/user/github",
+    {
+      token: code,
+    },
+    {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        accept: "application/json,",
+        Authorization: `Bearer ${getCookieToken("accessToken")}`,
+      },
+    }
+  );
   return res.data;
 };

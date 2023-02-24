@@ -22,7 +22,7 @@ import {
   statusMessage,
   tag,
   twitter,
-} from "../store/cardInfoAtom";
+} from "../../../store/cardInfoAtom";
 import { useMutation } from "react-query";
 import { BsFillBookmarkFill } from "react-icons/bs";
 import {
@@ -30,10 +30,10 @@ import {
   memberListuseMutationPostBookMark,
   memberListuseMutationPostCardInfo,
   memberListuseQuerygetBookMarkList,
-} from "../apis/queries/memberListQuery";
-import { getCookieToken } from "../cookie/cookie";
-import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
-import { userBookMarkList } from "../store/userInfoAtom";
+} from "../../../apis/queries/memberListQuery";
+import { getCookieToken } from "../../../cookie/cookie";
+import { useQueryMyPageGetUserValid } from "../../../apis/customQuery/myPageCustomQuery";
+import { userBookMarkList } from "../../../store/userInfoAtom";
 import domtoimage from "dom-to-image";
 import {
   follower,
@@ -42,7 +42,7 @@ import {
   githubConnection,
   githubProfileImageUrl,
   recentCommitMessage,
-} from "../store/githubInfoAtom";
+} from "../../../store/githubInfoAtom";
 import { useNavigate } from "react-router-dom";
 
 const SimpleSlider = ({ setRetouch, retouch }) => {
@@ -450,7 +450,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       {hasGithub === false && nickname === loginUserName ? (
         <div>
           <Second>
-            <GithubConnectionBtn onClick={() => navigator("/")}>
+            <GithubConnectionBtn href={loginUri}>
               Github 연동
             </GithubConnectionBtn>
           </Second>

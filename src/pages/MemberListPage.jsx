@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import SimpleSlider from "../components/Slide";
+import SimpleSlider from "../components/memberList/card/Slide";
 import { BsFillChatDotsFill } from "react-icons/bs";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
@@ -18,18 +18,18 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import {
   memberListuseQuerygetBookMarkList,
   memberListUseQueryGetCardInfo,
   memberListUseQueryGetCardList,
 } from "../apis/queries/memberListQuery";
 import InfiniteScroll from "../components/infiniteScroll/InfiniteScroll";
-import CommentList from "../components/comment/CommentList";
+import CommentList from "../components/memberList/comment/CommentList";
 import { userBookMarkList } from "../store/userInfoAtom";
 import { getCookieToken } from "../cookie/cookie";
-import MyCardBtn from "../components/MyCardBtn";
-import TopButton from "../components/TopButton";
+import MyCardBtn from "../components/memberList/card/MyCardBtn";
+import TopButton from "../components/memberList/card/TopButton";
 
 import {
   follower,

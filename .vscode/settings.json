@@ -1,9 +1,0 @@
-{
-  "editor.codeActionsOnSave": {
-    // 저장 버튼 누르면 자동으로 eslint의 규칙되로 변경이 됩니다.
-    "source.fixAll.eslint": true
-  },
-  "eslint.validate": ["javascript", "html"],
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
-}
