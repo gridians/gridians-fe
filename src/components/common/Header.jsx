@@ -12,8 +12,7 @@ const Header = () => {
     "cardEnroll",
     () => cardEnrollUseMutationPostToken(),
     {
-      onError: (err) => {
-      },
+      onError: (err) => {},
     }
   );
 
@@ -74,34 +73,34 @@ const Header = () => {
           <Menu>
             {location.pathname === "/signup" ? (
               <Link style={{ color: "#B3B600" }} to="/signup">
-                SignUp
+                회원가입
               </Link>
             ) : (
-              <Link to="/signup">SignUp</Link>
+              <Link to="/signup">회원가입</Link>
             )}
 
             {location.pathname === "/login" ? (
               <Link style={{ color: "#B3B600" }} to="/login">
-                Login
+                로그인
               </Link>
             ) : (
-              <Link to="/login">Login</Link>
+              <Link to="/login">로그인</Link>
             )}
           </Menu>
         ) : (
           <Menu>
-            <Link onClick={onClickLogOut}>LogOut</Link>
+            <Link onClick={onClickLogOut}>로그아웃</Link>
 
             {location.pathname === "/enroll" ? (
-              <Link style={{ color: "#B3B600" }}>Enroll</Link>
+              <Link style={{ color: "#B3B600" }}>등록하기</Link>
             ) : (
-              <Link onClick={onClickEnroll}>Enroll</Link>
+              <Link onClick={onClickEnroll}>등록하기</Link>
             )}
 
             {location.pathname === "/mypage" ? (
-              <Link style={{ color: "#B3B600" }}>Mypage</Link>
+              <Link style={{ color: "#B3B600" }}>내&nbsp;정보</Link>
             ) : (
-              <Link to="/mypage">Mypage</Link>
+              <Link to="/mypage">내&nbsp;정보</Link>
             )}
           </Menu>
         )}

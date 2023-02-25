@@ -96,6 +96,7 @@ const MemberListPage = () => {
     setPageNum: setPageNum,
   });
   useEffect(() => {
+    console.log(localStorage.getItem("name"));
     cardListInfo(pageNum);
     setPageNum(pageNum + 1);
   }, []);
