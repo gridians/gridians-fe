@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import Slider from "react-slick";
+import Swal from "sweetalert2";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled, { css } from "styled-components";
@@ -127,8 +128,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       onSuccess: (res) => {
         bookList();
       },
-      onError: (err) => {
-      },
+      onError: (err) => {},
     }
   );
 
@@ -186,13 +186,24 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   };
 
   const bookMarkOnClick = () => {
-    const boolean =
-      bookMarkList &&
-      bookMarkList.map((data) => data.nickname).includes(nickname);
-    if (!boolean) {
-      addBookMark();
+    if (getCookieToken("accessToken")) {
+      const boolean =
+        bookMarkList &&
+        bookMarkList.map((data) => data.nickname).includes(nickname);
+      if (!boolean) {
+        addBookMark();
+      } else {
+        minusBookMark();
+      }
     } else {
-      minusBookMark();
+      Swal.fire({
+        text: "즐겨찾기는 로그인 후 이용해 주세요.",
+        showCancelButton: true,
+        confirmButtonText: "로그인하기",
+        cancelButtonText: "X",
+      }).then((res) => {
+        if (res.isConfirmed) navigate("/login");
+      });
     }
   };
 
@@ -589,7 +600,7 @@ const BookMark = styled.div`
   ${(props) =>
     props.nickName
       ? css`
-          color: #ff0000;
+          color: #ececec;
         `
       : css`
           color: #494949;
