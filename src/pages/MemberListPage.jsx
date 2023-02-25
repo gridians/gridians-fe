@@ -96,7 +96,6 @@ const MemberListPage = () => {
     setPageNum: setPageNum,
   });
   useEffect(() => {
-    console.log(localStorage.getItem("name"));
     cardListInfo(pageNum);
     setPageNum(pageNum + 1);
   }, []);
@@ -107,7 +106,6 @@ const MemberListPage = () => {
     (index) => memberListUseQueryGetCardInfo(index),
     {
       onSuccess: (res) => {
-        console.log(res);
         setGithubName(res.githubAccount);
         setFollower(res.follower);
         setFollowing(res.following);
@@ -261,7 +259,7 @@ const Wrap = styled.div`
   grid-template-columns: 1fr 1fr 1fr 1fr;
   margin: 0 auto;
   padding-top: 90px;
-  width: 1080px;
+  width: 1045px;
 `;
 const Background = styled.div`
   position: absolute;
@@ -325,17 +323,17 @@ const MemberCard = styled.div`
     props.nickName
       ? css`
           div {
-            div {
+            div:nth-child(1) {
               background-color: yellow;
-              border-radius: 10px;
+              border-radius: 30px;
             }
           }
         `
       : css`
           div {
-            div {
-              background: #f6b8b8;
-              border-radius: 10px;
+            div:nth-child(1) {
+              background: #ffffff;
+              border-radius: 30px;
             }
           }
         `}
@@ -365,25 +363,26 @@ const Front = styled.div`
 `;
 const Skill = styled.div`
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 15%;
+  top: 32px;
+  right: 32px;
+  width: 28px;
   img {
     width: 100%;
+    height: 100%;
   }
 `;
 const ProfileImg = styled.div`
-  margin-top: 50px;
-  width: 130px;
-  border-radius: 50%;
-  overflow: hidden;
+  margin: 55px 0 10px 0;
+  width: 100px;
+  height: 100px;
   img {
-    width: 130px;
-    height: 130px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
   }
 `;
 const NickName = styled.h2`
-  margin: 0;
+  margin: -5px 0 0 0;
 `;
 const Role = styled.h5`
   margin: 0;
