@@ -1,18 +1,27 @@
 import React from "react";
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 import Swal from "sweetalert2";
 import { useMutation } from "react-query";
 import { cardEnrollUseMutationPostToken } from "../../apis/queries/cardEnrollQuery";
 
 const Header = () => {
+  const navaigate = useNavigate();
   //카드 등록 react-query
   const { mutate: cardEnroll } = useMutation(
-    "cardEnroll",
     () => cardEnrollUseMutationPostToken(),
     {
       onError: (err) => {
+        console.log("err");
+        if (err.status === 409) {
+          Swal.fire({
+            title: "이미 등록된 회원입니다",
+            cancelButtonColor: "#738598",
+            cancelButtonText: "돌아가기",
+            padding: "3em",
+          });
+        }
       },
     }
   );
@@ -42,11 +51,11 @@ const Header = () => {
 
   const onClickEnroll = () => {
     Swal.fire({
-      title: "등록 하시겠습니까?",
+      title: "카드를 생성 하시겠습니까?",
       confirmButtonColor: "#DCC6C6",
       cancelButtonColor: "#738598",
       showCancelButton: true,
-      confirmButtonText: "등록하기",
+      confirmButtonText: "생성하기",
       cancelButtonText: "돌아가기",
       padding: "3em",
       showClass: {
@@ -57,7 +66,10 @@ const Header = () => {
       },
       closeOnClickOutside: false,
     }).then((data) => {
-      if (data.isConfirmed) cardEnroll();
+      if (data.isConfirmed) {
+        cardEnroll();
+        navaigate("/memberlistpage");
+      }
     });
   };
 
@@ -74,34 +86,34 @@ const Header = () => {
           <Menu>
             {location.pathname === "/signup" ? (
               <Link style={{ color: "#B3B600" }} to="/signup">
-                SignUp
+                회원가입
               </Link>
             ) : (
-              <Link to="/signup">SignUp</Link>
+              <Link to="/signup">회원가입</Link>
             )}
 
             {location.pathname === "/login" ? (
               <Link style={{ color: "#B3B600" }} to="/login">
-                Login
+                로그인
               </Link>
             ) : (
-              <Link to="/login">Login</Link>
+              <Link to="/login">로그인</Link>
             )}
           </Menu>
         ) : (
           <Menu>
-            <Link onClick={onClickLogOut}>LogOut</Link>
+            <Link onClick={onClickLogOut}>로그아웃</Link>
 
             {location.pathname === "/enroll" ? (
-              <Link style={{ color: "#B3B600" }}>Enroll</Link>
+              <Link style={{ color: "#B3B600" }}>카드&nbsp;생성</Link>
             ) : (
-              <Link onClick={onClickEnroll}>Enroll</Link>
+              <Link onClick={onClickEnroll}>카드&nbsp;생성</Link>
             )}
 
             {location.pathname === "/mypage" ? (
-              <Link style={{ color: "#B3B600" }}>Mypage</Link>
+              <Link style={{ color: "#B3B600" }}>내&nbsp;정보</Link>
             ) : (
-              <Link to="/mypage">Mypage</Link>
+              <Link to="/mypage">내&nbsp;정보</Link>
             )}
           </Menu>
         )}

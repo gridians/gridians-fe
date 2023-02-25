@@ -60,14 +60,14 @@ export default function Intro() {
 
         <OverlayTitleContainer className="second-title">
           <span className="sub-title ">
-            <OverlayTitle>이력서</OverlayTitle>나
+            <OverlayTitle>이력서</OverlayTitle>나&nbsp;
             <OverlayTitle>포트폴리오</OverlayTitle>는 어떻게 관리하지?
           </span>
         </OverlayTitleContainer>
 
         <OverlayTitleContainer className="title-margin last-title">
           <span className="sub-title">
-            이곳에서 모든 궁금증이 다<OverlayTitle>해결</OverlayTitle>되실
+            이곳에서 모든 궁금증이 다&nbsp;<OverlayTitle>해결</OverlayTitle>되실
             겁니다!
           </span>
         </OverlayTitleContainer>
@@ -593,7 +593,7 @@ const PageRouterButtonContainer = styled.div`
     transform: translate(10px, 10px);
     width: 35px;
     height: 35px;
-    background: #ffffff15;
+    background: #cbc1c1d3;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border-radius: 50px;

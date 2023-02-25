@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import { memberListuseMutationGetCardInfo } from "../../../apis/queries/memberListQuery";
