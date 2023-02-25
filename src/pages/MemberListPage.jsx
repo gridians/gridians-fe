@@ -382,11 +382,13 @@ const ProfileImg = styled.div`
   }
 `;
 const NickName = styled.h2`
-  margin: -5px 0 0 0;
+  margin: -5px 0 5px 0;
+  font-weight: 600;
 `;
 const Role = styled.h5`
   margin: 0;
   color: #505050;
+  font-weight: lighter;
 `;
 const Back = styled.div`
   height: 100%;

@@ -7,6 +7,12 @@ const GlobalStyle = createGlobalStyle`
   font-weight: 900;
   font-style: normal;
  }
+ @font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
   &::-webkit-scrollbar {
     width: 10px;
     background-color: #0E0909;
@@ -21,6 +27,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
+    font-family: 'Pretendard-Regular';
     #root{
         /* width: 100%;
         height: 100%; */
