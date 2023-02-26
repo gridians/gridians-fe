@@ -33,10 +33,8 @@ export default function CommentList() {
     {
       refetchOnWindowFocus: false,
       retry: 0,
-      onSuccess: (res) => {
-      },
-      onError: (err) => {
-      },
+      onSuccess: (res) => {},
+      onError: (err) => {},
     }
   );
 
@@ -226,9 +224,9 @@ export default function CommentList() {
 
   return (
     <CommentContainer>
-      <CommentTitleContainer>
+      {/* <CommentTitleContainer>
         <CommentTitle>댓글</CommentTitle>
-      </CommentTitleContainer>
+      </CommentTitleContainer> */}
 
       <CommentFormContainer>
         {token && (
@@ -414,11 +412,11 @@ const CommentTitleContainer = styled.div`
   background-color: #191818;
   border-radius: 9999px;
   padding: 5px 0;
-  margin: 20px 0;
+  margin: 15px 0;
 `;
 
 const CommentTitle = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-size: ${({ theme }) => theme.fontSizes.base};
   color: ${({ theme }) => theme.colors.white};
   font-weight: bold;
 `;
@@ -441,15 +439,17 @@ const CommentInput = styled.textarea`
   width: 70%;
   border: none;
   /* height: 23px; */
-  background-color: #191818;
+  background-color: transparent;
   border-radius: 4px;
   resize: none;
   font-size: ${({ theme }) => theme.fontSizes.base};
   color: ${({ theme }) => theme.colors.white};
   padding: 10px;
   overflow: hidden;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
   &:focus {
     outline: none;
+    border-bottom: 1px solid white;
   }
 `;
 const CommentButtonContainer = styled.div`

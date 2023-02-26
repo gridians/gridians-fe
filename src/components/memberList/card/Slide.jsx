@@ -210,9 +210,24 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   //onSubmit
   const tagOnSubmit = (e) => {
     e.preventDefault();
-    if (tagText.length > 0) {
-      setTagList((tagList) => [...tagList, tagText]);
-      setTagText("");
+    if (tagList.includes(tagText)) {
+      Swal.fire({
+        text: "중복된 태그입니다.",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+      });
+    }
+    if (tagList.length >= 6) {
+      Swal.fire({
+        text: "태그는 최대 6개까지만 가능합니다.",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+      });
+    } else {
+      if (tagText.length > 0) {
+        setTagList((tagList) => [...tagList, tagText]);
+        setTagText("");
+      }
     }
   };
 
@@ -302,54 +317,17 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       <div>
         <First>
           <StatusWrapper>
-            <BookMark
-              onClick={() => bookMarkOnClick()}
-              nickName={
-                bookMarkList &&
-                bookMarkList.map((data) => data.nickname).includes(nickname)
-                  ? true
-                  : undefined
-              }
-            >
-              <BsFillBookmarkFill />
-              <LanguageImgWrapper>
-                <LanguageImg retouch={retouch}>
-                  {retouch ? (
-                    <>
-                      <select
-                        value={field || ""}
-                        onChange={(text) => positionOnChange(text)}
-                        placeholder="포지션을 선택"
-                      >
-                        {positionList.map((name) => (
-                          <option key={name}>{name}</option>
-                        ))}
-                        <option>react</option>
-                      </select>
-
-                      <select
-                        value={skill || ""}
-                        onChange={(text) => skillOnChange(text)}
-                      >
-                        {skillList.map((name) => (
-                          <option key={name}>{name}</option>
-                        ))}
-                      </select>
-                    </>
-                  ) : (
-                    <>
-                      <img src={skillUrl} alt="사용언어" />
-                    </>
-                  )}
-                </LanguageImg>
-              </LanguageImgWrapper>
-            </BookMark>
+            <FiledTextWrapper>
+              <FiledText retouch={retouch}>{field}</FiledText>
+            </FiledTextWrapper>
             {retouch ? (
               <StatusMessageWrapper>
                 <StatusMessage
                   value={statusMsg || ""}
                   onChange={(text) => statusMsgOnChange(text)}
                   retouch={retouch}
+                  maxLength="15"
+                  placeholder="Status Message"
                 />
               </StatusMessageWrapper>
             ) : (
@@ -357,9 +335,49 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                 <StatusMessage value={statusMsg || ""} disabled />
               </StatusMessageWrapper>
             )}
-            <FiledTextWrapper>
-              <FiledText>{field}</FiledText>
-            </FiledTextWrapper>
+            <LanguageImgWrapper>
+              <LanguageImg retouch={retouch}>
+                {retouch ? (
+                  <>
+                    <select
+                      value={field || ""}
+                      onChange={(text) => positionOnChange(text)}
+                      placeholder="포지션을 선택"
+                    >
+                      {positionList.map((name) => (
+                        <option key={name}>{name}</option>
+                      ))}
+                      <option>react</option>
+                    </select>
+
+                    <select
+                      value={skill || ""}
+                      onChange={(text) => skillOnChange(text)}
+                    >
+                      {skillList.map((name) => (
+                        <option key={name}>{name}</option>
+                      ))}
+                    </select>
+                  </>
+                ) : (
+                  <>
+                    <img src={skillUrl} alt="사용언어" />
+                  </>
+                )}
+              </LanguageImg>
+              <BookMark
+                onClick={() => bookMarkOnClick()}
+                nickName={
+                  bookMarkList &&
+                  bookMarkList.map((data) => data.nickname).includes(nickname)
+                    ? true
+                    : undefined
+                }
+                retouch={retouch}
+              >
+                <BsFillBookmarkFill />
+              </BookMark>
+            </LanguageImgWrapper>
           </StatusWrapper>
           <ProfileImg>
             {getUserInfoValue?.nickname === nickname ? (
@@ -376,7 +394,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <SnsAdressInput
                     value={githubId || ""}
                     onChange={(text) => githubOnChange(text)}
-                    placeholder="깃헙 name을 입력해주세요"
+                    placeholder="Github ID"
                   />
                 </SnsItem>
                 <SnsItem>
@@ -384,7 +402,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <SnsAdressInput
                     value={instagramId || ""}
                     onChange={(text) => instagramOnChange(text)}
-                    placeholder="Instagram @XXX를 입력해주세요"
+                    placeholder="Instagram ID"
                   />
                 </SnsItem>
                 <SnsItem>
@@ -392,7 +410,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <SnsAdressInput
                     value={twitterId || ""}
                     onChange={(text) => twitterOnChange(text)}
-                    placeholder="트위터 @XXX를 입력해주세요"
+                    placeholder="Twitter ID"
                   />
                 </SnsItem>
               </>
@@ -421,6 +439,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               value={introduce || ""}
               onChange={(text) => introduceOnChange(text)}
               retouch={retouch}
+              placeholder="자기소개"
             />
           ) : (
             <Introduce value={introduce || ""} disabled />
@@ -428,7 +447,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           <TagList>
             {tagList &&
               tagList.map((tag, index) => (
-                <TagItem key={tag}>
+                <TagItem key={index}>
                   #{tag}
                   {retouch ? (
                     <TagXBtn onClick={() => tagXBtnOnClick(index)}>X</TagXBtn>
@@ -441,8 +460,10 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <TagInputDiv onSubmit={(e) => tagOnSubmit(e)} retouch={retouch}>
                 <span>태그 추가하기</span>
                 <TagInput
+                  placeholder="Tag"
                   value={tagText || ""}
                   onChange={(text) => tagOnChange(text)}
+                  maxLength="20"
                 />
                 <SubmitBtnWrapper>
                   <SubmitBtn type="button" onClick={(e) => submitBtnOnClick(e)}>
@@ -476,7 +497,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <GithubName>{githubName}</GithubName>
               <FollowerFollowingDiv>
                 <Follower>
-                  <p>Follower</p>
+                  <p>Followers</p>
                   <span>{githubfollower}</span>
                 </Follower>
                 <Following>
@@ -486,7 +507,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               </FollowerFollowingDiv>
               <GitHubCalendar
                 username={githubName}
-                style={{ width: "90%" }}
+                style={{ width: "80%" }}
                 year="2023"
               />
             </GithubDiv>
@@ -558,6 +579,7 @@ const StyledSlider = styled(Slider)`
     }
   }
   .slick-dots {
+    height: 0;
     li {
       ${(props) =>
         props.retouch
@@ -585,17 +607,22 @@ const StatusWrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
 `;
 const BookMark = styled.div`
-  width: 20%;
   font-size: 35px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  font-size: 38px;
   svg {
     cursor: pointer;
+    ${(props) =>
+      props.retouch &&
+      css`
+        visibility: hidden;
+      `}
   }
   ${(props) =>
     props.nickName
@@ -607,30 +634,39 @@ const BookMark = styled.div`
         `}
 `;
 const StatusMessageWrapper = styled.div`
-  width: 60%;
+  flex: 2;
+  /* width: 80%; */
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 const StatusMessage = styled.input`
-  width: 90%;
-  height: 30px;
-  background-color: #262626;
-  border-radius: 10px;
+  padding: 5px;
+  width: 60%;
+  height: 31px;
+  background-color: transparent;
   text-align: center;
   color: white;
+  border: none;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
+
   ${(props) =>
     props.retouch
       ? css`
-          outline: 1px solid;
+          &:focus {
+            outline: none;
+            border-bottom: 1px solid white;
+          }
         `
       : css``}
 `;
 const LanguageImgWrapper = styled.div`
+  flex: 1;
   display: flex;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
 `;
 const LanguageImg = styled.div`
   ${(props) =>
@@ -639,8 +675,8 @@ const LanguageImg = styled.div`
           display: flex;
           flex-direction: column;
           position: absolute;
-          top: 40px;
-          right: 10px;
+          top: 0;
+          right: 0;
         `
       : css`
           display: flex;
@@ -659,25 +695,31 @@ const LanguageImg = styled.div`
     margin: 0;
   }
   img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
 `;
 
 const FiledTextWrapper = styled.div`
+  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 20%;
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* width: 25%; */
 `;
 const FiledText = styled.h4`
+  ${(props) =>
+    props.retouch &&
+    css`
+      visibility: hidden;
+    `}
   width: 100%;
   text-align: center;
   margin: 0;
 `;
 const ProfileImg = styled.div`
   position: relative;
-  margin-top: 10px;
+  margin: 25px 0 5px 0;
   svg {
     position: absolute;
     top: 70%;
@@ -695,7 +737,6 @@ const ProfileImg = styled.div`
   }
 `;
 const Name = styled.input`
-  margin: 20px 0 0 0;
   width: 80%;
   background-color: transparent;
   border-radius: 10px;
@@ -734,42 +775,53 @@ const SnsItem = styled.li`
   }
 `;
 const SnsAdressInput = styled.input`
-  outline: 1px solid;
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
+  text-align: center;
   padding: 5px;
   font-size: ${({ theme }) => theme.fontSizes.lg};
-  background-color: #262626;
-  border-radius: 10px;
+  background-color: transparent;
+  /* border-radius: 10px; */
   color: ${({ theme }) => theme.colors.white};
   &::placeholder {
     font-size: ${({ theme }) => theme.fontSizes.small};
   }
+  &:focus {
+    border-bottom: 1px solid white;
+    outline: none;
+  }
 `;
 const Introduce = styled.textarea`
-  margin-top: 30px;
+  /* margin-top: 30px; */
   padding: 10px;
   width: 80%;
-  height: 100%;
+  height: 15vh;
   background-color: transparent;
   resize: none;
   border: none;
   text-align: center;
   font-size: 22px;
   color: ${({ theme }) => theme.colors.white};
+  /* vertical-align: center; */
   ${(props) =>
     props.retouch
       ? css`
-          background-color: #262626;
-          outline: 1px solid;
+          border: 1px solid ${({ theme }) => theme.colors.subColor3};
+          background-color: transparent;
           border-radius: 10px;
-          color: ${({ theme }) => theme.colors.white};
         `
       : css`
           resize: none;
         `}
+  &:focus {
+    outline: none;
+    border: 1px solid white;
+  }
 `;
 const TagList = styled.ul`
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   padding: 0;
   width: 90%;
 `;
@@ -777,7 +829,7 @@ const TagItem = styled.li`
   position: relative;
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  margin: 0 10px 10px 0;
   padding: 0 10px;
   height: 30px;
   background-color: black;
@@ -810,11 +862,16 @@ const TagInputDiv = styled.form`
 `;
 const TagInput = styled.input`
   padding: 5px;
-  background-color: #262626;
-  border-radius: 10px;
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.base};
-  outline: 1px solid white;
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid white;
+  }
 `;
 const SubmitBtnWrapper = styled.div`
   width: 50%;
@@ -876,15 +933,18 @@ const GithubDiv = styled.div`
 `;
 const GithubLastCommitMsg = styled(StatusMessage)`
   width: 50%;
+  border: none;
 `;
 const GithubProfileImg = styled(ProfileImg)`
   margin: 25px 0 5px 0;
 `;
-const GithubName = styled.h1`
+const GithubName = styled.span`
   margin-bottom: 10px;
+  font-size: 32px;
 `;
 const FollowerFollowingDiv = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
   margin: 15px 0 35px 0;
   width: 60%;

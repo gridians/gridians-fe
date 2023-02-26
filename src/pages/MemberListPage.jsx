@@ -189,7 +189,7 @@ const MemberListPage = () => {
       <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
           <DefaultInfo>
-            <XBtnWrapper>
+            {/* <XBtnWrapper>
               <XBtn
                 scrollY={scrollY}
                 click={click ? click : undefined}
@@ -197,7 +197,7 @@ const MemberListPage = () => {
               >
                 X
               </XBtn>
-            </XBtnWrapper>
+            </XBtnWrapper> */}
           </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
@@ -289,6 +289,9 @@ const XBtnWrapper = styled.div`
   justify-content: center;
 `;
 const XBtn = styled.button`
+  position: relative;
+  z-index: 99;
+  margin-top: 55px;
   width: 40px;
   height: 40px;
   background-color: transparent;
@@ -311,14 +314,14 @@ const MemberCard = styled.div`
   width: 250px;
   height: 250px;
   background-color: transparent;
-  transition: all 0.5s;
+  transition: all 0.1s;
+  font-family: "aa";
+  font-weight: 600;
   cursor: pointer;
   &:hover {
-    .front {
-      transform: rotateY(180deg);
-    }
+    scale: 1.1;
+    color: red;
   }
-
   ${(props) =>
     props.nickName
       ? css`
@@ -332,7 +335,7 @@ const MemberCard = styled.div`
       : css`
           div {
             div:nth-child(1) {
-              background: #ffffff;
+              background-color: white;
               border-radius: 30px;
             }
           }
@@ -346,9 +349,6 @@ const Card = styled.div`
   color: black;
   transform-style: preserve-3d;
   transition: all 0.5s;
-  &:hover {
-    transform: rotateY(180deg);
-  }
 `;
 const Front = styled.div`
   position: absolute;
@@ -382,11 +382,14 @@ const ProfileImg = styled.div`
   }
 `;
 const NickName = styled.h2`
-  margin: -5px 0 0 0;
+  margin: -5px 0 5px 0;
+  font-family: "aa";
+  font-weight: 900;
 `;
 const Role = styled.h5`
   margin: 0;
   color: #505050;
+  font-weight: lighter;
 `;
 const Back = styled.div`
   height: 100%;
@@ -444,23 +447,24 @@ const DetailBtn = styled.div`
 `;
 
 const DetailContainer = styled.div`
-  padding: 10px 30px;
+  padding: 10px;
   width: 70%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgb(0 0 0 / 95%);
   cursor: auto;
 `;
 const DefaultInfo = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 5%;
+  height: 0;
 `;
 
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #0e0606;
+  background-color: #8b8a8aeb;
+  border-radius: 10px;
   cursor: auto;
 `;
 
