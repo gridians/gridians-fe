@@ -11,7 +11,6 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-
 api.interceptors.response.use(
   function (response) {
     return response;
