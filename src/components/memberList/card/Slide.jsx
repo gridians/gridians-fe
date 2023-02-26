@@ -210,9 +210,24 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   //onSubmit
   const tagOnSubmit = (e) => {
     e.preventDefault();
-    if (tagText.length > 0) {
-      setTagList((tagList) => [...tagList, tagText]);
-      setTagText("");
+    if (tagList.includes(tagText)) {
+      Swal.fire({
+        text: "중복된 태그입니다.",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+      });
+    }
+    if (tagList.length >= 10) {
+      Swal.fire({
+        text: "태그는 최대 10개까지만 가능합니다.",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+      });
+    } else {
+      if (tagText.length > 0) {
+        setTagList((tagList) => [...tagList, tagText]);
+        setTagText("");
+      }
     }
   };
 
@@ -319,7 +334,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                 <StatusMessage value={statusMsg || ""} disabled />
               </StatusMessageWrapper>
             )}
-
             <LanguageImgWrapper>
               <LanguageImg retouch={retouch}>
                 {retouch ? (
@@ -350,7 +364,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   </>
                 )}
               </LanguageImg>
-
               <BookMark
                 onClick={() => bookMarkOnClick()}
                 nickName={
@@ -431,7 +444,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           <TagList>
             {tagList &&
               tagList.map((tag, index) => (
-                <TagItem key={tag}>
+                <TagItem key={index}>
                   #{tag}
                   {retouch ? (
                     <TagXBtn onClick={() => tagXBtnOnClick(index)}>X</TagXBtn>
@@ -446,6 +459,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                 <TagInput
                   value={tagText || ""}
                   onChange={(text) => tagOnChange(text)}
+                  maxLength="20"
                 />
                 <SubmitBtnWrapper>
                   <SubmitBtn type="button" onClick={(e) => submitBtnOnClick(e)}>
@@ -561,6 +575,7 @@ const StyledSlider = styled(Slider)`
     }
   }
   .slick-dots {
+    height: 0;
     li {
       ${(props) =>
         props.retouch
@@ -756,10 +771,10 @@ const SnsAdressInput = styled.input`
   }
 `;
 const Introduce = styled.textarea`
-  margin-top: 30px;
+  /* margin-top: 30px; */
   padding: 10px;
   width: 80%;
-  height: 100%;
+  height: 15vh;
   background-color: transparent;
   resize: none;
   border: none;
@@ -781,6 +796,7 @@ const Introduce = styled.textarea`
 const TagList = styled.ul`
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   padding: 0;
   width: 90%;
 `;
@@ -788,7 +804,7 @@ const TagItem = styled.li`
   position: relative;
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  margin: 0 10px 10px 0;
   padding: 0 10px;
   height: 30px;
   background-color: black;
