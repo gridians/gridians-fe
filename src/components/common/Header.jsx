@@ -143,7 +143,6 @@ const HeaderWrap = styled.div`
 const Logo = styled.span`
   color: ${({ theme }) => theme.colors.white};
   font-size: 2.2rem;
-  font-family: "aa";
   font-weight: 600;
   @media ${(props) => props.theme.mobile} {
     font-size: ${({ theme }) => theme.fontSizes.base};

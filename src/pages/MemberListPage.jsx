@@ -315,7 +315,6 @@ const MemberCard = styled.div`
   height: 250px;
   background-color: transparent;
   transition: all 0.1s;
-  font-family: "aa";
   font-weight: 600;
   cursor: pointer;
   &:hover {
@@ -383,7 +382,6 @@ const ProfileImg = styled.div`
 `;
 const NickName = styled.h2`
   margin: -5px 0 5px 0;
-  font-family: "aa";
   font-weight: 900;
 `;
 const Role = styled.h5`
