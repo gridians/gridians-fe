@@ -226,9 +226,9 @@ export default function CommentList() {
 
   return (
     <CommentContainer>
-      <CommentTitleContainer>
+      {/* <CommentTitleContainer>
         <CommentTitle>댓글</CommentTitle>
-      </CommentTitleContainer>
+      </CommentTitleContainer> */}
 
       <CommentFormContainer>
         {token && (
