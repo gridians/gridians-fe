@@ -39,13 +39,6 @@ const TopBtn = styled.button`
   color: #414141;
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   cursor: pointer;
-  &:hover {
-    font-size: ${({ theme }) => theme.fontSizes.name};
-    svg {
-      top: -90%;
-      animation: null;
-    }
-  }
   svg{
     margin-top:3px;
   }
