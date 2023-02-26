@@ -665,8 +665,8 @@ const LanguageImg = styled.div`
           display: flex;
           flex-direction: column;
           position: absolute;
-          top: 40px;
-          right: 10px;
+          top: 60px;
+          right: 38px;
         `
       : css`
           display: flex;
