@@ -13,6 +13,12 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 400;
     font-style: normal;
 }
+ @font-face {
+    font-family: 'aa';
+    src: url('./inter(1)/Inter-VariableFont_slnt,wght.ttf') format('woff3');
+    font-weight: 400;
+    font-style: normal;
+}
   &::-webkit-scrollbar {
     width: 10px;
     background-color: #0E0909;
@@ -27,7 +33,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: 'Pretendard-Regular';
+    font-family: "aa";
     #root{
         /* width: 100%;
         height: 100%; */

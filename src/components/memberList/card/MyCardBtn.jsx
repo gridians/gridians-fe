@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 import { memberListuseMutationGetCardInfo } from "../../../apis/queries/memberListQuery";
 import { getCookieToken } from "../../../cookie/cookie";
+import { FaUserAlt } from "react-icons/fa";
 import {
   cardIdNum,
   github,
@@ -104,17 +105,27 @@ const MyCardBtn = ({ setClick }) => {
 
   return (
     <MyCardButton onClick={() => myCardOnClick()}>
-      <span>MyCard</span>
+      <FaUserAlt/>
     </MyCardButton>
   );
 };
 
 const MyCardButton = styled.button`
   position: fixed;
-  top: 85vh;
-  right: 10%;
-  background: ${({ theme }) => theme.colors.subColor2};
-  width: 80px;
+  top: 90vh;
+  right: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+  color: #000000;
+  font-size: ${({ theme }) => theme.fontSizes.name};
+  cursor: pointer;
+  /*background: ${({ theme }) => theme.colors.subColor2};
+   width: 80px;
   height: 80px;
   border: none;
   transition: all 0.5s;
@@ -157,7 +168,7 @@ const MyCardButton = styled.button`
     color: white;
     font-size: ${({ theme }) => theme.fontSizes.xl};
     font-weight: bold;
-  }
+  } */
 `;
 
 export default MyCardBtn;

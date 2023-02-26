@@ -414,11 +414,11 @@ const CommentTitleContainer = styled.div`
   background-color: #191818;
   border-radius: 9999px;
   padding: 5px 0;
-  margin: 20px 0;
+  margin: 15px 0;
 `;
 
 const CommentTitle = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-size: ${({ theme }) => theme.fontSizes.base};
   color: ${({ theme }) => theme.colors.white};
   font-weight: bold;
 `;

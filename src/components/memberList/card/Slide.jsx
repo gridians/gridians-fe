@@ -312,37 +312,6 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               }
             >
               <BsFillBookmarkFill />
-              <LanguageImgWrapper>
-                <LanguageImg retouch={retouch}>
-                  {retouch ? (
-                    <>
-                      <select
-                        value={field || ""}
-                        onChange={(text) => positionOnChange(text)}
-                        placeholder="포지션을 선택"
-                      >
-                        {positionList.map((name) => (
-                          <option key={name}>{name}</option>
-                        ))}
-                        <option>react</option>
-                      </select>
-
-                      <select
-                        value={skill || ""}
-                        onChange={(text) => skillOnChange(text)}
-                      >
-                        {skillList.map((name) => (
-                          <option key={name}>{name}</option>
-                        ))}
-                      </select>
-                    </>
-                  ) : (
-                    <>
-                      <img src={skillUrl} alt="사용언어" />
-                    </>
-                  )}
-                </LanguageImg>
-              </LanguageImgWrapper>
             </BookMark>
             {retouch ? (
               <StatusMessageWrapper>
@@ -350,6 +319,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   value={statusMsg || ""}
                   onChange={(text) => statusMsgOnChange(text)}
                   retouch={retouch}
+                  maxLength="15"
                 />
               </StatusMessageWrapper>
             ) : (
@@ -360,6 +330,37 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
             <FiledTextWrapper>
               <FiledText>{field}</FiledText>
             </FiledTextWrapper>
+            <LanguageImgWrapper>
+              <LanguageImg retouch={retouch}>
+                {retouch ? (
+                  <>
+                    <select
+                      value={field || ""}
+                      onChange={(text) => positionOnChange(text)}
+                      placeholder="포지션을 선택"
+                    >
+                      {positionList.map((name) => (
+                        <option key={name}>{name}</option>
+                      ))}
+                      <option>react</option>
+                    </select>
+
+                    <select
+                      value={skill || ""}
+                      onChange={(text) => skillOnChange(text)}
+                    >
+                      {skillList.map((name) => (
+                        <option key={name}>{name}</option>
+                      ))}
+                    </select>
+                  </>
+                ) : (
+                  <>
+                    <img src={skillUrl} alt="사용언어" />
+                  </>
+                )}
+              </LanguageImg>
+            </LanguageImgWrapper>
           </StatusWrapper>
           <ProfileImg>
             {getUserInfoValue?.nickname === nickname ? (
@@ -476,7 +477,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <GithubName>{githubName}</GithubName>
               <FollowerFollowingDiv>
                 <Follower>
-                  <p>Follower</p>
+                  <p>Followers</p>
                   <span>{githubfollower}</span>
                 </Follower>
                 <Following>
@@ -486,7 +487,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               </FollowerFollowingDiv>
               <GitHubCalendar
                 username={githubName}
-                style={{ width: "90%" }}
+                style={{ width: "80%" }}
                 year="2023"
               />
             </GithubDiv>
@@ -589,11 +590,12 @@ const StatusWrapper = styled.div`
   align-items: center;
 `;
 const BookMark = styled.div`
-  width: 20%;
+  flex: 2;
   font-size: 35px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  font-size: 38px;
   svg {
     cursor: pointer;
   }
@@ -607,19 +609,22 @@ const BookMark = styled.div`
         `}
 `;
 const StatusMessageWrapper = styled.div`
-  width: 60%;
+  flex: 4;
+  width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 const StatusMessage = styled.input`
-  width: 90%;
-  height: 30px;
+  padding: 5px;
+  width: 60%;
+  height: 31px;
   background-color: #262626;
-  border-radius: 10px;
+  border-radius: 9999px;
   text-align: center;
   color: white;
+  font-size: ${({ theme }) => theme.fontSizes.base};
   ${(props) =>
     props.retouch
       ? css`
@@ -628,9 +633,9 @@ const StatusMessage = styled.input`
       : css``}
 `;
 const LanguageImgWrapper = styled.div`
+  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 `;
 const LanguageImg = styled.div`
   ${(props) =>
@@ -659,12 +664,13 @@ const LanguageImg = styled.div`
     margin: 0;
   }
   img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
 `;
 
 const FiledTextWrapper = styled.div`
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -677,7 +683,7 @@ const FiledText = styled.h4`
 `;
 const ProfileImg = styled.div`
   position: relative;
-  margin-top: 10px;
+  margin-top: 30px;
   svg {
     position: absolute;
     top: 70%;
@@ -885,6 +891,7 @@ const GithubName = styled.h1`
 `;
 const FollowerFollowingDiv = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
   margin: 15px 0 35px 0;
   width: 60%;
