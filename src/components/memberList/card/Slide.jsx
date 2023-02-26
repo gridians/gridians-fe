@@ -217,9 +217,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
         confirmButtonText: "확인",
       });
     }
-    if (tagList.length >= 10) {
+    if (tagList.length >= 6) {
       Swal.fire({
-        text: "태그는 최대 10개까지만 가능합니다.",
+        text: "태그는 최대 6개까지만 가능합니다.",
         showCancelButton: true,
         confirmButtonText: "확인",
       });
@@ -318,7 +318,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
         <First>
           <StatusWrapper>
             <FiledTextWrapper>
-              <FiledText>{field}</FiledText>
+              <FiledText retouch={retouch}>{field}</FiledText>
             </FiledTextWrapper>
             {retouch ? (
               <StatusMessageWrapper>
@@ -373,6 +373,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                     ? true
                     : undefined
                 }
+                retouch={retouch}
               >
                 <BsFillBookmarkFill />
               </BookMark>
@@ -610,7 +611,6 @@ const StatusWrapper = styled.div`
   align-items: center;
 `;
 const BookMark = styled.div`
-  /* flex: 1; */
   font-size: 35px;
   display: flex;
   align-items: center;
@@ -618,6 +618,11 @@ const BookMark = styled.div`
   font-size: 38px;
   svg {
     cursor: pointer;
+    ${(props) =>
+      props.retouch &&
+      css`
+        visibility: hidden;
+      `}
   }
   ${(props) =>
     props.nickName
@@ -670,8 +675,8 @@ const LanguageImg = styled.div`
           display: flex;
           flex-direction: column;
           position: absolute;
-          top: 60px;
-          right: 38px;
+          top: 0;
+          right: 0;
         `
       : css`
           display: flex;
@@ -703,6 +708,11 @@ const FiledTextWrapper = styled.div`
   /* width: 25%; */
 `;
 const FiledText = styled.h4`
+  ${(props) =>
+    props.retouch &&
+    css`
+      visibility: hidden;
+    `}
   width: 100%;
   text-align: center;
   margin: 0;
@@ -766,7 +776,6 @@ const SnsItem = styled.li`
 `;
 const SnsAdressInput = styled.input`
   border: none;
-
   border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
   text-align: center;
   padding: 5px;
@@ -791,7 +800,6 @@ const Introduce = styled.textarea`
   resize: none;
   border: none;
   text-align: center;
-  line-height: 12vh;
   font-size: 22px;
   color: ${({ theme }) => theme.colors.white};
   /* vertical-align: center; */
