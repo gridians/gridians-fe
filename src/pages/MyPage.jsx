@@ -637,8 +637,8 @@ const MyPageContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   @media ${(props) => props.theme.mobile} {
-    padding: 0;
     justify-content: center;
+    padding: 0;
   }
 `;
 const MyPageWrapper = styled.div`
