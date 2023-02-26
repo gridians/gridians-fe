@@ -450,7 +450,7 @@ const DetailContainer = styled.div`
   padding: 10px;
   width: 70%;
   height: 100%;
-  background: rgb(0 0 0 / 92%);
+  background: rgb(0 0 0 / 95%);
   cursor: auto;
 `;
 const DefaultInfo = styled.div`
@@ -463,7 +463,8 @@ const DefaultInfo = styled.div`
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #0e0606;
+  background-color: #8b8a8aeb;
+  border-radius: 10px;
   cursor: auto;
 `;
 
