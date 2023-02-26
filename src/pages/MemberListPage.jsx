@@ -450,7 +450,7 @@ const DetailContainer = styled.div`
   padding: 10px;
   width: 70%;
   height: 100%;
-  background: rgb(0 0 0 / 82%);
+  background: rgb(0 0 0 / 92%);
   cursor: auto;
 `;
 const DefaultInfo = styled.div`

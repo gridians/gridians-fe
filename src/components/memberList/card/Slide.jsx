@@ -327,6 +327,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   onChange={(text) => statusMsgOnChange(text)}
                   retouch={retouch}
                   maxLength="15"
+                  placeholder="Status Message"
                 />
               </StatusMessageWrapper>
             ) : (
@@ -392,7 +393,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <SnsAdressInput
                     value={githubId || ""}
                     onChange={(text) => githubOnChange(text)}
-                    placeholder="깃헙 name을 입력해주세요"
+                    placeholder="Github ID"
                   />
                 </SnsItem>
                 <SnsItem>
@@ -400,7 +401,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <SnsAdressInput
                     value={instagramId || ""}
                     onChange={(text) => instagramOnChange(text)}
-                    placeholder="Instagram @XXX를 입력해주세요"
+                    placeholder="Instagram ID"
                   />
                 </SnsItem>
                 <SnsItem>
@@ -408,7 +409,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <SnsAdressInput
                     value={twitterId || ""}
                     onChange={(text) => twitterOnChange(text)}
-                    placeholder="트위터 @XXX를 입력해주세요"
+                    placeholder="Twitter ID"
                   />
                 </SnsItem>
               </>
@@ -437,6 +438,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               value={introduce || ""}
               onChange={(text) => introduceOnChange(text)}
               retouch={retouch}
+              placeholder="자기소개"
             />
           ) : (
             <Introduce value={introduce || ""} disabled />
@@ -457,6 +459,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <TagInputDiv onSubmit={(e) => tagOnSubmit(e)} retouch={retouch}>
                 <span>태그 추가하기</span>
                 <TagInput
+                  placeholder="Tag"
                   value={tagText || ""}
                   onChange={(text) => tagOnChange(text)}
                   maxLength="20"
@@ -637,18 +640,20 @@ const StatusMessage = styled.input`
   padding: 5px;
   width: 60%;
   height: 31px;
-  background-color: #262626;
-  border-radius: 9999px;
+  background-color: transparent;
   text-align: center;
   color: white;
   border: none;
-  padding: 10px;
-
   font-size: ${({ theme }) => theme.fontSizes.base};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
+
   ${(props) =>
     props.retouch
       ? css`
-          outline: 1px solid;
+          &:focus {
+            outline: none;
+            border-bottom: 1px solid white;
+          }
         `
       : css``}
 `;
@@ -760,14 +765,21 @@ const SnsItem = styled.li`
   }
 `;
 const SnsAdressInput = styled.input`
-  outline: 1px solid;
+  border: none;
+
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
+  text-align: center;
   padding: 5px;
   font-size: ${({ theme }) => theme.fontSizes.lg};
-  background-color: #262626;
-  border-radius: 10px;
+  background-color: transparent;
+  /* border-radius: 10px; */
   color: ${({ theme }) => theme.colors.white};
   &::placeholder {
     font-size: ${({ theme }) => theme.fontSizes.small};
+  }
+  &:focus {
+    border-bottom: 1px solid white;
+    outline: none;
   }
 `;
 const Introduce = styled.textarea`
@@ -779,19 +791,24 @@ const Introduce = styled.textarea`
   resize: none;
   border: none;
   text-align: center;
+  line-height: 12vh;
   font-size: 22px;
   color: ${({ theme }) => theme.colors.white};
+  /* vertical-align: center; */
   ${(props) =>
     props.retouch
       ? css`
-          background-color: #262626;
-          outline: 1px solid;
+          border: 1px solid ${({ theme }) => theme.colors.subColor3};
+          background-color: transparent;
           border-radius: 10px;
-          color: ${({ theme }) => theme.colors.white};
         `
       : css`
           resize: none;
         `}
+  &:focus {
+    outline: none;
+    border: 1px solid white;
+  }
 `;
 const TagList = styled.ul`
   list-style: none;
@@ -837,11 +854,16 @@ const TagInputDiv = styled.form`
 `;
 const TagInput = styled.input`
   padding: 5px;
-  background-color: #262626;
-  border-radius: 10px;
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.base};
-  outline: 1px solid white;
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid white;
+  }
 `;
 const SubmitBtnWrapper = styled.div`
   width: 50%;
