@@ -320,6 +320,7 @@ const MemberCard = styled.div`
   cursor: pointer;
   &:hover {
     scale: 1.1;
+    color: red;
   }
   ${(props) =>
     props.nickName
@@ -334,7 +335,7 @@ const MemberCard = styled.div`
       : css`
           div {
             div:nth-child(1) {
-              background: #ffffff;
+              background-color: white;
               border-radius: 30px;
             }
           }

@@ -302,17 +302,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       <div>
         <First>
           <StatusWrapper>
-            <BookMark
-              onClick={() => bookMarkOnClick()}
-              nickName={
-                bookMarkList &&
-                bookMarkList.map((data) => data.nickname).includes(nickname)
-                  ? true
-                  : undefined
-              }
-            >
-              <BsFillBookmarkFill />
-            </BookMark>
+            <FiledTextWrapper>
+              <FiledText>{field}</FiledText>
+            </FiledTextWrapper>
             {retouch ? (
               <StatusMessageWrapper>
                 <StatusMessage
@@ -327,9 +319,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                 <StatusMessage value={statusMsg || ""} disabled />
               </StatusMessageWrapper>
             )}
-            <FiledTextWrapper>
-              <FiledText>{field}</FiledText>
-            </FiledTextWrapper>
+
             <LanguageImgWrapper>
               <LanguageImg retouch={retouch}>
                 {retouch ? (
@@ -360,6 +350,18 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   </>
                 )}
               </LanguageImg>
+
+              <BookMark
+                onClick={() => bookMarkOnClick()}
+                nickName={
+                  bookMarkList &&
+                  bookMarkList.map((data) => data.nickname).includes(nickname)
+                    ? true
+                    : undefined
+                }
+              >
+                <BsFillBookmarkFill />
+              </BookMark>
             </LanguageImgWrapper>
           </StatusWrapper>
           <ProfileImg>
@@ -586,11 +588,11 @@ const StatusWrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
 `;
 const BookMark = styled.div`
-  flex: 2;
+  /* flex: 1; */
   font-size: 35px;
   display: flex;
   align-items: center;
@@ -609,8 +611,8 @@ const BookMark = styled.div`
         `}
 `;
 const StatusMessageWrapper = styled.div`
-  flex: 4;
-  width: 100%;
+  flex: 2;
+  /* width: 80%; */
   height: 100%;
   display: flex;
   align-items: center;
@@ -624,6 +626,9 @@ const StatusMessage = styled.input`
   border-radius: 9999px;
   text-align: center;
   color: white;
+  border: none;
+  padding: 10px;
+
   font-size: ${({ theme }) => theme.fontSizes.base};
   ${(props) =>
     props.retouch
@@ -635,7 +640,8 @@ const StatusMessage = styled.input`
 const LanguageImgWrapper = styled.div`
   flex: 1;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
+  align-items: center;
 `;
 const LanguageImg = styled.div`
   ${(props) =>
@@ -672,9 +678,9 @@ const LanguageImg = styled.div`
 const FiledTextWrapper = styled.div`
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 20%;
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* width: 25%; */
 `;
 const FiledText = styled.h4`
   width: 100%;
@@ -683,7 +689,7 @@ const FiledText = styled.h4`
 `;
 const ProfileImg = styled.div`
   position: relative;
-  margin-top: 30px;
+  margin: 25px 0 5px 0;
   svg {
     position: absolute;
     top: 70%;
@@ -701,7 +707,6 @@ const ProfileImg = styled.div`
   }
 `;
 const Name = styled.input`
-  margin: 20px 0 0 0;
   width: 80%;
   background-color: transparent;
   border-radius: 10px;
@@ -882,12 +887,14 @@ const GithubDiv = styled.div`
 `;
 const GithubLastCommitMsg = styled(StatusMessage)`
   width: 50%;
+  border: none;
 `;
 const GithubProfileImg = styled(ProfileImg)`
   margin: 25px 0 5px 0;
 `;
-const GithubName = styled.h1`
+const GithubName = styled.span`
   margin-bottom: 10px;
+  font-size: 32px;
 `;
 const FollowerFollowingDiv = styled.div`
   display: flex;
