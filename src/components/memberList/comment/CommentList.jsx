@@ -164,7 +164,7 @@ export default function CommentList() {
   // 대댓글  온클릭
   const onClickPostReplyComment = (commentId, e) => {
     const postReplyCommentInfo = { cardId, commentId, replyComment };
-    if (comment.trim() === "") {
+    if (replyComment.trim() === "") {
       e.preventDefault();
       Swal.fire({
         text: "내용을 입력해주세요",
@@ -356,9 +356,10 @@ export default function CommentList() {
                                     backgroundColor: "#0025A7",
                                     color: "white",
                                   }}
-                                  onClick={() =>
+                                  onClick={(e) =>
                                     onClickPostReplyComment(
-                                      commentArr.commentId
+                                      commentArr.commentId,
+                                      e
                                     )
                                   }
                                 >
@@ -469,18 +470,19 @@ const CommentListContainer = styled.div`
 `;
 const CommentListWrapper = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  /* justify-content: space-around; */
   margin-bottom: 10px;
 `;
 const CommentListCommentWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left: 20px;
   /* width: 70%; */
 `;
 const CommentListNickname = styled.span`
   font-weight: bold;
   font-size: ${({ theme }) => theme.fontSizes.lg};
-  width: 80%;
+  /* width: 100%; */
   display: flex;
   align-items: center;
 `;
@@ -521,6 +523,5 @@ const CommentListReplyCommentWrapper = styled.div`
 const CommentListReplyCommentInnderWrapper = styled.div`
   display: flex;
   align-items: center;
-  width: 70%;
   /* position: absolute; */
 `;
