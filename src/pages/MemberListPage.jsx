@@ -461,7 +461,7 @@ const DefaultInfo = styled.div`
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #8b8a8aeb;
+  background: rgb(0 0 0 / 95%);
   border-radius: 10px;
   cursor: auto;
 `;

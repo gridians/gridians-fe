@@ -224,17 +224,9 @@ export default function CommentList() {
 
   return (
     <CommentContainer>
-      {/* <CommentTitleContainer>
-        <CommentTitle>댓글</CommentTitle>
-      </CommentTitleContainer> */}
-
       <CommentFormContainer>
         {token && (
           <>
-            <CommentProfile
-              alt="image"
-              src={`${getUserInfoValue?.profileImage}`}
-            />
             <CommentInput
               placeholder="댓글"
               ref={commentRef}
@@ -402,23 +394,7 @@ const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
-`;
-
-const CommentTitleContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #191818;
-  border-radius: 9999px;
-  padding: 5px 0;
-  margin: 15px 0;
-`;
-
-const CommentTitle = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.white};
-  font-weight: bold;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
 `;
 
 const CommentFormContainer = styled.div`
@@ -426,21 +402,17 @@ const CommentFormContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  padding: 0 15px;
+  padding: 0 25px;
 `;
 const CommentProfile = styled.img`
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  color: white;
-  /* margin-right: 20px; */
 `;
 const CommentInput = styled.textarea`
-  width: 70%;
+  width: 100%;
   border: none;
-  /* height: 23px; */
   background-color: transparent;
-  border-radius: 4px;
   resize: none;
   font-size: ${({ theme }) => theme.fontSizes.base};
   color: ${({ theme }) => theme.colors.white};
@@ -450,6 +422,9 @@ const CommentInput = styled.textarea`
   &:focus {
     outline: none;
     border-bottom: 1px solid white;
+  }
+  &::placeholder {
+    color: #d3d3d3;
   }
 `;
 const CommentButtonContainer = styled.div`
@@ -500,7 +475,7 @@ const CommentListWrapper = styled.div`
 const CommentListCommentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 70%;
+  /* width: 70%; */
 `;
 const CommentListNickname = styled.span`
   font-weight: bold;
@@ -532,7 +507,7 @@ const CommentListReplayTitle = styled.span`
   margin-right: 5px;
 `;
 const CommentListReplyCommentWrapper = styled.div`
-  margin-top: 5px;
+  margin-top: 15px;
   ${(props) =>
     props.replyComment === "true"
       ? css`
