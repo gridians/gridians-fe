@@ -767,14 +767,45 @@ const SnsItem = styled.li`
     margin-bottom: 5px;
     font-size: ${({ theme }) => theme.fontSizes.lg};
   }
-  a {
-    color: ${({ theme }) => theme.colors.white};
-    svg {
-      &:hover {
-        color: ${({ theme }) => theme.colors.subColor1};
-      }
-    }
-  }
+  ${(props) =>
+    props.twitter === "twitter"
+      ? css`
+          a {
+            color: #1da1f2;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
+  ${(props) =>
+    props.instagram === "instagram"
+      ? css`
+          a {
+            color: #ffffff;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
+  ${(props) =>
+    props.github === "github"
+      ? css`
+          a {
+            color: #ffffff;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
 `;
 const SnsAdressInput = styled.input`
   border: none;
