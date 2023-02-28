@@ -514,7 +514,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           </Second>
         </div>
       ) : null}
-      <div className="slick-slide">
+      {/* <div className="slick-slide">
         <Third>
           <ThirdUploadWrapper>
             <ThirdUploadFile type="file" className="fileUploadInput" />
@@ -545,7 +545,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
             </CardWrapper>
           </ThirdWrapper>
         </Third>
-      </div>
+      </div> */}
     </StyledSlider>
   );
 };
@@ -660,7 +660,9 @@ const StatusMessage = styled.input`
             border-bottom: 1px solid white;
           }
         `
-      : css``}
+      : css`
+          border: none;
+        `}
 `;
 const LanguageImgWrapper = styled.div`
   flex: 1;
@@ -765,14 +767,45 @@ const SnsItem = styled.li`
     margin-bottom: 5px;
     font-size: ${({ theme }) => theme.fontSizes.lg};
   }
-  a {
-    color: ${({ theme }) => theme.colors.white};
-    svg {
-      &:hover {
-        color: ${({ theme }) => theme.colors.subColor1};
-      }
-    }
-  }
+  ${(props) =>
+    props.twitter === "twitter"
+      ? css`
+          a {
+            color: #1da1f2;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
+  ${(props) =>
+    props.instagram === "instagram"
+      ? css`
+          a {
+            color: #ffffff;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
+  ${(props) =>
+    props.github === "github"
+      ? css`
+          a {
+            color: #ffffff;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
 `;
 const SnsAdressInput = styled.input`
   border: none;
