@@ -259,7 +259,7 @@ const Wrap = styled.div`
   grid-template-columns: 1fr 1fr 1fr 1fr;
   margin: 0 auto;
   padding-top: 90px;
-  width: 1045px;
+  width: 50%;
 `;
 const Background = styled.div`
   position: absolute;
@@ -283,36 +283,11 @@ const Background = styled.div`
         `
       : css``}
 `;
-const XBtnWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const XBtn = styled.button`
-  position: relative;
-  z-index: 99;
-  margin-top: 55px;
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
-  border: none;
-  color: #f7f7f7;
-  font-size: 40px;
-  cursor: pointer;
-  ${(props) =>
-    props.click === "click"
-      ? css`
-          display: block;
-        `
-      : css`
-          display: none;
-        `}
-`;
 
 const MemberCard = styled.div`
   display: flex;
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  aspect-ratio: auto 1/1;
   background-color: transparent;
   transition: all 0.1s;
   font-weight: 600;
@@ -341,10 +316,8 @@ const MemberCard = styled.div`
         `}
 `;
 const Card = styled.div`
-  position: absolute;
-  z-index: 1;
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  height: 100%;
   color: black;
   transform-style: preserve-3d;
   transition: all 0.5s;
@@ -371,12 +344,12 @@ const Skill = styled.div`
   }
 `;
 const ProfileImg = styled.div`
-  margin: 55px 0 10px 0;
-  width: 100px;
-  height: 100px;
+  margin: 55px 0 15px 0;
+  width: 33.33%;
+  height: 35.33%;
   img {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
   }
 `;
