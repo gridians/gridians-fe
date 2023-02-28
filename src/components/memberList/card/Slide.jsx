@@ -514,7 +514,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
           </Second>
         </div>
       ) : null}
-      <div className="slick-slide">
+      {/* <div className="slick-slide">
         <Third>
           <ThirdUploadWrapper>
             <ThirdUploadFile type="file" className="fileUploadInput" />
@@ -545,7 +545,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
             </CardWrapper>
           </ThirdWrapper>
         </Third>
-      </div>
+      </div> */}
     </StyledSlider>
   );
 };
@@ -660,7 +660,9 @@ const StatusMessage = styled.input`
             border-bottom: 1px solid white;
           }
         `
-      : css``}
+      : css`
+          border: none;
+        `}
 `;
 const LanguageImgWrapper = styled.div`
   flex: 1;

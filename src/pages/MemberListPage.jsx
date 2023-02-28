@@ -229,7 +229,7 @@ const MemberListPage = () => {
                   <ProfileImg>
                     <img src={data.profileImage} alt="앗 안나와여" />
                   </ProfileImg>
-                  <NickName>{data.nickname}</NickName>
+                  <Nickname>{data.nickname}</Nickname>
                   <Role>{data.field}</Role>
                 </Front>
                 <Back className="back">
@@ -326,7 +326,7 @@ const MemberCard = styled.div`
       ? css`
           div {
             div:nth-child(1) {
-              background-color: yellow;
+              background-color: #f9e000;
               border-radius: 30px;
             }
           }
@@ -380,7 +380,8 @@ const ProfileImg = styled.div`
     border-radius: 50%;
   }
 `;
-const NickName = styled.h2`
+
+const Nickname = styled.h2`
   margin: -5px 0 5px 0;
   font-weight: 900;
 `;
@@ -461,8 +462,7 @@ const DefaultInfo = styled.div`
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #8b8a8aeb;
-  border-radius: 10px;
+  background: rgb(0 0 0 / 95%);
   cursor: auto;
 `;
 
