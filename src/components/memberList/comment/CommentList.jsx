@@ -451,7 +451,14 @@ const CommentListContainer = styled.div`
   flex-direction: column;
   overflow-y: scroll;
   padding: 5px;
-
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 10px;
+  }
   .replyCommentListWrapper {
     justify-content: space-between;
     .replyCommentList {

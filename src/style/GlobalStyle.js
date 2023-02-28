@@ -3,7 +3,7 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
   &::-webkit-scrollbar {
     width: 10px;
-    background-color: #0E0909;
+    background-color: transparent;
   }
   &::-webkit-scrollbar-thumb {
     background-color: white;
