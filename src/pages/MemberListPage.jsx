@@ -317,6 +317,7 @@ const MemberCard = styled.div`
   transition: all 0.1s;
   font-weight: 600;
   cursor: pointer;
+  border: 1px solid black;
   &:hover {
     scale: 1.1;
     color: red;
@@ -343,8 +344,8 @@ const MemberCard = styled.div`
 const Card = styled.div`
   position: absolute;
   z-index: 1;
-  width: 250px;
-  height: 250px;
+  width: 13vw;
+  height: 25vh;
   color: black;
   transform-style: preserve-3d;
   transition: all 0.5s;
@@ -384,6 +385,7 @@ const ProfileImg = styled.div`
 const Nickname = styled.h2`
   margin: -5px 0 5px 0;
   font-weight: 900;
+  font-size: ${({ theme }) => theme.fontSizes.xl};
 `;
 const Role = styled.h5`
   margin: 0;
