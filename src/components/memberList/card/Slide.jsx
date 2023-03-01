@@ -386,7 +386,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
             <img src={img} alt="d" />
           </ProfileImg>
           <Name value={nickname || ""} disabled />
-          <SnsList>
+          <SnsList retouch={retouch}>
             {retouch ? (
               <>
                 <SnsItem>
@@ -476,13 +476,15 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
         </First>
       </div>
       {hasGithub === false && nickname === loginUserName ? (
-        <div>
+        <SecondContainer>
           <Second>
-            <GithubConnectionBtn href={loginUri}>
-              Github 연동
-            </GithubConnectionBtn>
+            <GibhubBtnWrapper>
+              <GithubConnectionBtn href={loginUri}>
+                Github 연동
+              </GithubConnectionBtn>
+            </GibhubBtnWrapper>
           </Second>
-        </div>
+        </SecondContainer>
       ) : hasGithub ? (
         <div>
           <Second hasGithub={true}>
@@ -505,11 +507,17 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <span>{githubfollowing}</span>
                 </Following>
               </FollowerFollowingDiv>
-              <GitHubCalendar
-                username={githubName}
-                style={{ width: "80%" }}
-                year="2023"
-              />
+              <GitHubCalendarContainer>
+                <GitHubCalendar
+                  username={githubName}
+                  style={{
+                    width: "80%",
+                    height: "100%",
+                    bottom: "0",
+                  }}
+                  year="2023"
+                />
+              </GitHubCalendarContainer>
             </GithubDiv>
           </Second>
         </div>
@@ -551,16 +559,26 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
 };
 
 const StyledSlider = styled(Slider)`
-  /* height: 100%; */
   margin-top: 10px;
   transition: all 1s;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  .slick-slide {
+  height: 100%;
+  .slick-list {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  p .slick-slide {
     height: 100%;
     width: 100%;
   }
+
   h3 {
     text-align: center;
   }
@@ -579,7 +597,7 @@ const StyledSlider = styled(Slider)`
     }
   }
   .slick-dots {
-    height: 0;
+    position: relative;
     li {
       ${(props) =>
         props.retouch
@@ -737,6 +755,20 @@ const ProfileImg = styled.div`
     height: 170px;
     border-radius: 50%;
   }
+  @media ${(props) => props.theme.laptop} {
+    margin: 25px 0 15px 0;
+    width: 8vw;
+    aspect-ratio: auto 1/1;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+    svg {
+      top: 65%;
+      font-size: 2rem;
+    }
+  }
 `;
 const Name = styled.input`
   width: 80%;
@@ -747,6 +779,9 @@ const Name = styled.input`
   text-align: center;
   font-size: 32px;
   color: ${({ theme }) => theme.colors.white};
+  @media ${(props) => props.theme.laptop} {
+    font-size: 1.5rem;
+  }
 `;
 const SnsList = styled.ul`
   display: flex;
@@ -754,6 +789,13 @@ const SnsList = styled.ul`
   padding: 0;
   width: 100%;
   list-style: none;
+  ${(props) =>
+    props.retouch &&
+    css`
+      li {
+        width: 23%;
+      }
+    `}
 `;
 const SnsItem = styled.li`
   display: flex;
@@ -767,23 +809,57 @@ const SnsItem = styled.li`
     margin-bottom: 5px;
     font-size: ${({ theme }) => theme.fontSizes.lg};
   }
-  a {
-    color: ${({ theme }) => theme.colors.white};
-    svg {
-      &:hover {
-        color: ${({ theme }) => theme.colors.subColor1};
-      }
-    }
+  ${(props) =>
+    props.twitter === "twitter"
+      ? css`
+          a {
+            color: #1da1f2;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
+  ${(props) =>
+    props.instagram === "instagram"
+      ? css`
+          a {
+            color: #ffffff;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
+  ${(props) =>
+    props.github === "github"
+      ? css`
+          a {
+            color: #ffffff;
+            svg {
+              &:hover {
+                color: ${({ theme }) => theme.colors.subColor1};
+              }
+            }
+          }
+        `
+      : null}
+  @media ${(props) => props.theme.laptop} {
+    font-size: 1.5rem;
   }
 `;
 const SnsAdressInput = styled.input`
+  width: 100%;
   border: none;
   border-bottom: 1px solid ${({ theme }) => theme.colors.subColor3};
   text-align: center;
   padding: 5px;
   font-size: ${({ theme }) => theme.fontSizes.lg};
   background-color: transparent;
-  /* border-radius: 10px; */
   color: ${({ theme }) => theme.colors.white};
   &::placeholder {
     font-size: ${({ theme }) => theme.fontSizes.small};
@@ -792,12 +868,15 @@ const SnsAdressInput = styled.input`
     border-bottom: 1px solid white;
     outline: none;
   }
+  @media ${(props) => props.theme.laptop} {
+    font-size: 1rem;
+  }
 `;
 const Introduce = styled.textarea`
   /* margin-top: 30px; */
   padding: 10px;
   width: 80%;
-  height: 15vh;
+  max-height: 15vh;
   background-color: transparent;
   resize: none;
   border: none;
@@ -819,6 +898,9 @@ const Introduce = styled.textarea`
     outline: none;
     border: 1px solid white;
   }
+  @media ${(props) => props.theme.laptop} {
+    font-size: 1.2rem;
+  }
 `;
 const TagList = styled.ul`
   list-style: none;
@@ -836,6 +918,9 @@ const TagItem = styled.li`
   height: 30px;
   background-color: black;
   font-size: ${({ theme }) => theme.fontSizes.base};
+  @media ${(props) => props.theme.laptop} {
+    font-size: 1rem;
+  }
 `;
 const TagXBtn = styled.div`
   position: absolute;
@@ -861,6 +946,11 @@ const TagInputDiv = styled.form`
   span {
     margin-right: 15px;
   }
+  @media ${(props) => props.theme.laptop} {
+    span {
+      font-size: 1rem;
+    }
+  }
 `;
 const TagInput = styled.input`
   padding: 5px;
@@ -876,7 +966,7 @@ const TagInput = styled.input`
   }
 `;
 const SubmitBtnWrapper = styled.div`
-  width: 50%;
+  flex: 3;
   height: 100%;
   display: flex;
   align-items: center;
@@ -898,7 +988,13 @@ const SubmitBtn = styled.button`
     transition: all 0.5s;
   }
 `;
-
+const SecondContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 const Second = styled.div`
   display: flex;
   ${(props) =>
@@ -908,7 +1004,12 @@ const Second = styled.div`
           align-items: center;
         `}
   justify-content: center;
-  height: 49vh;
+  height: 100%;
+`;
+const GibhubBtnWrapper = styled.div`
+  /* transform: translate(50%, 50%); */
+  width: 100%;
+  height: 100%;
 `;
 const GithubConnectionBtn = styled.a`
   display: flex;
@@ -932,6 +1033,7 @@ const GithubDiv = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
+  height: 100%;
 `;
 const GithubLastCommitMsg = styled(StatusMessage)`
   width: 50%;
@@ -943,6 +1045,9 @@ const GithubProfileImg = styled(ProfileImg)`
 const GithubName = styled.span`
   margin-bottom: 10px;
   font-size: 32px;
+  @media ${(props) => props.theme.laptop} {
+    font-size: 1.5rem;
+  }
 `;
 const FollowerFollowingDiv = styled.div`
   display: flex;
@@ -962,8 +1067,21 @@ const Follower = styled.div`
   span {
     font-size: ${({ theme }) => theme.fontSizes.xxl};
   }
+  @media ${(props) => props.theme.laptop} {
+    p,
+    span {
+      font-size: 1.3rem;
+    }
+  }
 `;
 const Following = styled(Follower)``;
+const GitHubCalendarContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Third = styled(First)`
   width: 100%;
