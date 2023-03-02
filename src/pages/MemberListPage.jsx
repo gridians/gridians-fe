@@ -223,14 +223,25 @@ const MemberListPage = () => {
             >
               <Card className="front">
                 <Front>
-                  <Skill>
-                    <img src={data.skillImage} alt="34" />
-                  </Skill>
-                  <ProfileImg>
-                    <img src={data.profileImage} alt="앗 안나와여" />
-                  </ProfileImg>
-                  <NickName>{data.nickname}</NickName>
-                  <Role>{data.field}</Role>
+                  <SkillWrapper>
+                    <Skill>
+                      <img src={data.skillImage} alt="34" />
+                    </Skill>
+                  </SkillWrapper>
+                  {data.hasProfileImage === true ? (
+                    <ProfileImg>
+                      <img src={data.profileImage} alt="안나와여" />
+                    </ProfileImg>
+                  ) : (
+                    <ProfileImg className="baseProfileImage">
+                      <img src={data.profileImage} alt="안나와여" />
+                    </ProfileImg>
+                  )}
+
+                  <NicknameWrapper>
+                    <Nickname>{data.nickname}</Nickname>
+                    <Role>{data.field}</Role>
+                  </NicknameWrapper>
                 </Front>
                 <Back className="back">
                   <DetailBtn click={click ? click : undefined}>
@@ -259,7 +270,7 @@ const Wrap = styled.div`
   grid-template-columns: 1fr 1fr 1fr 1fr;
   margin: 0 auto;
   padding-top: 90px;
-  width: 1045px;
+  width: 50%;
 `;
 const Background = styled.div`
   position: absolute;
@@ -283,36 +294,13 @@ const Background = styled.div`
         `
       : css``}
 `;
-const XBtnWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const XBtn = styled.button`
-  position: relative;
-  z-index: 99;
-  margin-top: 55px;
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
-  border: none;
-  color: #f7f7f7;
-  font-size: 40px;
-  cursor: pointer;
-  ${(props) =>
-    props.click === "click"
-      ? css`
-          display: block;
-        `
-      : css`
-          display: none;
-        `}
-`;
 
 const MemberCard = styled.div`
   display: flex;
-  width: 250px;
-  height: 250px;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  aspect-ratio: auto 1/1;
   background-color: transparent;
   transition: all 0.1s;
   font-weight: 600;
@@ -326,7 +314,7 @@ const MemberCard = styled.div`
       ? css`
           div {
             div:nth-child(1) {
-              background-color: yellow;
+              background-color: #f9e000;
               border-radius: 30px;
             }
           }
@@ -341,10 +329,8 @@ const MemberCard = styled.div`
         `}
 `;
 const Card = styled.div`
-  position: absolute;
-  z-index: 1;
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  height: 100%;
   color: black;
   transform-style: preserve-3d;
   transition: all 0.5s;
@@ -355,15 +341,26 @@ const Front = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   width: 100%;
   height: 100%;
   transition: all 0.5s ease-in-out;
   backface-visibility: hidden;
+  .baseProfileImage {
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+  }
+`;
+const SkillWrapper = styled.div`
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 `;
 const Skill = styled.div`
-  position: absolute;
-  top: 32px;
-  right: 32px;
   width: 28px;
   img {
     width: 100%;
@@ -371,23 +368,32 @@ const Skill = styled.div`
   }
 `;
 const ProfileImg = styled.div`
-  margin: 55px 0 10px 0;
-  width: 100px;
-  height: 100px;
+  width: 33%;
+  height: 33%;
   img {
-    width: 100px;
-    height: 100px;
+    max-width: 100%;
+    height: 100%;
     border-radius: 50%;
   }
 `;
-const NickName = styled.h2`
-  margin: -5px 0 5px 0;
+const NicknameWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  height: 20%;
+`;
+const Nickname = styled.span`
   font-weight: 900;
+  font-size: ${({ theme }) => theme.fontSizes.xl};
 `;
 const Role = styled.h5`
-  margin: 0;
   color: #505050;
   font-weight: lighter;
+  margin-top: 5px;
+  /* font-size: ${({ theme }) => theme.fontSizes.small}; */
 `;
 const Back = styled.div`
   height: 100%;
@@ -461,8 +467,7 @@ const DefaultInfo = styled.div`
 const ReviewContainer = styled.div`
   width: 30%;
   height: 100%;
-  background-color: #8b8a8aeb;
-  border-radius: 10px;
+  background: rgb(0 0 0 / 95%);
   cursor: auto;
 `;
 
