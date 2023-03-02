@@ -478,11 +478,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       {hasGithub === false && nickname === loginUserName ? (
         <SecondContainer>
           <Second>
-            <GibhubBtnWrapper>
-              <GithubConnectionBtn href={loginUri}>
-                Github 연동
-              </GithubConnectionBtn>
-            </GibhubBtnWrapper>
+            <GithubConnectionBtn href={loginUri}>
+              Github 연동
+            </GithubConnectionBtn>
           </Second>
         </SecondContainer>
       ) : hasGithub ? (
@@ -597,7 +595,8 @@ const StyledSlider = styled(Slider)`
     }
   }
   .slick-dots {
-    position: relative;
+    position: absolute;
+    bottom: 15px;
     li {
       ${(props) =>
         props.retouch
@@ -1006,12 +1005,10 @@ const Second = styled.div`
   justify-content: center;
   height: 100%;
 `;
-const GibhubBtnWrapper = styled.div`
-  /* transform: translate(50%, 50%); */
-  width: 100%;
-  height: 100%;
-`;
+
 const GithubConnectionBtn = styled.a`
+  position: absolute;
+  top: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
