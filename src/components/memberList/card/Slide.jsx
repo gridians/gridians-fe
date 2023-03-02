@@ -476,13 +476,13 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
         </First>
       </div>
       {hasGithub === false && nickname === loginUserName ? (
-        <div>
+        <SecondContainer>
           <Second>
             <GithubConnectionBtn href={loginUri}>
               Github 연동
             </GithubConnectionBtn>
           </Second>
-        </div>
+        </SecondContainer>
       ) : hasGithub ? (
         <div>
           <Second hasGithub={true}>
@@ -505,11 +505,17 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
                   <span>{githubfollowing}</span>
                 </Following>
               </FollowerFollowingDiv>
-              <GitHubCalendar
-                username={githubName}
-                style={{ width: "80%" }}
-                year="2023"
-              />
+              <GitHubCalendarContainer>
+                <GitHubCalendar
+                  username={githubName}
+                  style={{
+                    width: "80%",
+                    height: "100%",
+                    bottom: "0",
+                  }}
+                  year="2023"
+                />
+              </GitHubCalendarContainer>
             </GithubDiv>
           </Second>
         </div>
@@ -551,16 +557,26 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
 };
 
 const StyledSlider = styled(Slider)`
-  /* height: 100%; */
   margin-top: 10px;
   transition: all 1s;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  .slick-slide {
+  height: 100%;
+  .slick-list {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  p .slick-slide {
     height: 100%;
     width: 100%;
   }
+
   h3 {
     text-align: center;
   }
@@ -579,7 +595,8 @@ const StyledSlider = styled(Slider)`
     }
   }
   .slick-dots {
-    height: 0;
+    position: absolute;
+    bottom: 15px;
     li {
       ${(props) =>
         props.retouch
@@ -842,7 +859,6 @@ const SnsAdressInput = styled.input`
   padding: 5px;
   font-size: ${({ theme }) => theme.fontSizes.lg};
   background-color: transparent;
-  /* border-radius: 10px; */
   color: ${({ theme }) => theme.colors.white};
   &::placeholder {
     font-size: ${({ theme }) => theme.fontSizes.small};
@@ -971,7 +987,13 @@ const SubmitBtn = styled.button`
     transition: all 0.5s;
   }
 `;
-
+const SecondContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 const Second = styled.div`
   display: flex;
   ${(props) =>
@@ -981,9 +1003,12 @@ const Second = styled.div`
           align-items: center;
         `}
   justify-content: center;
-  height: 49vh;
+  height: 100%;
 `;
+
 const GithubConnectionBtn = styled.a`
+  position: absolute;
+  top: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1005,6 +1030,7 @@ const GithubDiv = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
+  height: 100%;
 `;
 const GithubLastCommitMsg = styled(StatusMessage)`
   width: 50%;
@@ -1046,6 +1072,13 @@ const Follower = styled.div`
   }
 `;
 const Following = styled(Follower)``;
+const GitHubCalendarContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Third = styled(First)`
   width: 100%;

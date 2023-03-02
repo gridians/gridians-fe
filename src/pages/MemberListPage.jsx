@@ -223,14 +223,25 @@ const MemberListPage = () => {
             >
               <Card className="front">
                 <Front>
-                  <Skill>
-                    <img src={data.skillImage} alt="34" />
-                  </Skill>
-                  <ProfileImg>
-                    <img src={data.profileImage} alt="앗 안나와여" />
-                  </ProfileImg>
-                  <Nickname>{data.nickname}</Nickname>
-                  <Role>{data.field}</Role>
+                  <SkillWrapper>
+                    <Skill>
+                      <img src={data.skillImage} alt="34" />
+                    </Skill>
+                  </SkillWrapper>
+                  {data.hasProfileImage === true ? (
+                    <ProfileImg>
+                      <img src={data.profileImage} alt="안나와여" />
+                    </ProfileImg>
+                  ) : (
+                    <ProfileImg className="baseProfileImage">
+                      <img src={data.profileImage} alt="안나와여" />
+                    </ProfileImg>
+                  )}
+
+                  <NicknameWrapper>
+                    <Nickname>{data.nickname}</Nickname>
+                    <Role>{data.field}</Role>
+                  </NicknameWrapper>
                 </Front>
                 <Back className="back">
                   <DetailBtn click={click ? click : undefined}>
@@ -286,6 +297,8 @@ const Background = styled.div`
 
 const MemberCard = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
   width: 100%;
   aspect-ratio: auto 1/1;
   background-color: transparent;
@@ -328,15 +341,26 @@ const Front = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   width: 100%;
   height: 100%;
   transition: all 0.5s ease-in-out;
   backface-visibility: hidden;
+  .baseProfileImage {
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+  }
+`;
+const SkillWrapper = styled.div`
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 `;
 const Skill = styled.div`
-  position: absolute;
-  top: 32px;
-  right: 32px;
   width: 28px;
   img {
     width: 100%;
@@ -344,24 +368,32 @@ const Skill = styled.div`
   }
 `;
 const ProfileImg = styled.div`
-  margin: 55px 0 15px 0;
-  width: 33.33%;
-  height: 35.33%;
+  width: 33%;
+  height: 33%;
   img {
-    width: 100%;
+    max-width: 100%;
     height: 100%;
     border-radius: 50%;
   }
 `;
-
-const Nickname = styled.h2`
-  margin: -5px 0 5px 0;
+const NicknameWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  height: 20%;
+`;
+const Nickname = styled.span`
   font-weight: 900;
+  font-size: ${({ theme }) => theme.fontSizes.xl};
 `;
 const Role = styled.h5`
-  margin: 0;
   color: #505050;
   font-weight: lighter;
+  margin-top: 5px;
+  /* font-size: ${({ theme }) => theme.fontSizes.small}; */
 `;
 const Back = styled.div`
   height: 100%;

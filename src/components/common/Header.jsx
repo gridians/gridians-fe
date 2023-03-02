@@ -58,12 +58,6 @@ const Header = () => {
       confirmButtonText: "생성하기",
       cancelButtonText: "돌아가기",
       padding: "3em",
-      showClass: {
-        popup: "animate__animated animate__fadeInDown",
-      },
-      hideClass: {
-        popup: "animate__animated animate__fadeOutUp",
-      },
       closeOnClickOutside: false,
     }).then((data) => {
       if (data.isConfirmed) {

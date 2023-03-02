@@ -27,7 +27,6 @@ export default function Certification() {
   const onClickLogin = () => {
     if (token === undefined) {
       postCertification(id);
-      // getUserInfoValue(id);
     } else if (token) {
       putEditEmail(id);
     } else {

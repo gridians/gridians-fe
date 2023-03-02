@@ -54,7 +54,7 @@ export default function MyPage() {
     () => myPageUseMutationPutUserProfile(imageSrc),
     {
       onSuccess: (data) => {
-        navigate("/home");
+        window.location.replace("/home");
       },
       onError: (error) => {
         if (error.response.data.status === 500) {
