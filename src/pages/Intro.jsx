@@ -42,7 +42,7 @@ export default function Intro() {
   };
   return (
     <IntroContainer>
-      <IntroOverlay>
+      {/* <IntroOverlay>
         <OverlayTitleContainer className="first-title">
           <OverlayTitle>다른 개발자들</OverlayTitle>
           <span className="sub-title">을 보면서</span>
@@ -71,7 +71,7 @@ export default function Intro() {
             겁니다!
           </span>
         </OverlayTitleContainer>
-      </IntroOverlay>
+      </IntroOverlay> */}
       <IntroWrapper>
         <IntroProfileWrapper className="grid-wrapper10">
           <IntroIconWrapper>
@@ -349,7 +349,6 @@ const OverlayTitleContainer = styled.div`
   }
   @media ${(props) => props.theme.mobile} {
     .sub-title {
-      /* padding: 0 20px; */
       font-size: ${({ theme }) => theme.fontSizes.base};
     }
   }
@@ -369,7 +368,11 @@ const IntroWrapper = styled.div`
   grid-template-rows: 1fr 1fr 1fr 1fr;
   gap: 10px;
   padding: 20px 0;
-
+  @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    column-gap: 5px;
+    row-gap: 5px;
+  }
   .grid-wrapper1 {
     animation-delay: 0.3s;
   }
@@ -466,12 +469,6 @@ const IntroWrapper = styled.div`
   .grid16 {
     background-image: url(${profile16});
   }
-  @media ${(props) => props.theme.mobile} {
-    width: 100%;
-    grid-template-columns: repeat(4px, 1fr);
-    column-gap: 5px;
-    row-gap: 5px;
-  }
 `;
 const IntroProfileWrapper = styled.div`
   width: 100%;
@@ -481,22 +478,26 @@ const IntroProfileWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: 30px;
+  border-radius: 10px;
   padding-top: 30px;
   background-color: black;
   animation: ${gridAnimation} 1s forwards;
   opacity: 0;
-
   .icon {
     width: 30px;
     height: 30px;
     color: white;
   }
   @media ${(props) => props.theme.mobile} {
+    width: 100%;
+    height: 60%;
+    border: 1px solid blue;
+
     .icon {
       width: 15px;
       height: 15px;
     }
+    padding: 0;
   }
 `;
 const IntroIconWrapper = styled.div`
@@ -507,6 +508,10 @@ const IntroIconWrapper = styled.div`
   position: absolute;
   right: 30px;
   top: 25px;
+  @media ${(props) => props.theme.mobile} {
+    right: 5px;
+    top: 5px;
+  }
 `;
 const IntroProfileImage = styled.div`
   width: 100%;
@@ -515,6 +520,12 @@ const IntroProfileImage = styled.div`
   background-size: 50%;
   background-repeat: no-repeat;
   margin-top: 20px;
+  @media ${(props) => props.theme.mobile} {
+    border: 2px solid white;
+    width: 40px;
+    height: 40px;
+    margin-top: 40px;
+  }
 `;
 const IntroProfileTitleContainer = styled.div`
   display: flex;
@@ -527,9 +538,8 @@ const IntroProfileTitleContainer = styled.div`
 const IntroProfileName = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.name};
   color: ${({ theme }) => theme.colors.white};
-
   @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.fontSizes.small};
+    font-size: ${({ theme }) => theme.mobileFontSizes.base};
   }
 `;
 const IntroProfileJob = styled.span`
@@ -537,7 +547,7 @@ const IntroProfileJob = styled.span`
   color: ${({ theme }) => theme.colors.subColor1};
   margin-bottom: 10px;
   @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+    font-size: ${({ theme }) => theme.mobileFontSizes.small};
   }
 `;
 const PageRouterButtonContainer = styled.div`

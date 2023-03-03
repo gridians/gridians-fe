@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import GithubLoginPage from "./pages/GithubLoginPage";
 import Certification from "./components/signup/Certification";
 import { getCookieToken } from "./cookie/cookie";
+import NotFound from "./components/notfound/NotFound";
 
 export default function Router() {
   const isLogin = !!getCookieToken("accessToken");
@@ -30,6 +31,7 @@ export default function Router() {
         <Route path={"/mypage"} element={<MyPage />} />
         <Route path={"/githubloginpage"} element={<GithubLoginPage />} />
         <Route path={"/certification"} element={<Certification />} />
+        <Route path={"/*"} element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

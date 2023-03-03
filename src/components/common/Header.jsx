@@ -28,6 +28,7 @@ const Header = () => {
 
   const location = useLocation();
   if (location.pathname === "/") return null;
+  // if (location.pathname === "/") return null;
 
   const onClickLogOut = () => {
     Swal.fire({
@@ -122,7 +123,7 @@ const HeaderBox = styled.header`
   height: 10vh;
   padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
   @media ${(props) => props.theme.mobile} {
     overflow: hidden;
     padding: 0 20px;
@@ -164,7 +165,7 @@ const Menu = styled.div`
   @media ${(props) => props.theme.mobile} {
     font-size: ${({ theme }) => theme.fontSizes.small};
     a {
-      color: ${({ theme }) => theme.colors.black};
+      color: ${({ theme }) => theme.colors.white};
       font-weight: bold;
       cursor: pointer;
       padding: 6px;

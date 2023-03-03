@@ -2,8 +2,14 @@ const fontFace = {
   font1: "ClimateCrisisKR-1979",
 };
 
+const mobileFontSizes = {
+  small:"6px",
+  base: "8px",
+  lg: "10px",
+  xl: "12px",
+};
+
 const fontSizes = {
-  mobileSmall:"10px",
   small: "14px",
   base: "16px",
   lg: "18px",
@@ -65,6 +71,7 @@ const theme = {
   paddings,
   margins,
   fontFace,
+  mobileFontSizes,
 };
 
 export default theme;
