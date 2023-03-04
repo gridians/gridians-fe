@@ -28,7 +28,6 @@ const Header = () => {
 
   const location = useLocation();
   if (location.pathname === "/") return null;
-  // if (location.pathname === "/") return null;
 
   const onClickLogOut = () => {
     Swal.fire({
@@ -140,7 +139,7 @@ const Logo = styled.span`
   font-size: 2.2rem;
   font-weight: 600;
   @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    font-size: ${({ theme }) => theme.mobileFontSizes.xxxl};
   }
 `;
 const Menu = styled.div`
@@ -163,17 +162,13 @@ const Menu = styled.div`
     color: ${({ theme }) => theme.colors.white};
   }
   @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.fontSizes.small};
+    font-size: ${({ theme }) => theme.mobileFontSizes.xl};
     a {
       color: ${({ theme }) => theme.colors.white};
       font-weight: bold;
       cursor: pointer;
       padding: 6px;
       margin-left: 10px;
-      &:hover {
-        font-size: ${({ theme }) => theme.fontSizes.base};
-        color: ${({ theme }) => theme.colors.subColor2};
-      }
     }
   }
 `;

@@ -359,14 +359,18 @@ export default function MyPage() {
 
           <MyPageInputContainerInnerWrapper>
             <MyPageInputWrapper className="profileImageContainer">
-              <picture>
+              <picture
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 {getUserInfoValue?.profileImage !== undefined && (
                   <>
                     <ProfileImage src={`${getUserInfoValue?.profileImage}`} />
-                    {/* <socure
-                          src={`${getUserInfoValue?.profileImage}`}
-                          
-                        /> */}
                   </>
                 )}
               </picture>
@@ -666,6 +670,9 @@ const MyPageFormInfoWrapper = styled.div`
   }
   .editInputContainer {
     margin-top: 10px;
+    @media ${(props) => props.theme.mobile} {
+      margin: 0;
+    }
   }
   .editIcon {
     width: 40px;
@@ -816,8 +823,8 @@ const ProfileImage = styled.img`
   background-repeat: no-repeat;
   background-size: 100% 100%;
   @media ${(props) => props.theme.mobile} {
-    width: 60px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
   }
 `;
 
@@ -911,6 +918,6 @@ const EditButton = styled.button`
   @media ${(props) => props.theme.mobile} {
     width: 70px;
     height: 30px;
-    font-size: ${({ theme }) => theme.fontSizes.mobileSmall};
+    font-size: ${({ theme }) => theme.mobileFontSizes.base};
   }
 `;

@@ -35,4 +35,7 @@ const HomeTitle = styled.span`
       color: ${({ theme }) => theme.colors.subColor2};
     }
   }
+  @media ${(props) => props.theme.mobile} {
+    font-size: ${({ theme }) => theme.fontSizes.name};
+  }
 `;

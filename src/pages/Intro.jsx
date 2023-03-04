@@ -491,8 +491,6 @@ const IntroProfileWrapper = styled.div`
   @media ${(props) => props.theme.mobile} {
     width: 100%;
     height: 60%;
-    border: 1px solid blue;
-
     .icon {
       width: 15px;
       height: 15px;
@@ -521,7 +519,6 @@ const IntroProfileImage = styled.div`
   background-repeat: no-repeat;
   margin-top: 20px;
   @media ${(props) => props.theme.mobile} {
-    border: 2px solid white;
     width: 40px;
     height: 40px;
     margin-top: 40px;
@@ -547,7 +544,7 @@ const IntroProfileJob = styled.span`
   color: ${({ theme }) => theme.colors.subColor1};
   margin-bottom: 10px;
   @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.mobileFontSizes.small};
+    font-size: ${({ theme }) => theme.mobileFontSizes.base};
   }
 `;
 const PageRouterButtonContainer = styled.div`

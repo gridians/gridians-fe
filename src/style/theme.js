@@ -7,6 +7,9 @@ const mobileFontSizes = {
   base: "8px",
   lg: "10px",
   xl: "12px",
+  xxl: "14px",
+  xxxl: "16px",
+  xxxxl: "18px",
 };
 
 const fontSizes = {
