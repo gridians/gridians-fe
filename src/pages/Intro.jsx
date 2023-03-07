@@ -42,7 +42,7 @@ export default function Intro() {
   };
   return (
     <IntroContainer>
-      {/* <IntroOverlay>
+      <IntroOverlay>
         <OverlayTitleContainer className="first-title">
           <OverlayTitle>다른 개발자들</OverlayTitle>
           <span className="sub-title">을 보면서</span>
@@ -71,7 +71,7 @@ export default function Intro() {
             겁니다!
           </span>
         </OverlayTitleContainer>
-      </IntroOverlay> */}
+      </IntroOverlay>
       <IntroWrapper>
         <IntroProfileWrapper className="grid-wrapper10">
           <IntroIconWrapper>

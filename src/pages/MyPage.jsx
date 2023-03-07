@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { AiOutlineFileImage } from "react-icons/ai";
 import { AiOutlineIdcard } from "react-icons/ai";
@@ -13,7 +13,6 @@ import {
   myPageUserNewPasswordConfirm,
   myPageUserNewPasswordConfirmMessage,
   myPageUserNewPasswordMessage,
-  myPageUserNickname,
   myPageUserNicknameMessage,
   myPageUserPassword,
   myPageUserPasswordMessage,
@@ -30,7 +29,6 @@ import {
 } from "../apis/queries/myPageQuery";
 import Swal from "sweetalert2";
 import { useQueryMyPageGetUserValid } from "../apis/customQuery/myPageCustomQuery";
-import { loginUserNickname } from "../store/userInfoAtom";
 import GithubBtn from "../components/GithubBtn";
 
 export default function MyPage() {

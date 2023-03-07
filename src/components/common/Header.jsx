@@ -1,20 +1,22 @@
 import React from "react";
 import styled from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 import Swal from "sweetalert2";
 import { useMutation } from "react-query";
 import { cardEnrollUseMutationPostToken } from "../../apis/queries/cardEnrollQuery";
 
 const Header = () => {
-  const navaigate = useNavigate();
   //카드 등록 react-query
   const { mutate: cardEnroll } = useMutation(
     () => cardEnrollUseMutationPostToken(),
     {
+      onSuccess: (data) => {
+        console.log(data);
+      },
       onError: (err) => {
-        console.log("err");
-        if (err.status === 409) {
+        console.log("aaaaaaaaa", err);
+        if (err.response.status === 409) {
           Swal.fire({
             title: "이미 등록된 회원입니다",
             cancelButtonColor: "#738598",
@@ -62,7 +64,7 @@ const Header = () => {
     }).then((data) => {
       if (data.isConfirmed) {
         cardEnroll();
-        navaigate("/memberlistpage");
+        // navaigate("/memberlistpage");
       }
     });
   };
@@ -74,7 +76,7 @@ const Header = () => {
     <HeaderBox>
       <HeaderWrap>
         <Link to="/home">
-          <Logo>Gradient</Logo>
+          <Logo>Gridians</Logo>
         </Link>
         {getCookieToken("accessToken") === undefined ? (
           <Menu>
