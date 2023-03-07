@@ -58,7 +58,11 @@ const MyCardBtn = ({ setClick }) => {
     "cardInfo",
     () => memberListuseMutationGetCardInfo(),
     {
+      onError: (err) => {
+        console.log(err);
+      },
       onSuccess: (res) => {
+        console.log(res);
         setGithubName(res.githubAccount);
         setFollower(res.follower);
         setFollowing(res.following);
@@ -105,7 +109,7 @@ const MyCardBtn = ({ setClick }) => {
 
   return (
     <MyCardButton onClick={() => myCardOnClick()}>
-      <FaUserAlt/>
+      <FaUserAlt />
     </MyCardButton>
   );
 };
