@@ -34,7 +34,7 @@ export const postLoginQueryFindUserPassword = async (email) => {
 
 //github 로그인 토큰 보내기
 export const loginUseMutationPostToken = (code) => {
-  const res = api.post(
+  const res = api.put(
     "/user/github",
     {
       token: code,
