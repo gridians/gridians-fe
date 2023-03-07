@@ -1,20 +1,22 @@
 import React from "react";
 import styled from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 import Swal from "sweetalert2";
 import { useMutation } from "react-query";
 import { cardEnrollUseMutationPostToken } from "../../apis/queries/cardEnrollQuery";
 
 const Header = () => {
-  const navaigate = useNavigate();
   //카드 등록 react-query
   const { mutate: cardEnroll } = useMutation(
     () => cardEnrollUseMutationPostToken(),
     {
+      onSuccess: (data) => {
+        console.log(data);
+      },
       onError: (err) => {
-        console.log("err");
-        if (err.status === 409) {
+        console.log("aaaaaaaaa", err);
+        if (err.response.status === 409) {
           Swal.fire({
             title: "이미 등록된 회원입니다",
             cancelButtonColor: "#738598",
@@ -62,7 +64,7 @@ const Header = () => {
     }).then((data) => {
       if (data.isConfirmed) {
         cardEnroll();
-        navaigate("/memberlistpage");
+        // navaigate("/memberlistpage");
       }
     });
   };
@@ -74,7 +76,7 @@ const Header = () => {
     <HeaderBox>
       <HeaderWrap>
         <Link to="/home">
-          <Logo>Gradient</Logo>
+          <Logo>Gridians</Logo>
         </Link>
         {getCookieToken("accessToken") === undefined ? (
           <Menu>
@@ -122,7 +124,7 @@ const HeaderBox = styled.header`
   height: 10vh;
   padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
   @media ${(props) => props.theme.mobile} {
     overflow: hidden;
     padding: 0 20px;
@@ -139,7 +141,7 @@ const Logo = styled.span`
   font-size: 2.2rem;
   font-weight: 600;
   @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    font-size: ${({ theme }) => theme.mobileFontSizes.xxxl};
   }
 `;
 const Menu = styled.div`
@@ -162,17 +164,13 @@ const Menu = styled.div`
     color: ${({ theme }) => theme.colors.white};
   }
   @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.fontSizes.small};
+    font-size: ${({ theme }) => theme.mobileFontSizes.xl};
     a {
-      color: ${({ theme }) => theme.colors.black};
+      color: ${({ theme }) => theme.colors.white};
       font-weight: bold;
       cursor: pointer;
       padding: 6px;
       margin-left: 10px;
-      &:hover {
-        font-size: ${({ theme }) => theme.fontSizes.base};
-        color: ${({ theme }) => theme.colors.subColor2};
-      }
     }
   }
 `;

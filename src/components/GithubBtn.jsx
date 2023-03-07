@@ -6,16 +6,17 @@ const GithubBtn = () => {
   const loginUri = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo:status read:repo_hook user:email&redirect_uri=http://localhost:3000/githubloginpage`;
   return (
     <GithubContainer>
-      <Github href={loginUri}>Github<br/> 연동하기</Github>
+      <Github href={loginUri}>
+        Github
+        <br /> 연동하기
+      </Github>
     </GithubContainer>
   );
 };
 
 const GithubContainer = styled.div`
   width: 100%;
-
   @media ${(props) => props.theme.mobile} {
-    padding: 0 20px;
   }
 `;
 const Github = styled.a`

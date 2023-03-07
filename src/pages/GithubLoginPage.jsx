@@ -17,7 +17,6 @@ const GithubLoginPage = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        navigate("/memberlistpage");
       },
       onError: (err) => {
         console.log(err);
