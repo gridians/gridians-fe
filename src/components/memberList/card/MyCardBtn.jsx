@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import { memberListuseMutationGetCardInfo } from "../../../apis/queries/memberListQuery";
@@ -14,6 +14,7 @@ import {
   instagram,
   introduceText,
   language,
+  list,
   nickNameText,
   position,
   skillSrc,
@@ -29,11 +30,13 @@ import {
   githubProfileImageUrl,
   recentCommitMessage,
 } from "../../../store/githubInfoAtom";
+import { loginUserNickname } from "../../../store/userInfoAtom";
 
 const MyCardBtn = ({ setClick }) => {
   const navigate = useNavigate();
   // const setStatusMsg = useSetRecoilState(statusMessageSelector);
 
+  const cardList = useRecoilValue(list);
   const setStatusMsg = useSetRecoilState(statusMessage);
   const setField = useSetRecoilState(position);
   const setSkill = useSetRecoilState(language);
@@ -53,6 +56,8 @@ const MyCardBtn = ({ setClick }) => {
   const setFollower = useSetRecoilState(follower);
   const setFollowing = useSetRecoilState(following);
   const setGithubName = useSetRecoilState(githubAccount);
+  //user 정보
+  const userNickName = useRecoilValue(loginUserNickname);
 
   const { mutate: cardInfo } = useMutation(
     "cardInfo",
@@ -91,6 +96,17 @@ const MyCardBtn = ({ setClick }) => {
     if (getCookieToken("accessToken")) {
       cardInfo();
       setClick("click");
+      if (!cardList.map((data) => data.nickname).includes(userNickName)) {
+        Swal.fire({
+          title: "카드 생성을 해주세요",
+          confirmButtonColor: "#DCC6C6",
+          cancelButtonColor: "#738598",
+          showCancelButton: true,
+          confirmButtonText: "확인",
+          padding: "2em",
+          closeOnClickOutside: false,
+        });
+      }
     } else {
       Swal.fire({
         title: "로그인을 해주세요",
