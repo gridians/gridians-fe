@@ -49,9 +49,6 @@ import { useNavigate } from "react-router-dom";
 const SimpleSlider = ({ setRetouch, retouch }) => {
   const navigate = useNavigate();
 
-  const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
-  const loginUri = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo:status read:repo_hook user:email&redirect_uri=http://localhost:3000/githubloginpage`;
-
   const [loginUserName, setLoginUserName] = useState();
   const [tagText, setTagText] = useState("");
   const [statusMsg, setStatusMsg] = useRecoilState(statusMessage);
@@ -161,6 +158,9 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   //onClick
   const reTouchOnClick = () => {
     setRetouch(!retouch);
+  };
+  const githubBtnOnClick = () => {
+    navigate("/mypage");
   };
   //카드 정보 수정 내용을 담은 객체
   const editCardListUserInfo = {
@@ -478,7 +478,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
       {hasGithub === false && nickname === loginUserName ? (
         <SecondContainer>
           <Second>
-            <GithubConnectionBtn href={loginUri}>
+            <GithubConnectionBtn onClick={() => githubBtnOnClick()}>
               Github 연동
             </GithubConnectionBtn>
           </Second>
