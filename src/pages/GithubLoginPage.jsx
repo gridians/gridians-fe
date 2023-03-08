@@ -17,6 +17,7 @@ const GithubLoginPage = () => {
     {
       onSuccess: (res) => {
         console.log(res);
+        navigate("/home");
       },
       onError: (err) => {
         console.log(err);
