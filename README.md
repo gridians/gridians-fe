@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+<h1>😃Gridians 개발자 소통 사이트</h1>
+<h2>개발자들이 서로 소통하며 궁금한 것을 물어보고 즐겨찾기 등 개인 카드프로필을 꾸밀 수 있는 사이트</h2>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+🗓 프로젝트 기간
+2022/1/25 ~ ing 
+<hr/>
 
-## Available Scripts
+<h3>주요기능</h3>
+(인트로 화면)
+<br/>
 
-In the project directory, you can run:
+![intro](https://user-images.githubusercontent.com/67773009/223963586-46647b0a-4656-4d5a-9378-2846f3cbe698.png)
+<br/>
 
-### `npm start`
+(회원가입 화면)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+![signUp](https://user-images.githubusercontent.com/67773009/223965145-3e09b368-6aa9-4380-a533-6ab43e1d4a1d.png)
+<li>회원가입 정보를 작성하게 되면 이메일 인증이 작성한 이메일로 인증을 요청하고 인증이 완료된 사람만 로그인이 가능합니다.</li>
+<br/>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+(로그인 화면)
 
-### `npm test`
+![login](https://user-images.githubusercontent.com/67773009/223965852-ea6eca14-f03d-4966-b0fe-82591d81b775.png)
+<li>회원가입 인증이 완료되면 로그인 진행가능.</li>
+<li>로그인을 하면 AccessToken, RefreshToken을 받아서 저장한다.</li>
+<br/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+(내 정보 화면)
 
-### `npm run build`
+![mypage](https://user-images.githubusercontent.com/67773009/223967586-59418feb-0d98-4ffb-8b60-1880700ad8a2.png)
+<li>내 닉네임 또는 이메일 비밀번호 등을 수정할 수 있고 이미지 또한 변경이 가능하다.</li>
+<li>이메일 수정시 이메일은 재 인증을 통해서만 이메일 변경이 가능하다.</li>
+<li>회원탈퇴를 누르면 웹사이트에 있는 정보기능이 완전히 사라진다.</li>
+<br/>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+(메인 화면)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+![main](https://user-images.githubusercontent.com/67773009/223967070-41a44a71-6958-4932-aefd-c43578a57313.png)
+<li>로그인을 하게되면 메인화면에 카드를 등록한 유저들이 나타난다.</li>
+<li>즐겨찾기를 하게 되면 그 유저의 카드에는 노란색으로 표시가 된다.</li>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<br/>
 
-### `npm run eject`
+![card](https://user-images.githubusercontent.com/67773009/223968647-3bcf8eac-20ad-46c0-bf5a-dd235a363947.png)
+<br/>
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![card1](https://user-images.githubusercontent.com/67773009/223969265-4cefc861-9eec-48b2-a494-0736c8c56cc4.png)
+<br/>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<li>카드를 등록하게 되면 이렇게 카드가 만들어진다.</li>
+<li>수정버튼을 클릭하여 개인 상태메세지 태그 등 자유롭게 작성이 가능하다.</li>
+<li>오른쪽 하단에 버튼을 누르게 되면 내 카드 정보가 보여진다.</li>
+<br/>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+![card2](https://user-images.githubusercontent.com/67773009/223968658-5d64bb4d-1482-46b8-a947-f7ac308de56b.png)
+<br/>
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+![comment](https://user-images.githubusercontent.com/67773009/223968671-06e387f2-fc4c-485f-b6c0-760177f0e1c4.png)
+<br/>
 
-## Learn More
+<li>깃허브 연동을 하게 되면 연동한 계정의 정보를 조금 보여준다.</li>
+<li>등록한 사람에 카드에 댓글 작성이 가능하다.</li>
+<li>댓글을 남긴 사람에 대한 답글 작성도 가능하며 삭제는 본인이 작성한 댓글이 삭제 가능하다.</li>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<h1>⛓ 기술스택</h1>
+<h3>React, React-Query, Recoil, Axios</h3>
