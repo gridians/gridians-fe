@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import Intro from "./pages/Intro";
 import MyPage from "./pages/MyPage";
 import SignUp from "./pages/SignUp";
-import MemberListPage from "./pages/MemberListPage";
 import Login from "./pages/Login";
 import GithubLoginPage from "./pages/GithubLoginPage";
 import Certification from "./components/signup/Certification";
@@ -19,8 +18,6 @@ export default function Router() {
       <Header />
       <Routes>
         <Route path={"/"} element={<Intro />} />
-        <Route path={"/memberlistpage"} element={<MemberListPage />} />
-
         <Route
           path={"/login"}
           element={isLogin ? <Navigate to="/home" /> : <Login />}
