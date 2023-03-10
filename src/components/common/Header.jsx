@@ -5,17 +5,21 @@ import { getCookieToken, removeCookieToken } from "../../cookie/cookie";
 import Swal from "sweetalert2";
 import { useMutation } from "react-query";
 import { cardEnrollUseMutationPostToken } from "../../apis/queries/cardEnrollQuery";
+import logoImage from "../../image/logo/Group_1004.png";
+import { useRecoilState } from "recoil";
+import { cardClick, cardReset } from "../../store/cardInfoAtom";
 
 const Header = () => {
+  const [click, setClick] = useRecoilState(cardClick);
+  //카드 정보를 수정중인지 아닌지 판별
+  const [retouch, setRetouch] = useRecoilState(cardReset);
+
   //카드 등록 react-query
   const { mutate: cardEnroll } = useMutation(
     () => cardEnrollUseMutationPostToken(),
     {
-      onSuccess: (data) => {
-        console.log(data);
-      },
+      onSuccess: (data) => {},
       onError: (err) => {
-        console.log("aaaaaaaaa", err);
         if (err.response.status === 409) {
           Swal.fire({
             title: "이미 등록된 회원입니다",
@@ -27,6 +31,11 @@ const Header = () => {
       },
     }
   );
+
+  const onClickBackground = () => {
+    setRetouch(false);
+    setClick("reset");
+  };
 
   const location = useLocation();
   if (location.pathname === "/") return null;
@@ -64,19 +73,17 @@ const Header = () => {
     }).then((data) => {
       if (data.isConfirmed) {
         cardEnroll();
-        // navaigate("/memberlistpage");
       }
     });
   };
 
-  // useEffect(() => {
-
-  // },[])
   return (
-    <HeaderBox>
+    <HeaderBox onClick={() => onClickBackground()}>
       <HeaderWrap>
         <Link to="/home">
-          <Logo>Gridians</Logo>
+          <Logo>
+            <img src={logoImage} alt="logo" />
+          </Logo>
         </Link>
         {getCookieToken("accessToken") === undefined ? (
           <Menu>
@@ -136,10 +143,15 @@ const HeaderWrap = styled.div`
   align-items: center;
   width: 1440px;
 `;
-const Logo = styled.span`
+const Logo = styled.div`
   color: ${({ theme }) => theme.colors.white};
-  font-size: 2.2rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  img {
+    width: 180px;
+    height: 60px;
+  }
   @media ${(props) => props.theme.mobile} {
     font-size: ${({ theme }) => theme.mobileFontSizes.xxxl};
   }

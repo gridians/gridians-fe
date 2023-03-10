@@ -4,7 +4,9 @@ import SimpleSlider from "../components/memberList/card/Slide";
 import { BsFillChatDotsFill } from "react-icons/bs";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
+  cardClick,
   cardIdNum,
+  cardReset,
   github,
   imgSrc,
   instagram,
@@ -43,12 +45,12 @@ import {
 const MemberListPage = () => {
   const [cardList, setCardList] = useRecoilState(list);
   //카드를 클릭한 상태인지 다시 닫은 상태인지 관리
-  const [click, setClick] = useState();
+  const [click, setClick] = useRecoilState(cardClick);
   //클릭한 카드에 index번호 저장
   const [num, setNum] = useState();
   const setNickname = useSetRecoilState(nickNameText);
   //카드 정보를 수정중인지 아닌지 판별
-  const [retouch, setRetouch] = useState(false);
+  const [retouch, setRetouch] = useRecoilState(cardReset);
   const setStatusMsg = useSetRecoilState(statusMessage);
   const setField = useSetRecoilState(position);
   const setTagList = useSetRecoilState(tag);
@@ -152,10 +154,6 @@ const MemberListPage = () => {
     setRetouch(false);
     setClick("reset");
   };
-  const XBtnOnClick = () => {
-    setRetouch(false);
-    setClick("reset");
-  };
   const cardOnClick = (e, index, data) => {
     setEaditCardId(data.profileCardId);
     setCardId(data.profileCardId);
@@ -188,17 +186,6 @@ const MemberListPage = () => {
       />
       <Detail click={click ? click : undefined} scrollY={scrollY}>
         <DetailContainer>
-          <DefaultInfo>
-            {/* <XBtnWrapper>
-              <XBtn
-                scrollY={scrollY}
-                click={click ? click : undefined}
-                onClick={() => XBtnOnClick()}
-              >
-                X
-              </XBtn>
-            </XBtnWrapper> */}
-          </DefaultInfo>
           <SimpleSlider setRetouch={setRetouch} retouch={retouch} />
         </DetailContainer>
         <ReviewContainer>

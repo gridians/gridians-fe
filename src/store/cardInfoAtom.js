@@ -1,6 +1,14 @@
 import { atom } from "recoil";
 import { v1 } from "uuid";
 
+export const cardClick = atom({
+  key: `cardClose/${v1()}`,
+  default: "",
+});
+export const cardReset = atom({
+  key: `cardReset/${v1()}`,
+  default: false,
+});
 export const cardIdNum = atom({
   key: `cardIdNum/${v1()}`,
   default: "",
