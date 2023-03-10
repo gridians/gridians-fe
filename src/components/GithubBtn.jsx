@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const GithubBtn = () => {
   const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
-  const loginUri = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo:status read:repo_hook user:email&redirect_uri=http://localhost:3000/githubloginpage`;
+  const loginUri = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo:status read:repo_hook user:email&redirect_uri=https://www.gridians.site/githubloginpage`;
   return (
     <GithubContainer>
       <Github href={loginUri}>
