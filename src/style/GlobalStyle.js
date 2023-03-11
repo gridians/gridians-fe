@@ -7,11 +7,12 @@ const GlobalStyle = createGlobalStyle`
     font-weight: normal;
     font-style: normal;
   }
-  &::-webkit-scrollbar {
+    &::-webkit-scrollbar {
     width: 10px;
-    background-color: transparent;
+    background-color: #0E0909;
   }
   &::-webkit-scrollbar-thumb {
+    width: 5px;
     background-color: white;
     border-radius: 10px;
   }
@@ -22,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family:'SUIT-Regular' ;
+    background-color: #0E0909;
     #root{
         /* width: 100%;
         height: 100%; */

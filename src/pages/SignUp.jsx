@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { AiOutlineIdcard } from "react-icons/ai";
-import { AiOutlineMail } from "react-icons/ai";
-import { RiLockPasswordLine } from "react-icons/ri";
+import { AiOutlineIdcard } from "@react-icons/all-files/ai/AiOutlineIdcard";
+import { AiOutlineMail } from "@react-icons/all-files/ai/AiOutlineMail";
+import { RiLockPasswordLine } from "@react-icons/all-files/ri/RiLockPasswordLine";
 import Swal from "sweetalert2";
 
 import {

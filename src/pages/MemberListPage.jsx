@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import SimpleSlider from "../components/memberList/card/Slide";
-import { BsFillChatDotsFill } from "react-icons/bs";
+import { BsFillChatDotsFill } from "@react-icons/all-files/bs/BsFillChatDotsFill";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   cardClick,
@@ -20,7 +20,7 @@ import {
   tag,
   twitter,
 } from "../store/cardInfoAtom";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import {
   memberListuseQuerygetBookMarkList,
   memberListUseQueryGetCardInfo,
@@ -73,6 +73,8 @@ const MemberListPage = () => {
   const [pageNum, setPageNum] = useState(0);
   const [cardId, setCardId] = useRecoilState(cardIdNum);
 
+  const queryClient = useQueryClient();
+
   // 회원 카드 리스트 받아오기 react-query
   const { mutate: cardListInfo } = useMutation(
     "cardList",
@@ -104,7 +106,6 @@ const MemberListPage = () => {
 
   //회원 카드 상세정보 가져오기 react-query
   const { mutate: cardInfo } = useMutation(
-    "cardInfo",
     (index) => memberListUseQueryGetCardInfo(index),
     {
       onSuccess: (res) => {
@@ -124,6 +125,9 @@ const MemberListPage = () => {
           if (data.name === "github") return setGithubId(data.account);
           else return setInstagramId(data.account);
         });
+      },
+      onSettled: (data, error, variables, context) => {
+        queryClient.invalidateQueries();
       },
       onError: (err) => {
         // console.log(err);
@@ -265,7 +269,7 @@ const Background = styled.div`
   width: 100%;
   height: 100%;
   background-color: transparent;
-  transition: all 1s;
+  transition: all 0.5s;
   ${(props) =>
     props.click &&
     css`
@@ -402,15 +406,19 @@ const Detail = styled(Front)`
   width: 70%;
   height: 75vh;
   color: ${({ theme }) => theme.colors.white};
-  transition: all 0.5s;
+  transition: all 1s;
   ${(props) =>
     props.click === "click"
       ? css`
           z-index: 9;
           display: flex;
           opacity: 1;
+          transition: all 0.5s;
         `
-      : css``}
+      : css`
+          z-index: -9;
+          transition: all 0.5s;
+        `}
 `;
 const DetailBtn = styled.div`
   position: absolute;
@@ -458,4 +466,4 @@ const ReviewContainer = styled.div`
   cursor: auto;
 `;
 
-export default MemberListPage;
+export default memo(MemberListPage);

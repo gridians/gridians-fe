@@ -21,5 +21,6 @@ export default function LoadingSpinner() {
 
 const LoaderContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 90vh;
+  background-color: #0e0909;
 `;

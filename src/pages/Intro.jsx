@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { FaReact } from "react-icons/fa";
-import { FaFigma } from "react-icons/fa";
-import { FaNodeJs } from "react-icons/fa";
-import { FaDatabase } from "react-icons/fa";
-import { FaAngular } from "react-icons/fa";
-import { FaPhp } from "react-icons/fa";
-import { FaHtml5 } from "react-icons/fa";
-import { FaCss3 } from "react-icons/fa";
-import { FaJava } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
-import { FaCopyright } from "react-icons/fa";
-import { FaSwift } from "react-icons/fa";
-import { FaVuejs } from "react-icons/fa";
-import { FaArrowDown } from "react-icons/fa";
-import profile1 from "../image/profileImage/profile1.png";
-import profile2 from "../image/profileImage/profile2.png";
-import profile3 from "../image/profileImage/profile3.png";
-import profile4 from "../image/profileImage/profile4.png";
-import profile5 from "../image/profileImage/profile5.png";
-import profile6 from "../image/profileImage/profile6.png";
-import profile7 from "../image/profileImage/profile7.png";
-import profile8 from "../image/profileImage/profile8.png";
-import profile9 from "../image/profileImage/profile9.png";
-import profile10 from "../image/profileImage/profile10.png";
-import profile11 from "../image/profileImage/profile11.png";
-import profile12 from "../image/profileImage/profile12.png";
-import profile13 from "../image/profileImage/profile13.png";
-import profile14 from "../image/profileImage/profile14.png";
-import profile15 from "../image/profileImage/profile15.png";
-import profile16 from "../image/profileImage/profile16.png";
+import { FaReact } from "@react-icons/all-files/fa/FaReact";
+import { FaFigma } from "@react-icons/all-files/fa/FaFigma";
+import { FaNodeJs } from "@react-icons/all-files/fa/FaNodeJs";
+import { FaDatabase } from "@react-icons/all-files/fa/FaDatabase";
+import { FaAngular } from "@react-icons/all-files/fa/FaAngular";
+import { FaPhp } from "@react-icons/all-files/fa/FaPhp";
+import { FaHtml5 } from "@react-icons/all-files/fa/FaHtml5";
+import { FaCss3 } from "@react-icons/all-files/fa/FaCss3";
+import { FaJava } from "@react-icons/all-files/fa/FaJava";
+import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
+import { FaCopyright } from "@react-icons/all-files/fa/FaCopyright";
+import { FaSwift } from "@react-icons/all-files/fa/FaSwift";
+import { FaVuejs } from "@react-icons/all-files/fa/FaVuejs";
+import { FaArrowDown } from "@react-icons/all-files/fa/FaArrowDown";
+import profile1 from "../image/profileImage/profile1.webp";
+import profile2 from "../image/profileImage/profile2.webp";
+import profile3 from "../image/profileImage/profile3.webp";
+import profile4 from "../image/profileImage/profile4.webp";
+import profile5 from "../image/profileImage/profile5.webp";
+import profile6 from "../image/profileImage/profile6.webp";
+import profile7 from "../image/profileImage/profile7.webp";
+import profile8 from "../image/profileImage/profile8.webp";
+import profile9 from "../image/profileImage/profile9.webp";
+import profile10 from "../image/profileImage/profile10.webp";
+import profile11 from "../image/profileImage/profile11.webp";
+import profile12 from "../image/profileImage/profile12.webp";
+import profile13 from "../image/profileImage/profile13.webp";
+import profile14 from "../image/profileImage/profile14.webp";
+import profile15 from "../image/profileImage/profile15.webp";
+import profile16 from "../image/profileImage/profile16.webp";
 import { useNavigate } from "react-router";
 export default function Intro() {
   const [arrow, setArrow] = useState(false);
@@ -42,7 +42,7 @@ export default function Intro() {
   };
   return (
     <IntroContainer>
-      <IntroOverlay>
+      {/* <IntroOverlay>
         <OverlayTitleContainer className="first-title">
           <OverlayTitle>다른 개발자들</OverlayTitle>
           <span className="sub-title">을 보면서</span>
@@ -71,13 +71,13 @@ export default function Intro() {
             겁니다!
           </span>
         </OverlayTitleContainer>
-      </IntroOverlay>
+      </IntroOverlay> */}
       <IntroWrapper>
         <IntroProfileWrapper className="grid-wrapper10">
           <IntroIconWrapper>
             <FaCss3 className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid10" />
+          <IntroProfileImage src={`${profile10}`} className="grid10" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Tim</IntroProfileName>
             <IntroProfileJob>Css</IntroProfileJob>
@@ -88,7 +88,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaJava className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid11" />
+          <IntroProfileImage src={`${profile11}`} className="grid11" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Stephanie</IntroProfileName>
             <IntroProfileJob>Java</IntroProfileJob>
@@ -99,7 +99,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaGithub className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid12" />
+          <IntroProfileImage src={`${profile12}`} className="grid12" />
           <IntroProfileTitleContainer>
             <IntroProfileName>God</IntroProfileName>
             <IntroProfileJob>Github</IntroProfileJob>
@@ -110,7 +110,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaCopyright className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid13" />
+          <IntroProfileImage src={`${profile13}`} className="grid13" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Chorok</IntroProfileName>
             <IntroProfileJob>C</IntroProfileJob>
@@ -121,7 +121,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaHtml5 className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid9" />
+          <IntroProfileImage src={`${profile9}`} className="grid9" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Sally</IntroProfileName>
             <IntroProfileJob>Html</IntroProfileJob>
@@ -132,7 +132,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaFigma className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid2" />
+          <IntroProfileImage src={`${profile2}`} className="grid2" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Jenny</IntroProfileName>
             <IntroProfileJob>UI</IntroProfileJob>
@@ -143,7 +143,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaNodeJs className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid3" />
+          <IntroProfileImage src={`${profile3}`} className="grid3" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Hoody</IntroProfileName>
             <IntroProfileJob>Back-end</IntroProfileJob>
@@ -154,7 +154,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaFigma className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid14" />
+          <IntroProfileImage src={`${profile14}`} className="grid14" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Geum</IntroProfileName>
             <IntroProfileJob>UX</IntroProfileJob>
@@ -165,7 +165,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaAngular className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid8" />
+          <IntroProfileImage src={`${profile8}`} className="grid8" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Joker</IntroProfileName>
             <IntroProfileJob>Angular</IntroProfileJob>
@@ -176,7 +176,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaReact className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid1" />
+          <IntroProfileImage src={`${profile1}`} className="grid1" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Byung-ho</IntroProfileName>
             <IntroProfileJob>Rapper</IntroProfileJob>
@@ -187,7 +187,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaDatabase className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid4" />
+          <IntroProfileImage src={`${profile4}`} className="grid4" />
           <IntroProfileTitleContainer>
             <IntroProfileName>John</IntroProfileName>
             <IntroProfileJob>DB</IntroProfileJob>
@@ -198,7 +198,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaReact className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid15" />
+          <IntroProfileImage src={`${profile15}`} className="grid15" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Wall</IntroProfileName>
             <IntroProfileJob>React</IntroProfileJob>
@@ -209,7 +209,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaPhp className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid7" />
+          <IntroProfileImage src={`${profile7}`} className="grid7" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Ryan</IntroProfileName>
             <IntroProfileJob>Php</IntroProfileJob>
@@ -220,7 +220,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaVuejs className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid6" />
+          <IntroProfileImage src={`${profile6}`} className="grid6" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Xia</IntroProfileName>
             <IntroProfileJob>Vue</IntroProfileJob>
@@ -231,7 +231,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaSwift className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid5" />
+          <IntroProfileImage src={`${profile5}`} className="grid5" />
           <IntroProfileTitleContainer>
             <IntroProfileName>Matter</IntroProfileName>
             <IntroProfileJob>Ios</IntroProfileJob>
@@ -242,7 +242,7 @@ export default function Intro() {
           <IntroIconWrapper>
             <FaJava className="icon" />
           </IntroIconWrapper>
-          <IntroProfileImage className="grid16" />
+          <IntroProfileImage src={`${profile16}`} className="grid16" />
           <IntroProfileTitleContainer>
             <IntroProfileName>tupac</IntroProfileName>
             <IntroProfileJob>Java</IntroProfileJob>
@@ -421,54 +421,6 @@ const IntroWrapper = styled.div`
   .grid-wrapper16 {
     animation-delay: 4.8s;
   }
-  .grid1 {
-    background-image: url(${profile1});
-  }
-  .grid2 {
-    background-image: url(${profile2});
-  }
-  .grid3 {
-    background-image: url(${profile3});
-  }
-  .grid4 {
-    background-image: url(${profile4});
-  }
-  .grid5 {
-    background-image: url(${profile5});
-  }
-  .grid6 {
-    background-image: url(${profile6});
-  }
-  .grid7 {
-    background-image: url(${profile7});
-  }
-  .grid8 {
-    background-image: url(${profile8});
-  }
-  .grid9 {
-    background-image: url(${profile9});
-  }
-  .grid10 {
-    background-image: url(${profile10});
-  }
-  .grid11 {
-    background-image: url(${profile11});
-  }
-  .grid12 {
-    background-image: url(${profile12});
-  }
-  .grid13 {
-    background-image: url(${profile13});
-  }
-  .grid14 {
-    background-image: url(${profile14});
-  }
-  .grid15 {
-    background-image: url(${profile15});
-  }
-  .grid16 {
-    background-image: url(${profile16});
-  }
 `;
 const IntroProfileWrapper = styled.div`
   width: 100%;
@@ -511,13 +463,14 @@ const IntroIconWrapper = styled.div`
     top: 5px;
   }
 `;
-const IntroProfileImage = styled.div`
+const IntroPicture = styled.picture`
   width: 100%;
   height: 100%;
-  background-position: center;
-  background-size: 50%;
-  background-repeat: no-repeat;
-  margin-top: 20px;
+`;
+const IntroProfileImage = styled.img`
+  width: 40%;
+  height: 40%;
+  object-fit: cover;
   @media ${(props) => props.theme.mobile} {
     width: 40px;
     height: 40px;

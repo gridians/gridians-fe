@@ -18,7 +18,7 @@ import mobileInfo5Img from "../image/mobileInfo/mobile-info5.png";
 import mobileInfo6Img from "../image/mobileInfo/mobile-info6.png";
 import arrowRight from "../image/arrow/arrow-right.png";
 import arrowLeft from "../image/arrow/arrow-left.png";
-import { FaReact } from "react-icons/fa";
+import { FaReact } from "@react-icons/all-files/fa";
 
 export default function Education() {
   const settings = {

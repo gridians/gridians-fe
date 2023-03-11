@@ -44,9 +44,7 @@ export default function CommentList() {
     {
       refetchOnWindowFocus: false,
       enabled: false,
-      onSuccess: (res) => {
-        console.log(res);
-      },
+      onSuccess: (res) => {},
       onSettled: (data, error, variables, context) => {
         queryClient.invalidateQueries();
       },
@@ -59,12 +57,8 @@ export default function CommentList() {
       commentUseMutationDeleteCommentList(deleteCommentInfo),
     {
       refetchOnWindowFocus: false,
-      onSuccess: (res) => {
-        console.log(res);
-        // queryClient.invalidateQueries("carCommentInfo");
-      },
+      onSuccess: (res) => {},
       onSettled: (data, error, variables, context) => {
-        // console.log(data);
         queryClient.invalidateQueries();
       },
     }
@@ -77,7 +71,6 @@ export default function CommentList() {
     {
       refetchOnWindowFocus: false,
       onSuccess: (res) => {
-        console.log(res);
         setReplyComment("");
       },
       onSettled: (data, error, variables, context) => {

@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 import { memberListuseMutationGetCardInfo } from "../../../apis/queries/memberListQuery";
 import { getCookieToken } from "../../../cookie/cookie";
-import { FaUserAlt } from "react-icons/fa";
+import { FaUserAlt } from "@react-icons/all-files/fa/FaUserAlt";
 import {
   cardIdNum,
   github,
@@ -67,7 +67,6 @@ const MyCardBtn = ({ setClick }) => {
         console.log(err);
       },
       onSuccess: (res) => {
-        console.log(res);
         setGithubName(res.githubAccount);
         setFollower(res.follower);
         setFollowing(res.following);

@@ -4,8 +4,10 @@ import Swal from "sweetalert2";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled, { css } from "styled-components";
-import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
-import { AiFillSetting } from "react-icons/ai";
+import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
+import { FaInstagram } from "@react-icons/all-files/fa/FaInstagram";
+import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
+import { AiFillSetting } from "@react-icons/all-files/ai/AiFillSetting";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { saveAs } from "file-saver";
@@ -418,17 +420,17 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <>
                 <SnsItem github="github">
                   <a href={`https://github.com/${githubId}`}>
-                    <BsGithub />
+                    <FaGithub />
                   </a>
                 </SnsItem>
                 <SnsItem instagram="instagram">
                   <a href={`https://www.instagram.com/${instagramId}`}>
-                    <BsInstagram />
+                    <FaInstagram />
                   </a>
                 </SnsItem>
                 <SnsItem twitter="twitter">
                   <a href={`https://twitter.com/${twitterId}`}>
-                    <BsTwitter />
+                    <FaTwitter />
                   </a>
                 </SnsItem>
               </>
