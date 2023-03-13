@@ -1,14 +1,16 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import Swal from "sweetalert2";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled, { css } from "styled-components";
-import { BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
-import { AiFillSetting } from "react-icons/ai";
+import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
+import { FaInstagram } from "@react-icons/all-files/fa/FaInstagram";
+import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
+import { AiFillSetting } from "@react-icons/all-files/ai/AiFillSetting";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { saveAs } from "file-saver";
+// import { saveAs } from "file-saver";
 import GitHubCalendar from "react-github-calendar";
 import {
   cardIdNum,
@@ -25,7 +27,7 @@ import {
   twitter,
 } from "../../../store/cardInfoAtom";
 import { useMutation } from "react-query";
-import { BsFillBookmarkFill } from "react-icons/bs";
+import { BsFillBookmarkFill } from "@react-icons/all-files/bs/BsFillBookmarkFill";
 import {
   memberListuseMutationDeleteBookMark,
   memberListuseMutationPostBookMark,
@@ -35,7 +37,7 @@ import {
 import { getCookieToken } from "../../../cookie/cookie";
 import { useQueryMyPageGetUserValid } from "../../../apis/customQuery/myPageCustomQuery";
 import { userBookMarkList } from "../../../store/userInfoAtom";
-import domtoimage from "dom-to-image";
+// import domtoimage from "dom-to-image";
 import {
   follower,
   following,
@@ -63,7 +65,7 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   const cardId = useRecoilValue(cardIdNum);
   const skillUrl = useRecoilValue(skillSrc);
   const nickname = useRecoilValue(nickNameText);
-  const cardRef = useRef();
+  // const cardRef = useRef();
   //github 관련 recoil
   const hasGithub = useRecoilValue(githubConnection);
   const lastCommitMsg = useRecoilValue(recentCommitMessage);
@@ -243,17 +245,17 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
   };
 
   // cardImage화
-  const onDownloadBtn = () => {
-    const card = cardRef.current;
-    domtoimage
-      .toBlob(card)
-      .then((blob) => {
-        saveAs(blob, "card.png");
-      })
-      .catch(function (error) {
-        console.error("oops, something went wrong!", error);
-      });
-  };
+  // const onDownloadBtn = () => {
+  //   const card = cardRef.current;
+  //   domtoimage
+  //     .toBlob(card)
+  //     .then((blob) => {
+  //       saveAs(blob, "card.png");
+  //     })
+  //     .catch(function (error) {
+  //       console.error("oops, something went wrong!", error);
+  //     });
+  // };
 
   //선택 가능한 포지션 list
   const positionList = [
@@ -418,17 +420,17 @@ const SimpleSlider = ({ setRetouch, retouch }) => {
               <>
                 <SnsItem github="github">
                   <a href={`https://github.com/${githubId}`}>
-                    <BsGithub />
+                    <FaGithub />
                   </a>
                 </SnsItem>
                 <SnsItem instagram="instagram">
                   <a href={`https://www.instagram.com/${instagramId}`}>
-                    <BsInstagram />
+                    <FaInstagram />
                   </a>
                 </SnsItem>
                 <SnsItem twitter="twitter">
                   <a href={`https://twitter.com/${twitterId}`}>
-                    <BsTwitter />
+                    <FaTwitter />
                   </a>
                 </SnsItem>
               </>
@@ -1080,140 +1082,140 @@ const GitHubCalendarContainer = styled.div`
   justify-content: center;
 `;
 
-const Third = styled(First)`
-  width: 100%;
-  height: 100%;
-`;
-const ThirdUploadWrapper = styled.div`
-  width: 100%;
-  padding-left: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 30px;
-  .fileUploadInput {
-    margin-right: 40px;
-  }
-  .fileUploadButton {
-  }
-`;
-const ThirdUploadFile = styled.input`
-  border: none;
-  width: 55%;
-  display: flex;
-  align-items: center;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.white};
-  padding: 10px;
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  border-radius: 10px;
-  &:focus {
-    outline: none;
-  }
-  &::placeholder {
-    font-size: ${({ theme }) => theme.fontSizes.small};
-    color: ${({ theme }) => theme.colors.subColor4};
-  }
-`;
-const ThirdWrapper = styled.div`
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  position: relative;
-`;
-const CardWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 500px;
-  background-color: transparent;
-  align-items: center;
-  justify-content: center;
-  margin-top: -30px;
-`;
-const Card = styled.div`
-  position: relative;
-  width: 250px;
-  height: 250px;
-  color: black;
-  background: white;
-  border-radius: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-const Skill = styled.div`
-  position: absolute;
-  top: 32px;
-  right: 32px;
-  width: 28px;
-  img {
-    width: 100%;
-    height: 100%;
-  }
-`;
-const ThirdProfileImg = styled.div`
-  margin: 55px 0 10px 0;
-  width: 100px;
-  height: 100px;
-  img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-  }
-`;
-const Nickname = styled.h2`
-  margin: -5px 0 0 0;
-`;
-const Role = styled.h5`
-  margin: 0;
-  color: #505050;
-`;
+// const Third = styled(First)`
+//   width: 100%;
+//   height: 100%;
+// `;
+// const ThirdUploadWrapper = styled.div`
+//   width: 100%;
+//   padding-left: 30px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   margin-top: 30px;
+//   .fileUploadInput {
+//     margin-right: 40px;
+//   }
+//   .fileUploadButton {
+//   }
+// `;
+// const ThirdUploadFile = styled.input`
+//   border: none;
+//   width: 55%;
+//   display: flex;
+//   align-items: center;
+//   background-color: transparent;
+//   border: 1px solid ${({ theme }) => theme.colors.white};
+//   padding: 10px;
+//   color: ${({ theme }) => theme.colors.white};
+//   font-size: ${({ theme }) => theme.fontSizes.lg};
+//   border-radius: 10px;
+//   &:focus {
+//     outline: none;
+//   }
+//   &::placeholder {
+//     font-size: ${({ theme }) => theme.fontSizes.small};
+//     color: ${({ theme }) => theme.colors.subColor4};
+//   }
+// `;
+// const ThirdWrapper = styled.div`
+//   height: 100%;
+//   width: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 10px;
+//   position: relative;
+// `;
+// const CardWrapper = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   height: 500px;
+//   background-color: transparent;
+//   align-items: center;
+//   justify-content: center;
+//   margin-top: -30px;
+// `;
+// const Card = styled.div`
+//   position: relative;
+//   width: 250px;
+//   height: 250px;
+//   color: black;
+//   background: white;
+//   border-radius: 30px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// `;
+// const Skill = styled.div`
+//   position: absolute;
+//   top: 32px;
+//   right: 32px;
+//   width: 28px;
+//   img {
+//     width: 100%;
+//     height: 100%;
+//   }
+// `;
+// const ThirdProfileImg = styled.div`
+//   margin: 55px 0 10px 0;
+//   width: 100px;
+//   height: 100px;
+//   img {
+//     width: 100px;
+//     height: 100px;
+//     border-radius: 50%;
+//   }
+// `;
+// const Nickname = styled.h2`
+//   margin: -5px 0 0 0;
+// `;
+// const Role = styled.h5`
+//   margin: 0;
+//   color: #505050;
+// `;
 
-const CardImageButtonWrapper = styled.div`
-  width: 100%;
-`;
-const CardImageButton = styled.button`
-  width: 130px;
-  height: 40px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  position: absolute;
-  cursor: pointer;
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.white};
-  border: none;
-  bottom: 60px;
-  right: 60px;
-  border: 2px solid white;
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.subColor6};
-    color: ${({ theme }) => theme.colors.white};
-    transition: all 0.5s;
-  }
-`;
+// const CardImageButtonWrapper = styled.div`
+//   width: 100%;
+// `;
+// const CardImageButton = styled.button`
+//   width: 130px;
+//   height: 40px;
+//   border-radius: 10px;
+//   font-weight: bold;
+//   font-size: ${({ theme }) => theme.fontSizes.base};
+//   position: absolute;
+//   cursor: pointer;
+//   background-color: transparent;
+//   color: ${({ theme }) => theme.colors.white};
+//   border: none;
+//   bottom: 60px;
+//   right: 60px;
+//   border: 2px solid white;
+//   &:hover {
+//     background-color: ${({ theme }) => theme.colors.subColor6};
+//     color: ${({ theme }) => theme.colors.white};
+//     transition: all 0.5s;
+//   }
+// `;
 
-const UploadImageButton = styled.button`
-  width: 150px;
-  height: 40px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  cursor: pointer;
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.white};
-  border: none;
-  bottom: 60px;
-  right: 60px;
-  border: 2px solid white;
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.subColor6};
-    color: ${({ theme }) => theme.colors.white};
-    transition: all 0.5s;
-  }
-`;
-export default SimpleSlider;
+// const UploadImageButton = styled.button`
+//   width: 150px;
+//   height: 40px;
+//   border-radius: 10px;
+//   font-weight: bold;
+//   font-size: ${({ theme }) => theme.fontSizes.base};
+//   cursor: pointer;
+//   background-color: transparent;
+//   color: ${({ theme }) => theme.colors.white};
+//   border: none;
+//   bottom: 60px;
+//   right: 60px;
+//   border: 2px solid white;
+//   &:hover {
+//     background-color: ${({ theme }) => theme.colors.subColor6};
+//     color: ${({ theme }) => theme.colors.white};
+//     transition: all 0.5s;
+//   }
+// `;
+export default React.memo(SimpleSlider);

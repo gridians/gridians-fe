@@ -1,7 +1,6 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import { BsArrowUp } from "react-icons/bs";
-import { MdKeyboardArrowUp } from "react-icons/md";
+import { MdKeyboardArrowUp } from "@react-icons/all-files/md/MdKeyboardArrowUp";
 
 const TopButton = () => {
   const topBtnOnClick = () => {
@@ -39,8 +38,8 @@ const TopBtn = styled.button`
   color: #414141;
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   cursor: pointer;
-  svg{
-    margin-top:3px;
+  svg {
+    margin-top: 3px;
   }
   /* svg {
     position: absolute;

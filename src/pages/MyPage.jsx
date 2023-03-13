@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { AiOutlineFileImage } from "react-icons/ai";
-import { AiOutlineIdcard } from "react-icons/ai";
-import { AiOutlineMail } from "react-icons/ai";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { MdPassword } from "react-icons/md";
+import { FaRegFileImage } from "@react-icons/all-files/fa/FaRegFileImage";
+import { FaRegIdCard } from "@react-icons/all-files/fa/FaRegIdCard";
+import { FaRegEnvelope } from "@react-icons/all-files/fa/FaRegEnvelope";
+import { FaUnlockAlt } from "@react-icons/all-files/fa/FaUnlockAlt";
+import { FaLock } from "@react-icons/all-files/fa/FaLock";
 import {
   myPageUserEmail,
   myPageUserEmailMessage,
@@ -396,7 +396,7 @@ export default function MyPage() {
           <MyPageFormEditInfoWrapper>
             {/* 이미지 업로드 */}
             <MyPageInputContainer>
-              <AiOutlineFileImage className="icon" />
+              <FaRegFileImage className="icon" />
               <MyPageInputWrapper>
                 <MyPageInput
                   type="file"
@@ -416,7 +416,7 @@ export default function MyPage() {
             {/* 이메일 */}
             {email.length > 0 ? (
               <MyPageInputContainer>
-                <AiOutlineMail className="icon" />
+                <FaRegEnvelope className="icon" />
                 <MyPageInputWrapper>
                   {isEmail ? (
                     <MyPageInput
@@ -443,7 +443,7 @@ export default function MyPage() {
               </MyPageInputContainer>
             ) : (
               <MyPageInputContainer>
-                <AiOutlineMail className="icon" />
+                <FaRegEnvelope className="icon" />
                 <MyPageInputWrapper>
                   <MyPageInput
                     onChange={onChangeEmail}
@@ -463,7 +463,7 @@ export default function MyPage() {
             {/* 닉네임 */}
             {nickname.length > 0 ? (
               <MyPageInputContainer>
-                <AiOutlineIdcard className="icon" />
+                <FaRegIdCard className="icon" />
                 <MyPageInputWrapper>
                   {isNickname ? (
                     <MyPageInput
@@ -485,7 +485,7 @@ export default function MyPage() {
               </MyPageInputContainer>
             ) : (
               <MyPageInputContainer>
-                <AiOutlineIdcard className="icon" />
+                <FaRegIdCard className="icon" />
                 <MyPageInputWrapper>
                   <MyPageInput
                     onChange={onChangeNickname}
@@ -500,7 +500,7 @@ export default function MyPage() {
             {/* 비밀번호 */}
             {password.length > 0 ? (
               <MyPageInputContainer>
-                <RiLockPasswordLine className="icon" />
+                <FaUnlockAlt className="icon" />
                 <MyPageInputWrapper>
                   {isPassword ? (
                     <MyPageInput
@@ -524,7 +524,7 @@ export default function MyPage() {
               </MyPageInputContainer>
             ) : (
               <MyPageInputContainer>
-                <RiLockPasswordLine className="icon" />
+                <FaUnlockAlt className="icon" />
                 <MyPageInputWrapper>
                   <MyPageInput
                     onChange={onChangePassword}
@@ -539,7 +539,7 @@ export default function MyPage() {
             {/* 비밀번호 변경 */}
             {newPassword.length > 0 ? (
               <MyPageInputContainer>
-                <MdPassword className="icon" />
+                <FaLock className="icon" />
                 <MyPageInputWrapper>
                   {isNewPassword ? (
                     <MyPageInput
@@ -563,7 +563,7 @@ export default function MyPage() {
               </MyPageInputContainer>
             ) : (
               <MyPageInputContainer>
-                <MdPassword className="icon" />
+                <FaLock className="icon" />
                 <MyPageInputWrapper>
                   <MyPageInput
                     onChange={onChangeNewPassword}
@@ -578,7 +578,7 @@ export default function MyPage() {
             {/* 비밀번호 확인 */}
             {newPasswordConfirm.length > 0 ? (
               <MyPageInputContainer>
-                <MdPassword className="icon" />
+                <FaLock className="icon" />
                 <MyPageInputWrapper>
                   {isNewPasswordConfirm ? (
                     <MyPageInput
@@ -602,7 +602,7 @@ export default function MyPage() {
               </MyPageInputContainer>
             ) : (
               <MyPageInputContainer>
-                <MdPassword className="icon" />
+                <FaLock className="icon" />
                 <MyPageInputWrapper>
                   <MyPageInput
                     onChange={onChangeNewPasswordConfirm}

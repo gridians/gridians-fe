@@ -6,13 +6,13 @@ import Swal from "sweetalert2";
 import { useMutation } from "react-query";
 import { cardEnrollUseMutationPostToken } from "../../apis/queries/cardEnrollQuery";
 import logoImage from "../../image/logo/Group_1004.png";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { cardClick, cardReset } from "../../store/cardInfoAtom";
 
 const Header = () => {
-  const [click, setClick] = useRecoilState(cardClick);
+  const setClick = useSetRecoilState(cardClick);
   //카드 정보를 수정중인지 아닌지 판별
-  const [retouch, setRetouch] = useRecoilState(cardReset);
+  const setRetouch = useSetRecoilState(cardReset);
 
   //카드 등록 react-query
   const { mutate: cardEnroll } = useMutation(

@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { setCookieToken } from "../cookie/cookie";
 import Swal from "sweetalert2";
-import LoadingSpinner from "../components/loading/LoadingSpinner";
 import {
   postLoginUseQueryUserInfo,
   postLoginQueryFindUserPassword,
@@ -20,7 +19,6 @@ const Login = () => {
 
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const userLoginInfo = { email, password };
   const { mutate: postLoginInfo } = useMutation(
@@ -30,10 +28,7 @@ const Login = () => {
         setCookieToken("accessToken", res.accessToken);
         localStorage.setItem("refreshToken", res.refreshToken);
         localStorage.setItem("name", res.nickname);
-        setIsLoading(true);
-        setTimeout(() => {
-          navigate("/home");
-        }, 2000);
+        navigate("/home");
       },
       onError: () => {},
     }
@@ -98,98 +93,94 @@ const Login = () => {
 
   return (
     <LoginContainer>
-      {isLoading === true ? (
-        <LoadingSpinner />
-      ) : (
-        <LoginFormWrapper>
-          <LoginTitleListWrapper>
-            <LoginTitleWrapper>
-              <MainTitle>Login</MainTitle>
-            </LoginTitleWrapper>
-          </LoginTitleListWrapper>
-          <LoginForm>
-            <LoginFormInnerWrapper>
-              <IdContainer>
-                <p>이메일</p>
-                {email.length > 0 ? (
-                  <>
-                    <IdInput
-                      value={email}
-                      onChange={idOnChange}
-                      placeholder="이메일을 입력해주세요"
-                    />
-                    <InputMessage>{emailMessage}</InputMessage>
-                  </>
-                ) : (
-                  <>
-                    <IdInput
-                      value={email}
-                      onChange={idOnChange}
-                      placeholder="이메일을 입력해주세요"
-                    />
-                  </>
-                )}
-              </IdContainer>
-              <PwContainer>
-                <p>비밀번호</p>
-                {password.length > 0 ? (
-                  <>
-                    <PwInput
-                      type={"password"}
-                      value={password}
-                      onChange={pwOnChange}
-                      placeholder="비밀번호를 입력해주세요"
-                    />
-                    <InputMessage>{passwordMessage}</InputMessage>
-                  </>
-                ) : (
-                  <>
-                    <PwInput
-                      type={"password"}
-                      value={password}
-                      onChange={pwOnChange}
-                      placeholder="비밀번호를 입력해주세요"
-                    />
-                  </>
-                )}
-              </PwContainer>
-              {isEmail && isPassword ? (
-                <LoginBtn
-                  style={{
-                    backgroundColor: "#738598",
-                    color: "white",
-                    border: "none",
-                  }}
-                  onClick={onSubmit}
-                  type="submit"
-                >
-                  로그인
-                </LoginBtn>
+      <LoginFormWrapper>
+        <LoginTitleListWrapper>
+          <LoginTitleWrapper>
+            <MainTitle>Login</MainTitle>
+          </LoginTitleWrapper>
+        </LoginTitleListWrapper>
+        <LoginForm>
+          <LoginFormInnerWrapper>
+            <IdContainer>
+              <p>이메일</p>
+              {email.length > 0 ? (
+                <>
+                  <IdInput
+                    value={email}
+                    onChange={idOnChange}
+                    placeholder="이메일을 입력해주세요"
+                  />
+                  <InputMessage>{emailMessage}</InputMessage>
+                </>
               ) : (
-                <LoginBtn style={{ pointerEvents: "none" }} onClick={onSubmit}>
-                  로그인
-                </LoginBtn>
+                <>
+                  <IdInput
+                    value={email}
+                    onChange={idOnChange}
+                    placeholder="이메일을 입력해주세요"
+                  />
+                </>
               )}
-              {/* <GithubBtn /> */}
-              <MenuList>
-                <MenuItem>
-                  <FindPwContainer onClick={onClickFindPw}>
-                    비밀번호 찾기
-                  </FindPwContainer>
-                </MenuItem>
+            </IdContainer>
+            <PwContainer>
+              <p>비밀번호</p>
+              {password.length > 0 ? (
+                <>
+                  <PwInput
+                    type={"password"}
+                    value={password}
+                    onChange={pwOnChange}
+                    placeholder="비밀번호를 입력해주세요"
+                  />
+                  <InputMessage>{passwordMessage}</InputMessage>
+                </>
+              ) : (
+                <>
+                  <PwInput
+                    type={"password"}
+                    value={password}
+                    onChange={pwOnChange}
+                    placeholder="비밀번호를 입력해주세요"
+                  />
+                </>
+              )}
+            </PwContainer>
+            {isEmail && isPassword ? (
+              <LoginBtn
+                style={{
+                  backgroundColor: "#738598",
+                  color: "white",
+                  border: "none",
+                }}
+                onClick={onSubmit}
+                type="submit"
+              >
+                로그인
+              </LoginBtn>
+            ) : (
+              <LoginBtn style={{ pointerEvents: "none" }} onClick={onSubmit}>
+                로그인
+              </LoginBtn>
+            )}
+            {/* <GithubBtn /> */}
+            <MenuList>
+              <MenuItem>
+                <FindPwContainer onClick={onClickFindPw}>
+                  비밀번호 찾기
+                </FindPwContainer>
+              </MenuItem>
 
-                <MenuItem>
-                  <RegisterMoveBtn>
-                    <Link className="signupButton" to="/signup">
-                      가입이 아직이신가요?
-                    </Link>
-                  </RegisterMoveBtn>
-                </MenuItem>
-              </MenuList>
-            </LoginFormInnerWrapper>
-          </LoginForm>
-        </LoginFormWrapper>
-      )}
+              <MenuItem>
+                <RegisterMoveBtn>
+                  <Link className="signupButton" to="/signup">
+                    가입이 아직이신가요?
+                  </Link>
+                </RegisterMoveBtn>
+              </MenuItem>
+            </MenuList>
+          </LoginFormInnerWrapper>
+        </LoginForm>
+      </LoginFormWrapper>
     </LoginContainer>
   );
 };
