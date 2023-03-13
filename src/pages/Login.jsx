@@ -19,7 +19,6 @@ const Login = () => {
 
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const userLoginInfo = { email, password };
   const { mutate: postLoginInfo } = useMutation(

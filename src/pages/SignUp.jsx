@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { AiOutlineIdcard } from "@react-icons/all-files/ai/AiOutlineIdcard";
 import { AiOutlineMail } from "@react-icons/all-files/ai/AiOutlineMail";
@@ -23,7 +23,7 @@ import LoadingSpinner from "../components/loading/LoadingSpinner";
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const [githubId, setGithubId] = useRecoilState(loginGithubId);
+  const githubId = useRecoilValue(loginGithubId);
 
   const [nickname, setNickname] = useRecoilState(userNickname);
   const [email, setEmail] = useRecoilState(userEmail);
@@ -43,7 +43,7 @@ export default function SignUp() {
     setNickname("");
     setEmail("");
     setPassword("");
-  }, []);
+  }, [setEmail, setNickname, setPassword]);
 
   const { mutate: signUpUser, isLoading: signUpLoading } = useMutation(
     (userInfo) => signUpUseMutaionPostInfo(userInfo),

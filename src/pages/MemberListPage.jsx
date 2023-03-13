@@ -71,7 +71,7 @@ const MemberListPage = () => {
   const setGithubName = useSetRecoilState(githubAccount);
 
   const [pageNum, setPageNum] = useState(0);
-  const [cardId, setCardId] = useRecoilState(cardIdNum);
+  const setCardId = useSetRecoilState(cardIdNum);
 
   const queryClient = useQueryClient();
 
@@ -466,4 +466,4 @@ const ReviewContainer = styled.div`
   cursor: auto;
 `;
 
-export default memo(MemberListPage);
+export default React.memo(MemberListPage);
