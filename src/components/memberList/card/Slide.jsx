@@ -27,7 +27,7 @@ import {
   twitter,
 } from "../../../store/cardInfoAtom";
 import { useMutation } from "react-query";
-import { BsFillBookmarkFill } from "react-icons/bs";
+import { BsFillBookmarkFill } from "@react-icons/all-files/bs/BsFillBookmarkFill";
 import {
   memberListuseMutationDeleteBookMark,
   memberListuseMutationPostBookMark,
