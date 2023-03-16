@@ -46,7 +46,7 @@ const deviceSizes = {
   mobile: "600px",
   tablet: "900px",
   laptop: "1200px",
-  desktop: "1800px",
+  desktop: "1600px",
 };
 
 const colors = {

@@ -80,11 +80,11 @@ const Header = () => {
   return (
     <HeaderBox onClick={() => onClickBackground()}>
       <HeaderWrap>
-        <Link to="/home">
-          <Logo>
+        <Logo>
+          <Link to="/home">
             <img src={logoImage} alt="logo" />
-          </Logo>
-        </Link>
+          </Link>
+        </Logo>
         {getCookieToken("accessToken") === undefined ? (
           <Menu>
             {location.pathname === "/signup" ? (
@@ -128,8 +128,8 @@ const Header = () => {
 const HeaderBox = styled.header`
   display: flex;
   justify-content: center;
+  align-items: center;
   height: 10vh;
-  padding: 20px 300px;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
   color: ${({ theme }) => theme.colors.white};
   @media ${(props) => props.theme.mobile} {
@@ -139,21 +139,34 @@ const HeaderBox = styled.header`
 `;
 const HeaderWrap = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  width: 1440px;
+  width: 100%;
 `;
 const Logo = styled.div`
-  color: ${({ theme }) => theme.colors.white};
-  font-weight: 600;
   display: flex;
   align-items: center;
   img {
     width: 180px;
-    height: 60px;
+    height: 50px;
   }
-  @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.mobileFontSizes.xxxl};
+  @media ${(props) => props.theme.laptop} {
+    img {
+      width: 140px;
+      height: 40px;
+    }
+    @media ${(props) => props.theme.tablet} {
+      img {
+        width: 100px;
+        height: 30px;
+      }
+      @media ${(props) => props.theme.mobile} {
+        img {
+          width: 80px;
+          height: 20px;
+        }
+      }
+    }
   }
 `;
 const Menu = styled.div`
@@ -175,14 +188,32 @@ const Menu = styled.div`
   span {
     color: ${({ theme }) => theme.colors.white};
   }
-  @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.mobileFontSizes.xl};
+
+  @media ${(props) => props.theme.laptop} {
+    font-size: ${({ theme }) => theme.fontSizes.xl};
     a {
       color: ${({ theme }) => theme.colors.white};
       font-weight: bold;
       cursor: pointer;
       padding: 6px;
-      margin-left: 10px;
+    }
+    @media ${(props) => props.theme.tablet} {
+      font-size: ${({ theme }) => theme.fontSizes.lg};
+      a {
+        color: ${({ theme }) => theme.colors.white};
+        font-weight: bold;
+        padding: 6px;
+        margin-left: 20px;
+        @media ${(props) => props.theme.mobile} {
+          font-size: ${({ theme }) => theme.mobileFontSizes.lg};
+          a {
+            color: ${({ theme }) => theme.colors.white};
+            font-weight: bold;
+            padding: 6px;
+            margin-left: 10px;
+          }
+        }
+      }
     }
   }
 `;

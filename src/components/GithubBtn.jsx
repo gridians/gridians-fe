@@ -16,8 +16,7 @@ const GithubBtn = () => {
 
 const GithubContainer = styled.div`
   width: 100%;
-  @media ${(props) => props.theme.mobile} {
-  }
+
 `;
 const Github = styled.a`
   display: flex;

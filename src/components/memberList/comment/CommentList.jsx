@@ -317,16 +317,24 @@ export default function CommentList() {
                                   </CommentListComment>
                                   {getUserInfoValue?.nickname ===
                                     replyCommentList.nickname && (
-                                    <CommentListReplayTitle
-                                      onClick={() =>
-                                        onClickDeleteReplyComment(
-                                          replyCommentList.commentId,
-                                          replyCommentList.replyId
-                                        )
-                                      }
+                                    <div
+                                      style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
                                     >
-                                      삭제
-                                    </CommentListReplayTitle>
+                                      <CommentListReplayTitle
+                                        onClick={() =>
+                                          onClickDeleteReplyComment(
+                                            replyCommentList.commentId,
+                                            replyCommentList.replyId
+                                          )
+                                        }
+                                      >
+                                        삭제
+                                      </CommentListReplayTitle>
+                                    </div>
                                   )}
                                 </CommentListReplyCommentInnerWrapper>
                               </CommentListReplyCommentInnderWrapper>
@@ -563,6 +571,7 @@ const CommentListReplayTitle = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.base};
   margin-right: 5px;
   text-align: end;
+  border: 2px solid white;
 `;
 const CommentListReplyCommentWrapper = styled.div`
   margin-top: 15px;
