@@ -638,18 +638,22 @@ const MyPageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
-  @media ${(props) => props.theme.mobile} {
-    justify-content: center;
-    padding: 0;
+  @media ${(props) => props.theme.laptop} {
+    padding: 20px 100px;
+    @media ${(props) => props.theme.mobile} {
+      justify-content: center;
+      padding: 0;
+    }
   }
 `;
 const MyPageWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
-  @media ${(props) => props.theme.mobile} {
+
+  @media ${(props) => props.theme.laptop} {
+    display: flex;
     flex-direction: column;
-    height: auto;
   }
 `;
 const MyPageFormInfoWrapper = styled.div`
@@ -661,6 +665,12 @@ const MyPageFormInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   color: white;
+  @media ${(props) => props.theme.laptop} {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border-top-right-radius: 10px;
+  }
   .profileImageContainer {
     display: flex;
     align-items: center;
@@ -668,10 +678,11 @@ const MyPageFormInfoWrapper = styled.div`
   }
   .editInputContainer {
     margin-top: 10px;
-    @media ${(props) => props.theme.mobile} {
-      margin: 0;
+    @media ${(props) => props.theme.laptop} {
+      margin-top: 0;
     }
   }
+
   .editIcon {
     width: 40px;
     height: 40px;
@@ -693,14 +704,29 @@ const MyPageFormInfoTitleWrapper = styled.div`
   color: black;
   border: 1px solid white;
   background-color: white;
-  @media ${(props) => props.theme.mobile} {
-    display: none;
+
+  @media ${(props) => props.theme.laptop} {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    border-top-left-radius: 10px;
+
+    @media ${(props) => props.theme.mobile} {
+      display: none;
+    }
   }
 `;
 const Title = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.titleSize};
   font-weight: bold;
   margin-bottom: 10px;
+  @media ${(props) => props.theme.laptop} {
+    font-size: ${({ theme }) => theme.fontSizes.subTitleSize};
+    margin: 0;
+    @media ${(props) => props.theme.tablet} {
+      font-size: ${({ theme }) => theme.fontSizes.name};
+    }
+  } ;
 `;
 
 const MyPageForm = styled.form`
@@ -721,18 +747,23 @@ const MyPageForm = styled.form`
     width: 30px;
     height: 30px;
   }
-  @media ${(props) => props.theme.mobile} {
+  @media ${(props) => props.theme.laptop} {
     border-radius: 0;
-    padding: 0;
-    border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    .icon {
-      width: 25px;
-      height: 25px;
-    }
-    .show-icon {
-      width: 15px;
-      height: 15px;
+    border-bottom-left-radius: 10px;
+
+    @media ${(props) => props.theme.mobile} {
+      padding: 0;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      .icon {
+        width: 25px;
+        height: 25px;
+      }
+      .show-icon {
+        width: 15px;
+        height: 15px;
+      }
     }
   }
 `;
@@ -742,6 +773,7 @@ const MyPageFormEditInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   @media ${(props) => props.theme.mobile} {
     width: 100%;
     border-bottom-left-radius: 10px;
@@ -754,6 +786,12 @@ const MyPageInputContainerInnerWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media ${(props) => props.theme.laptop} {
+    margin-top: 0;
+    flex-direction: row;
+    width: 100%;
+  }
   @media ${(props) => props.theme.mobile} {
     margin-top: 0;
     flex-direction: row;
@@ -820,6 +858,14 @@ const ProfileImage = styled.img`
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  @media ${(props) => props.theme.laptop} {
+    width: 70px;
+    height: 70px;
+  }
+  @media ${(props) => props.theme.tablet} {
+    width: 50px;
+    height: 50px;
+  }
   @media ${(props) => props.theme.mobile} {
     width: 30px;
     height: 30px;
@@ -866,8 +912,15 @@ const MyPageSpan = styled.span`
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: bold;
-  @media ${(props) => props.theme.mobile} {
-    font-size: ${({ theme }) => theme.fontSizes.small};
+
+  @media ${(props) => props.theme.laptop} {
+    font-size: ${({ theme }) => theme.fontSizes.xxl};
+    @media ${(props) => props.theme.tablet} {
+      font-size: ${({ theme }) => theme.fontSizes.base};
+      @media ${(props) => props.theme.mobile} {
+        font-size: ${({ theme }) => theme.fontSizes.small};
+      }
+    }
   }
 `;
 const InputMessage = styled.div`
