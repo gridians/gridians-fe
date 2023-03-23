@@ -197,8 +197,11 @@ const LoginContainer = styled.div`
   a {
     color: ${({ theme }) => theme.colors.white};
   }
-  @media ${(props) => props.theme.mobile} {
-    padding: 0;
+  @media ${(props) => props.theme.laptop} {
+    padding: 100px 200px;
+    @media ${(props) => props.theme.mobile} {
+      padding: 0;
+    }
   }
 `;
 
@@ -206,10 +209,13 @@ const LoginFormWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
-  @media ${(props) => props.theme.mobile} {
+  @media ${(props) => props.theme.laptop} {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    @media ${(props) => props.theme.mobile} {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
   }
 `;
 
@@ -222,13 +228,22 @@ const LoginTitleListWrapper = styled.div`
   align-items: center;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  @media ${(props) => props.theme.mobile} {
+  @media ${(props) => props.theme.laptop} {
     width: 100%;
-    height: 10%;
+    height: auto;
+    align-items: flex-start;
     border-radius: 0;
-    border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    background-color: ${({ theme }) => theme.colors.subColor3};
+    border-top-left-radius: 10px;
+
+    @media ${(props) => props.theme.mobile} {
+      width: 100%;
+      height: 10%;
+      border-radius: 0;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      background-color: ${({ theme }) => theme.colors.subColor3};
+    }
   }
 `;
 const LoginTitleWrapper = styled.div`
@@ -238,13 +253,20 @@ const LoginTitleWrapper = styled.div`
   margin-top: 100px;
   background-color: ${({ theme }) => theme.colors.subColor3};
   color: white;
-  @media ${(props) => props.theme.mobile} {
+  @media ${(props) => props.theme.laptop} {
+    margin: 0;
+    width: 50%;
     height: 100%;
-    align-items: center;
-    margin: 0px;
     border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom: 1px solid white;
+    @media ${(props) => props.theme.mobile} {
+      height: 100%;
+      width: 100%;
+      align-items: center;
+      margin: 0px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom: 1px solid white;
+    }
   }
 `;
 const MainTitle = styled.span`
@@ -268,12 +290,17 @@ const LoginForm = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  @media ${(props) => props.theme.mobile} {
-    height: 60%;
-    padding: 0;
+  @media ${(props) => props.theme.laptop} {
     border-radius: 0;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    @media ${(props) => props.theme.mobile} {
+      height: 60%;
+      padding: 0;
+      border-radius: 0;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
   }
 `;
 
