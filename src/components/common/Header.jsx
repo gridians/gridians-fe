@@ -205,7 +205,7 @@ const Menu = styled.div`
         padding: 6px;
         margin-left: 20px;
         @media ${(props) => props.theme.mobile} {
-          font-size: ${({ theme }) => theme.mobileFontSizes.lg};
+          font-size: ${({ theme }) => theme.fontSizes.small};
           a {
             color: ${({ theme }) => theme.colors.white};
             font-weight: bold;
