@@ -295,19 +295,27 @@ const SignUpContainer = styled.div`
   align-items: center;
   padding: 100px 350px;
   background-color: ${({ theme }) => theme.colors.mainBackgroundColor};
-  @media ${(props) => props.theme.mobile} {
-    padding: 0;
+  @media ${(props) => props.theme.laptop} {
+    padding: 100px 200px;
+    @media ${(props) => props.theme.tablet} {
+      padding: 100px 50px;
+      @media ${(props) => props.theme.mobile} {
+        padding: 0;
+      }
+    }
   }
 `;
 const SignUpFormWrapper = styled.div`
   width: 80%;
   height: 100%;
   display: flex;
-  @media ${(props) => props.theme.mobile} {
+  @media ${(props) => props.theme.laptop} {
     flex-direction: column;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @media ${(props) => props.theme.mobile} {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
   }
 `;
 const SignUpTitleListWrapper = styled.div`
@@ -319,13 +327,23 @@ const SignUpTitleListWrapper = styled.div`
   align-items: center;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  @media ${(props) => props.theme.mobile} {
+
+  @media ${(props) => props.theme.laptop} {
     width: 100%;
-    height: 10%;
+    height: auto;
+    align-items: flex-end;
     border-radius: 0;
-    border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    background-color: ${({ theme }) => theme.colors.subColor3};
+    border-top-left-radius: 10px;
+
+    @media ${(props) => props.theme.mobile} {
+      width: 100%;
+      height: 10%;
+      border-radius: 0;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      background-color: ${({ theme }) => theme.colors.subColor3};
+    }
   }
 `;
 const TitleWrapper = styled.div`
@@ -335,12 +353,20 @@ const TitleWrapper = styled.div`
   justify-content: center;
   margin-top: 100px;
   background-color: ${({ theme }) => theme.colors.subColor3};
-  @media ${(props) => props.theme.mobile} {
+  @media ${(props) => props.theme.laptop} {
+    margin: 0;
+    width: 50%;
     height: 100%;
-    margin: 0px;
-    border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    border-bottom: 1px solid white;
+    @media ${(props) => props.theme.mobile} {
+      height: 100%;
+      width: 100%;
+      align-items: center;
+      margin: 0px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom: 1px solid white;
+    }
   }
 `;
 const Title = styled.span`
@@ -364,12 +390,21 @@ const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  @media ${(props) => props.theme.mobile} {
-    height: 60%;
-    padding: 0;
+  @media ${(props) => props.theme.laptop} {
     border-radius: 0;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    padding: 40px 50px;
+    @media ${(props) => props.theme.tablet} {
+      padding: 40px 50px;
+      @media ${(props) => props.theme.mobile} {
+        height: 60%;
+        padding: 0;
+        border-radius: 0;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+    }
   }
 `;
 const SignUpInnerWrapper = styled.div`
@@ -378,6 +413,9 @@ const SignUpInnerWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media ${(props) => props.theme.mobile} {
+    align-items: center;
+  }
 `;
 const SignUpInputContainer = styled.div`
   position: relative;

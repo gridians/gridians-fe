@@ -199,8 +199,11 @@ const LoginContainer = styled.div`
   }
   @media ${(props) => props.theme.laptop} {
     padding: 100px 200px;
-    @media ${(props) => props.theme.mobile} {
-      padding: 0;
+    @media ${(props) => props.theme.tablet} {
+      padding: 100px 50px;
+      @media ${(props) => props.theme.mobile} {
+        padding: 0;
+      }
     }
   }
 `;
@@ -294,12 +297,16 @@ const LoginForm = styled.form`
     border-radius: 0;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    @media ${(props) => props.theme.mobile} {
-      height: 60%;
-      padding: 0;
-      border-radius: 0;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
+    padding: 40px 50px;
+    @media ${(props) => props.theme.tablet} {
+      padding: 40px 50px;
+      @media ${(props) => props.theme.mobile} {
+        height: 60%;
+        padding: 0;
+        border-radius: 0;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
     }
   }
 `;
@@ -327,9 +334,12 @@ const LoginBtn = styled.button`
   background-color: transparent;
   transition: all 0.5s;
   cursor: pointer;
-  @media ${(props) => props.theme.mobile} {
-    width: 50%;
-    font-size: ${({ theme }) => theme.fontSizes.base};
+  @media ${(props) => props.theme.tablet} {
+    font-size: ${({ theme }) => theme.fontSizes.lg};
+    @media ${(props) => props.theme.mobile} {
+      width: 50%;
+      font-size: ${({ theme }) => theme.fontSizes.base};
+    }
   }
 `;
 
